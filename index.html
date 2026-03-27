@@ -3,373 +3,446 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>左官VRトレーナー</title>
+<title>左官ARトレーナー</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#000; color:#fff; font-family:monospace; overflow:hidden; }
+
 #ui {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:#0a0c10; z-index:10;
+position:fixed; top:0; left:0; width:100%; height:100%;
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+background:#0a0c10; z-index:10;
 }
-h1 { font-size:24px; color:#00e5ff; margin-bottom:8px; letter-spacing:4px; }
-p  { color:#4a6a8a; font-size:12px; margin-bottom:32px; }
-#btn-vr {
-  background:#00e5ff; color:#000; border:none;
-  padding:16px 40px; font-size:18px; font-weight:bold;
-  cursor:pointer; border-radius:4px; margin-bottom:16px;
+h1 { font-size:28px; color:#00e5ff; margin-bottom:8px; letter-spacing:4px; }
+p  { color:#4a6a8a; font-size:13px; margin-bottom:8px; text-align:center; padding:0 20px; }
+#btn-ar {
+background:#00e5ff; color:#000; border:none;
+padding:20px 52px; font-size:22px; font-weight:bold;
+cursor:pointer; border-radius:8px; margin:20px 0 16px;
 }
-#btn-vr:hover { background:#00ccee; }
-#status { color:#ffcc00; font-size:12px; min-height:20px; }
-#score-ui {
-  position:fixed; top:0; right:0; width:200px;
-  background:rgba(0,0,0,0.7); padding:12px;
-  font-size:12px; display:none; z-index:5;
+#status { color:#ffcc00; font-size:13px; min-height:20px; text-align:center; padding:0 20px; }
+
+/* ===== HUD ===== */
+#hud {
+position:fixed; top:16px; left:50%;
+transform:translateX(-50%);
+display:none; z-index:20;
+pointer-events:none;
+width:92%; max-width:520px;
 }
-.s-row { display:flex; justify-content:space-between; margin-bottom:6px; }
-.s-label { color:#4a6a8a; }
-.s-val { color:#00e5ff; font-weight:bold; }
+
+.panel {
+background:rgba(0,0,0,0.82);
+border:2.5px solid #00e5ff;
+border-radius:14px;
+padding:18px 22px;
+margin-bottom:12px;
+}
+
+.ptitle {
+color:#00e5ff; font-size:12px;
+letter-spacing:3px; margin-bottom:12px; opacity:0.75;
+}
+
+/* BIG SCORE */
+.score-wrap { text-align:center; }
+.score-num  { font-size:80px; font-weight:bold; line-height:1; }
+.score-grade{ font-size:22px; letter-spacing:5px; margin-top:6px; }
+
+/* ROWS */
+.row {
+display:flex; justify-content:space-between;
+align-items:center; margin-bottom:10px;
+}
+.lbl { color:#aac8e0; font-size:18px; }
+.val { font-size:34px; font-weight:bold; color:#fff; text-align:right; }
+.val.good { color:#00ff88; }
+.val.warn { color:#ffcc00; }
+.val.bad  { color:#ff4466; }
+.val.sm   { font-size:24px; }
+
+/* BAR */
+.bar-bg { width:100%; height:10px; background:rgba(255,255,255,0.12); border-radius:5px; overflow:hidden; margin-top:4px; }
+.bar-fill{ height:100%; border-radius:5px; transition:width 0.3s; }
+
+/* ANGLE GAUGE */
+.gauge-wrap { position:relative; height:20px; border-radius:10px; overflow:hidden; margin-top:8px; }
+.gauge-zones{ display:flex; width:100%; height:100%; }
+.z-bad  { flex:25; background:rgba(255,68,102,0.55); }
+.z-warn { flex:15; background:rgba(255,204,0,0.55); }
+.z-good { flex:20; background:rgba(0,255,136,0.55); }
+.needle {
+position:absolute; top:0; width:5px; height:100%;
+background:#fff; border-radius:3px;
+transition:left 0.1s; transform:translateX(-50%);
+box-shadow:0 0 6px #fff;
+}
+
 canvas { display:block; }
 </style>
+
 </head>
 <body>
 
 <div id="ui">
-  <h1>左官VR TRAINER</h1>
-  <p>コントローラーでコテを動かして壁を塗る練習</p>
-  <button id="btn-vr">▶ VRセッション開始</button>
+  <h1>左官AR TRAINER</h1>
+  <p>右手でコテを持って壁を塗ってください<br>壁に近づけるだけで塗れます（ボタン不要）</p>
+  <button id="btn-ar">📷 ARセッション開始</button>
   <div id="status">WebXR確認中...</div>
 </div>
 
-<div id="score-ui">
-  <div class="s-row"><span class="s-label">角度</span><span class="s-val" id="s-angle">--°</span></div>
-  <div class="s-row"><span class="s-label">目標角度</span><span class="s-val">35°</span></div>
-  <div class="s-row"><span class="s-label">ブレ</span><span class="s-val" id="s-blur">--%</span></div>
-  <div class="s-row"><span class="s-label">カバレッジ</span><span class="s-val" id="s-cover">0%</span></div>
-  <div class="s-row"><span class="s-label">スコア</span><span class="s-val" id="s-score">0</span></div>
+<div id="hud">
+  <!-- SCORE -->
+  <div class="panel">
+    <div class="ptitle">総合スコア</div>
+    <div class="score-wrap">
+      <div class="score-num" id="h-score">0</div>
+      <div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div>
+    </div>
+  </div>
+
+  <!-- ANGLE -->
+
+  <div class="panel">
+    <div class="ptitle">コテ角度</div>
+    <div class="row">
+      <span class="lbl">現在角度</span>
+      <span class="val" id="h-angle">--°</span>
+    </div>
+    <div class="row" style="margin-bottom:6px">
+      <span class="lbl">目標</span>
+      <span class="val sm" style="color:#00e5ff">35° ± 5°</span>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-zones">
+        <div class="z-bad"></div><div class="z-warn"></div>
+        <div class="z-good"></div>
+        <div class="z-warn"></div><div class="z-bad"></div>
+      </div>
+      <div class="needle" id="h-needle" style="left:50%"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <span class="lbl">ブレ率</span>
+      <span class="val" id="h-blur">0%</span>
+    </div>
+    <div class="bar-bg">
+      <div class="bar-fill" id="h-blur-bar" style="width:0%;background:#00ff88"></div>
+    </div>
+  </div>
+
+  <!-- COVERAGE -->
+
+  <div class="panel">
+    <div class="row">
+      <span class="lbl">カバレッジ</span>
+      <span class="val" id="h-cover">0%</span>
+    </div>
+    <div class="bar-bg">
+      <div class="bar-fill" id="h-cover-bar" style="width:0%;background:#00e5ff"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <span class="lbl">ストローク</span>
+      <span class="val sm" id="h-strokes">0回</span>
+    </div>
+    <div class="row">
+      <span class="lbl">平均厚み</span>
+      <span class="val sm" id="h-thick">0.0mm</span>
+    </div>
+  </div>
 </div>
 
 <canvas id="c"></canvas>
 
 <script>
 // ============================================================
-// WebGL setup (no Three.js - pure WebGL)
+// WebGL init
 // ============================================================
 const canvas = document.getElementById('c');
-canvas.width  = window.innerWidth;
+canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const gl = canvas.getContext('webgl2', { xrCompatible: true });
-if (!gl) document.getElementById('status').textContent = 'WebGL2非対応';
+let gl = canvas.getContext('webgl2', { xrCompatible:true, alpha:true });
+const GL2 = !!gl;
+if (!gl) gl = canvas.getContext('webgl', { xrCompatible:true, alpha:true });
 
-// Simple vertex shader
-const VS = `#version 300 es
-in vec4 a_pos;
-in vec3 a_color;
-uniform mat4 u_proj;
-uniform mat4 u_view;
-uniform mat4 u_model;
-out vec3 v_color;
-void main(){
-  gl_Position = u_proj * u_view * u_model * a_pos;
-  v_color = a_color;
-}`;
+const VS = GL2
+? `#version 300 es
+in vec4 a_p; in vec3 a_c; in float a_a;
+uniform mat4 uP,uV,uM;
+out vec3 vc; out float va;
+void main(){ gl_Position=uP*uV*uM*a_p; vc=a_c; va=a_a; }`
+: `attribute vec4 a_p; attribute vec3 a_c; attribute float a_a;
+uniform mat4 uP,uV,uM;
+varying vec3 vc; varying float va;
+void main(){ gl_Position=uP*uV*uM*a_p; vc=a_c; va=a_a; }`;
 
-const FS = `#version 300 es
+const FS = GL2
+? `#version 300 es
 precision mediump float;
-in vec3 v_color;
-out vec4 outColor;
-void main(){ outColor = vec4(v_color, 1.0); }`;
+in vec3 vc; in float va; out vec4 o;
+void main(){ o=vec4(vc,va); }`
+: `precision mediump float;
+varying vec3 vc; varying float va;
+void main(){ gl_FragColor=vec4(vc,va); }`;
 
-function compileShader(gl, type, src) {
-  const s = gl.createShader(type);
-  gl.shaderSource(s, src);
-  gl.compileShader(s);
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
-    console.error(gl.getShaderInfoLog(s));
-  return s;
-}
-
+function sh(t,s){ const x=gl.createShader(t); gl.shaderSource(x,s); gl.compileShader(x); return x; }
 const prog = gl.createProgram();
-gl.attachShader(prog, compileShader(gl, gl.VERTEX_SHADER, VS));
-gl.attachShader(prog, compileShader(gl, gl.FRAGMENT_SHADER, FS));
-gl.linkProgram(prog);
-gl.useProgram(prog);
+gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog); gl.useProgram(prog);
 
-const aPos   = gl.getAttribLocation(prog, 'a_pos');
-const aColor = gl.getAttribLocation(prog, 'a_color');
-const uProj  = gl.getUniformLocation(prog, 'u_proj');
-const uView  = gl.getUniformLocation(prog, 'u_view');
-const uModel = gl.getUniformLocation(prog, 'u_model');
+const aP=gl.getAttribLocation(prog,'a_p');
+const aC=gl.getAttribLocation(prog,'a_c');
+const aA=gl.getAttribLocation(prog,'a_a');
+const uP=gl.getUniformLocation(prog,'uP');
+const uV=gl.getUniformLocation(prog,'uV');
+const uM=gl.getUniformLocation(prog,'uM');
+const ST=28; // stride: 7 floats * 4 bytes
+
+function setAttr(){
+  gl.enableVertexAttribArray(aP); gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);
+  gl.enableVertexAttribArray(aC); gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);
+  gl.enableVertexAttribArray(aA); gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);
+}
+function mkBuf(d,h){ const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b); gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW); return b; }
+function mat4(tx,ty,tz){ const m=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]); m[12]=tx;m[13]=ty;m[14]=tz; return m; }
 
 // ============================================================
-// WALL GRID  (20x15 cells, each 0.1m)
+// WALL GRID
+// GW×GH セル、各 CELL m
+// 壁は視線正面 Z=-1.0m に配置
+// Y方向: 床(0)〜GH*CELL m
+// X方向: 中央揃え
 // ============================================================
-const GW = 20, GH = 15, CELL = 0.1;
-const TARGET_THICK = 0.008; // 8mm
-const TARGET_ANGLE = 35;
-const TOL_ANGLE = 5;
+const GW=20, GH=14, CELL=0.07;
+const WALL_Z = -1.0;   // 正面1m先
+const WALL_Y =  0.5;   // 床から0.5m上に壁の下端
+const TARGET_THICK=0.008, TARGET_ANGLE=35, TOL=5;
+// 塗り判定: コントローラーが壁面から何m以内か
+const PAINT_DIST = 0.12;
 
-const thickness = new Float32Array(GW * GH); // meters
-const angleLog  = [];
+const thick = new Float32Array(GW*GH);
+const angLog = []; let strokes=0, wasPainting=false;
 
-// Build wall mesh buffers (updated each frame)
-function buildWallBuffers() {
-  const verts = [];
-  for (let gy = 0; gy < GH; gy++) {
-    for (let gx = 0; gx < GW; gx++) {
-      const t = thickness[gy * GW + gx];
-      const x0 = (gx - GW/2) * CELL;
-      const x1 = x0 + CELL - 0.002;
-      const y0 = gy * CELL;
-      const y1 = y0 + CELL - 0.002;
-      const z  = 0;
-
-      // Color by thickness
-      let r, g, b;
-      if (t === 0) { r=0.08; g=0.1; b=0.14; }
-      else {
-        const ratio = t / TARGET_THICK;
-        if (ratio < 0.85)      { r=0.0; g=0.3; b=0.9; }
-        else if (ratio < 1.15) { r=0.0; g=0.9; b=0.4; }
-        else                   { r=0.9; g=0.4; b=0.0; }
-      }
-
-      // Two triangles per cell
-      const quad = [
-        x0,y0,z, r,g,b,
-        x1,y0,z, r,g,b,
-        x0,y1,z, r,g,b,
-        x1,y0,z, r,g,b,
-        x1,y1,z, r,g,b,
-        x0,y1,z, r,g,b,
-      ];
-      verts.push(...quad);
-    }
+function wallVerts(){
+  const v=[];
+  for(let gy=0;gy<GH;gy++) for(let gx=0;gx<GW;gx++){
+    const t=thick[gy*GW+gx]; if(t===0) continue;
+    const x0=(gx-GW/2)*CELL, x1=x0+CELL-0.003;
+    const y0=gy*CELL,         y1=y0+CELL-0.003;
+    const ratio=t/TARGET_THICK;
+    let r,g,b;
+    if(ratio<0.85){r=0.1;g=0.4;b=1.0;}
+    else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}
+    else{r=1.0;g=0.4;b=0.1;}
+    const a=Math.min(0.88,ratio*0.5+0.3);
+    v.push(x0,y0,0,r,g,b,a, x1,y0,0,r,g,b,a, x0,y1,0,r,g,b,a,
+           x1,y0,0,r,g,b,a, x1,y1,0,r,g,b,a, x0,y1,0,r,g,b,a);
   }
-  return new Float32Array(verts);
+  return new Float32Array(v);
 }
 
-const wallVAO = gl.createVertexArray();
-gl.bindVertexArray(wallVAO);
-const wallBuf = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, wallBuf);
-const STRIDE = (3 + 3) * 4;
-gl.enableVertexAttribArray(aPos);
-gl.vertexAttribPointer(aPos,   3, gl.FLOAT, false, STRIDE, 0);
-gl.enableVertexAttribArray(aColor);
-gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, STRIDE, 12);
-
-// Kote (trowel) — simple rectangle
-const koteVerts = new Float32Array([
-  -0.15, -0.02, 0,  0.8,0.85,0.9,
-   0.15, -0.02, 0,  0.8,0.85,0.9,
-  -0.15,  0.02, 0,  0.8,0.85,0.9,
-   0.15, -0.02, 0,  0.8,0.85,0.9,
-   0.15,  0.02, 0,  0.8,0.85,0.9,
-  -0.15,  0.02, 0,  0.8,0.85,0.9,
-]);
-const koteVAO = gl.createVertexArray();
-gl.bindVertexArray(koteVAO);
-const koteBuf = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, koteBuf);
-gl.bufferData(gl.ARRAY_BUFFER, koteVerts, gl.STATIC_DRAW);
-gl.enableVertexAttribArray(aPos);
-gl.vertexAttribPointer(aPos,   3, gl.FLOAT, false, STRIDE, 0);
-gl.enableVertexAttribArray(aColor);
-gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, STRIDE, 12);
-
-// ============================================================
-// MATH HELPERS
-// ============================================================
-function mat4Identity() {
-  return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+function gridVerts(){
+  const v=[],r=0.15,g=0.55,b=0.65,a=0.4;
+  for(let x=0;x<=GW;x++){const px=(x-GW/2)*CELL; v.push(px,0,0,r,g,b,a,px,GH*CELL,0,r,g,b,a);}
+  for(let y=0;y<=GH;y++){const py=y*CELL; v.push(-(GW/2)*CELL,py,0,r,g,b,a,(GW/2)*CELL,py,0,r,g,b,a);}
+  return new Float32Array(v);
 }
 
-function mat4Perspective(fov, aspect, near, far) {
-  const f = 1 / Math.tan(fov / 2);
-  const nf = 1 / (near - far);
-  return new Float32Array([
-    f/aspect,0,0,0,
-    0,f,0,0,
-    0,0,(far+near)*nf,-1,
-    0,0,2*far*near*nf,0
-  ]);
-}
+// コテ形状
+const koteBuf = mkBuf(new Float32Array([
+  -0.14,-0.016,0,0.85,0.90,0.95,0.92,
+   0.14,-0.016,0,0.85,0.90,0.95,0.92,
+  -0.14, 0.016,0,0.85,0.90,0.95,0.92,
+   0.14,-0.016,0,0.85,0.90,0.95,0.92,
+   0.14, 0.016,0,0.85,0.90,0.95,0.92,
+  -0.14, 0.016,0,0.85,0.90,0.95,0.92,
+   0.10,-0.012,0,0.55,0.35,0.20,0.92,
+   0.22,-0.012,0,0.55,0.35,0.20,0.92,
+   0.10, 0.012,0,0.55,0.35,0.20,0.92,
+   0.22,-0.012,0,0.55,0.35,0.20,0.92,
+   0.22, 0.012,0,0.55,0.35,0.20,0.92,
+   0.10, 0.012,0,0.55,0.35,0.20,0.92,
+]));
+const gridBuf = mkBuf(gridVerts());
+const wallBuf = mkBuf(new Float32Array(0), gl.DYNAMIC_DRAW);
 
 // ============================================================
-// SCORE
+// HUD UPDATE
 // ============================================================
-function calcScore() {
-  let covered = 0;
-  for (let i = 0; i < thickness.length; i++) if (thickness[i] > 0) covered++;
-  const coverage = covered / thickness.length;
+let lastAngle = TARGET_ANGLE;
 
-  let blurRate = 0;
-  if (angleLog.length > 0) {
-    const bad = angleLog.filter(a => Math.abs(a - TARGET_ANGLE) > TOL_ANGLE).length;
-    blurRate = bad / angleLog.length;
-  }
-
-  const angleScore = Math.max(0, 100 - blurRate * 100);
-  const coverScore = coverage * 100;
-  const total = Math.round(angleScore * 0.6 + coverScore * 0.4);
-
-  return { total, blurRate, coverage, angleScore };
+function calcScore(){
+  let cov=0,ts=0;
+  for(let i=0;i<thick.length;i++) if(thick[i]>0){cov++;ts+=thick[i];}
+  const coverage=cov/thick.length, avg=cov>0?ts/cov:0;
+  let blur=0;
+  if(angLog.length>0) blur=angLog.filter(a=>Math.abs(a-TARGET_ANGLE)>TOL).length/angLog.length;
+  return { total:Math.round((1-blur)*60+coverage*40), blur, coverage, avg };
 }
 
-function updateScoreUI(currentAngle) {
-  const s = calcScore();
-  document.getElementById('s-angle').textContent = currentAngle.toFixed(1) + '°';
-  document.getElementById('s-blur').textContent  = (s.blurRate * 100).toFixed(0) + '%';
-  document.getElementById('s-cover').textContent = (s.coverage * 100).toFixed(0) + '%';
-  document.getElementById('s-score').textContent = s.total;
+function updateHUD(ang){
+  lastAngle=ang;
+  const s=calcScore();
+
+  // Score
+  document.getElementById('h-score').textContent=s.total;
+  const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
+  const [,g,gc]=gs.find(([m])=>s.total>=m);
+  const ge=document.getElementById('h-grade');
+  ge.textContent=`--- GRADE ${g} ---`; ge.style.color=gc;
+  document.getElementById('h-score').style.color=gc;
+
+  // Angle
+  const diff=Math.abs(ang-TARGET_ANGLE);
+  const ae=document.getElementById('h-angle');
+  ae.textContent=ang.toFixed(1)+'°';
+  ae.className='val '+(diff<=TOL?'good':diff<=TOL*2?'warn':'bad');
+  document.getElementById('h-needle').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
+
+  // Blur
+  const bp=Math.round(s.blur*100);
+  const be=document.getElementById('h-blur');
+  be.textContent=bp+'%';
+  be.className='val '+(bp<20?'good':bp<40?'warn':'bad');
+  const bb=document.getElementById('h-blur-bar');
+  bb.style.width=bp+'%'; bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
+
+  // Coverage
+  const cp=Math.round(s.coverage*100);
+  document.getElementById('h-cover').textContent=cp+'%';
+  document.getElementById('h-cover-bar').style.width=cp+'%';
+  document.getElementById('h-strokes').textContent=strokes+'回';
+  document.getElementById('h-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
 // ============================================================
 // XR SESSION
 // ============================================================
-let xrSession = null;
-let xrRefSpace = null;
-let glLayer = null;
+let xrSession=null, xrRefSpace=null, glLayer=null;
+const statusEl=document.getElementById('status');
 
-const statusEl = document.getElementById('status');
-const uiEl     = document.getElementById('ui');
-const scoreUI  = document.getElementById('score-ui');
-
-// Check support
-if (navigator.xr) {
-  navigator.xr.isSessionSupported('immersive-vr').then(supported => {
-    if (supported) {
-      statusEl.textContent = '✓ WebXR対応 — VR開始できます';
-      statusEl.style.color = '#00ff88';
-    } else {
-      statusEl.textContent = '✗ immersive-VR非対応';
-      statusEl.style.color = '#ff3355';
-    }
+if(navigator.xr){
+  navigator.xr.isSessionSupported('immersive-ar').then(ok=>{
+    statusEl.textContent = ok ? '✓ AR対応 — 開始できます' : '⚠ AR非対応 → VRで起動します';
+    statusEl.style.color = ok ? '#00ff88' : '#ffcc00';
+    if(!ok) document.getElementById('btn-ar').textContent='🥽 VRセッション開始';
   });
 } else {
-  statusEl.textContent = '✗ WebXR非対応ブラウザ';
-  statusEl.style.color = '#ff3355';
+  statusEl.textContent='✗ WebXR非対応ブラウザ';
+  statusEl.style.color='#ff4466';
 }
 
-document.getElementById('btn-vr').addEventListener('click', async () => {
+document.getElementById('btn-ar').addEventListener('click', async()=>{
   try {
-    xrSession = await navigator.xr.requestSession('immersive-vr', {
-      requiredFeatures: ['local-floor'],
-    });
-
-    // Bind WebGL to XR
-    glLayer = new XRWebGLLayer(xrSession, gl);
-    xrSession.updateRenderState({ baseLayer: glLayer });
+    const arOk = await navigator.xr.isSessionSupported('immersive-ar');
+    const mode = arOk ? 'immersive-ar' : 'immersive-vr';
+    xrSession = await navigator.xr.requestSession(mode, { requiredFeatures:['local-floor'] });
+    glLayer = new XRWebGLLayer(xrSession, gl, { alpha:true });
+    xrSession.updateRenderState({ baseLayer:glLayer });
     xrRefSpace = await xrSession.requestReferenceSpace('local-floor');
-
-    uiEl.style.display = 'none';
-    scoreUI.style.display = 'block';
-
+    document.getElementById('ui').style.display='none';
+    document.getElementById('hud').style.display='block';
     xrSession.requestAnimationFrame(onXRFrame);
-
-    xrSession.addEventListener('end', () => {
-      uiEl.style.display = 'flex';
-      scoreUI.style.display = 'none';
+    xrSession.addEventListener('end',()=>{
+      document.getElementById('ui').style.display='flex';
+      document.getElementById('hud').style.display='none';
     });
-  } catch(e) {
-    statusEl.textContent = 'エラー: ' + e.message;
-    statusEl.style.color = '#ff3355';
+  } catch(e){
+    statusEl.textContent='エラー: '+e.message;
+    statusEl.style.color='#ff4466';
   }
 });
 
 // ============================================================
 // XR RENDER LOOP
 // ============================================================
-function onXRFrame(time, frame) {
-  xrSession.requestAnimationFrame(onXRFrame);
+let fc=0;
+let kPos={x:0, y:1.2, z:WALL_Z+0.05};
 
+function onXRFrame(t, frame){
+  xrSession.requestAnimationFrame(onXRFrame);
+  fc++;
   const pose = frame.getViewerPose(xrRefSpace);
-  if (!pose) return;
+  if(!pose) return;
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, glLayer.framebuffer);
-  gl.clearColor(0.04, 0.05, 0.07, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.clearColor(0,0,0,0);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  // --- Controller input ---
-  let koteAngle = TARGET_ANGLE;
-  let kotePos   = { x: 0, y: 1.2, z: -0.6 };
-  let trigger   = 0;
+  // ---- 右手コントローラー ----
+  let curAngle = lastAngle;
 
-  for (const src of xrSession.inputSources) {
-    if (!src.gripSpace) continue;
+  for(const src of xrSession.inputSources){
+    if(src.handedness !== 'right' || !src.gripSpace) continue;
     const gp = frame.getPose(src.gripSpace, xrRefSpace);
-    if (!gp) continue;
+    if(!gp) continue;
 
-    const q = gp.transform.orientation;
-    // Extract pitch angle from quaternion
+    const q=gp.transform.orientation, p=gp.transform.position;
+
+    // 角度: グリップの pitch から算出
     const sinP = 2*(q.w*q.x - q.y*q.z);
-    const pitch = Math.asin(Math.max(-1, Math.min(1, sinP)));
-    koteAngle = Math.abs(pitch * 180 / Math.PI);
+    curAngle = Math.abs(Math.asin(Math.max(-1,Math.min(1,sinP))) * 180/Math.PI);
 
-    const p = gp.transform.position;
-    kotePos = { x: p.x, y: p.y, z: p.z };
+    kPos = { x:p.x, y:p.y, z:p.z };
 
-    trigger = src.gamepad?.buttons[0]?.value ?? 0;
-  }
+    // ---- 塗り判定: ボタン不要、壁面に近づけるだけ ----
+    // 壁面Z = WALL_Z、コントローラーZが壁からPAINT_DIST以内で塗る
+    const distToWall = Math.abs(p.z - WALL_Z);
+    if(distToWall < PAINT_DIST){
+      if(!wasPainting){ strokes++; wasPainting=true; }
+      angLog.push(curAngle);
+      if(angLog.length>2000) angLog.shift();
 
-  // Log angle
-  if (trigger > 0.1) {
-    angleLog.push(koteAngle);
-    if (angleLog.length > 1000) angleLog.shift();
-
-    // Paint wall — project kote position onto wall plane (z≈-0.6)
-    const gx = Math.floor((kotePos.x / CELL) + GW/2);
-    const gy = Math.floor(kotePos.y / CELL);
-    const r  = 1;
-    for (let dy = -r; dy <= r; dy++) {
-      for (let dx = -r; dx <= r; dx++) {
-        const nx = gx+dx, ny = gy+dy;
-        if (nx>=0 && nx<GW && ny>=0 && ny<GH) {
-          const idx = ny*GW + nx;
-          thickness[idx] = Math.min(0.025, thickness[idx] + trigger * 0.0003);
+      // 壁面グリッド座標に変換
+      const gx = Math.floor(p.x/CELL + GW/2);
+      const gy = Math.floor((p.y - WALL_Y)/CELL);
+      // 距離に反比例した塗り量（近いほど厚く）
+      const pressure = 1 - distToWall/PAINT_DIST;
+      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+        const nx=gx+dx, ny=gy+dy;
+        if(nx>=0&&nx<GW&&ny>=0&&ny<GH){
+          const idx=ny*GW+nx;
+          thick[idx]=Math.min(0.025, thick[idx]+pressure*0.0005);
         }
       }
+    } else {
+      wasPainting=false;
     }
   }
 
-  // Update score UI every 30 frames
-  if (Math.round(time / 33) % 10 === 0) updateScoreUI(koteAngle);
+  if(fc%20===0) updateHUD(curAngle);
 
-  // --- Render each eye ---
-  for (const view of pose.views) {
-    const vp = glLayer.getViewport(view);
-    gl.viewport(vp.x, vp.y, vp.width, vp.height);
+  // 壁のモデル行列: X中央, Y=WALL_Y, Z=WALL_Z
+  const wallM = mat4(-(GW/2)*CELL, WALL_Y, WALL_Z);
 
-    const proj = view.projectionMatrix;
-    const viewMat = view.transform.inverse.matrix;
+  for(const view of pose.views){
+    const vp=glLayer.getViewport(view);
+    gl.viewport(vp.x,vp.y,vp.width,vp.height);
+    gl.uniformMatrix4fv(uP,false,view.projectionMatrix);
+    gl.uniformMatrix4fv(uV,false,view.transform.inverse.matrix);
 
-    gl.uniformMatrix4fv(uProj, false, proj);
-    gl.uniformMatrix4fv(uView, false, viewMat);
+    // グリッド枠
+    gl.uniformMatrix4fv(uM,false,wallM);
+    gl.bindBuffer(gl.ARRAY_BUFFER,gridBuf); setAttr();
+    gl.drawArrays(gl.LINES,0,(GW+1)*2+(GH+1)*2);
 
-    // Draw wall
-    const wallData = buildWallBuffers();
-    gl.bindVertexArray(wallVAO);
-    gl.bindBuffer(gl.ARRAY_BUFFER, wallBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, wallData, gl.DYNAMIC_DRAW);
+    // 塗り
+    const wd=wallVerts();
+    if(wd.length>0){
+      gl.bindBuffer(gl.ARRAY_BUFFER,wallBuf);
+      gl.bufferData(gl.ARRAY_BUFFER,wd,gl.DYNAMIC_DRAW);
+      setAttr();
+      gl.drawArrays(gl.TRIANGLES,0,wd.length/7);
+    }
 
-    const wallModel = mat4Identity();
-    // Position wall 0.6m in front, centered
-    wallModel[12] = -(GW/2)*CELL; // x offset
-    wallModel[14] = -0.8;          // z: in front of player
-    gl.uniformMatrix4fv(uModel, false, wallModel);
-    gl.drawArrays(gl.TRIANGLES, 0, GW * GH * 6);
-
-    // Draw kote at controller position
-    gl.bindVertexArray(koteVAO);
-    const km = mat4Identity();
-    km[12] = kotePos.x;
-    km[13] = kotePos.y;
-    km[14] = kotePos.z;
-    gl.uniformMatrix4fv(uModel, false, km);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    // コテ
+    gl.uniformMatrix4fv(uM,false,mat4(kPos.x,kPos.y,kPos.z));
+    gl.bindBuffer(gl.ARRAY_BUFFER,koteBuf); setAttr();
+    gl.drawArrays(gl.TRIANGLES,0,12);
   }
 }
 </script>
