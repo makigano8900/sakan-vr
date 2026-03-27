@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>左官VRトレーナー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #12161e;
+    --border: #1e2530;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --good: #00ff88;
+    --warn: #ffcc00;
+    --bad: #ff3355;
+    --text: #c8d8e8;
+    --dim: #4a5a6a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .logo span { color: var(--accent2); }
+
+  .status-bar {
+    display: flex;
+    gap: 24px;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  .status-item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* === CANVAS AREA === */
+  #canvas-wrap {
+    position: relative;
+    background: #080a0d;
+  }
+
+  canvas { display: block; width: 100%; height: 100%; }
+
+  .canvas-overlay {
+    position: absolute;
+    top: 12px; left: 12px;
+    display: flex; gap: 8px; flex-direction: column;
+    pointer-events: none;
+  }
+
+  .badge {
+    background: rgba(10,12,16,0.85);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: 'Orbitron', monospace;
+    color: var(--accent);
+    backdrop-filter: blur(4px);
+  }
+
+  .badge span { color: #fff; }
+
+  /* === RIGHT PANEL === */
+  .panel {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .section {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  /* SCORE RING */
+  .score-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ring-container { position: relative; width: 120px; height: 120px; }
+
+  .ring-container svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+
+  .ring-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .ring-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .ring-max { font-size: 10px; color: var(--dim); }
+
+  .score-grade {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  /* METRICS */
+  .metric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .metric-label { font-size: 11px; color: var(--dim); }
+
+  .metric-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .bar-wrap { margin-top: 4px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s ease; }
+
+  /* HEATMAP */
+  #heatmap {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    image-rendering: pixelated;
+  }
+
+  /* CONTROLS */
+  .ctrl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .ctrl-btn {
+    background: var(--border);
+    border: 1px solid #2a3545;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .ctrl-btn:hover { background: #1e2d3e; border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { background: #0a2030; border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.danger { border-color: var(--bad); color: var(--bad); }
+  .ctrl-btn.danger:hover { background: #200a10; }
+
+  /* SLIDER */
+  .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .slider-row label { font-size: 10px; color: var(--dim); min-width: 60px; }
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    height: 3px;
+  }
+  .slider-val { font-family: 'Orbitron', monospace; font-size: 10px; min-width: 35px; text-align: right; }
+
+  /* ANGLE GAUGE */
+  .angle-gauge {
+    position: relative;
+    height: 60px;
+    margin-bottom: 6px;
+  }
+
+  .gauge-svg { width: 100%; height: 100%; }
+
+  /* LOG */
+  .log-list {
+    max-height: 80px;
+    overflow-y: auto;
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .log-entry { padding: 2px 0; border-bottom: 1px solid #1a1f28; }
+  .log-entry.good { color: var(--good); }
+  .log-entry.warn { color: var(--warn); }
+  .log-entry.bad { color: var(--bad); }
+
+  /* Mouse VR sim controls */
+  .sim-hint {
+    position: absolute;
+    bottom: 10px; left: 50%; transform: translateX(-50%);
+    background: rgba(10,12,16,0.9);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    font-size: 10px;
+    color: var(--dim);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .mode-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 10px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.15s;
+  }
+  .mode-btn.active { background: var(--accent); color: #000; font-weight: 700; }
+
+  /* VR CONNECT */
+  #vr-btn {
+    background: linear-gradient(135deg, #0a2040, #0d3060);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  #vr-btn:hover { background: linear-gradient(135deg, #0d3060, #1050a0); box-shadow: 0 0 12px #00e5ff44; }
+  #vr-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #vr-btn.connected { border-color: var(--good); color: var(--good); background: linear-gradient(135deg, #002015, #003025); }
+
+  .xr-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    font-size: 10px;
+  }
+  .xr-cell {
+    background: #0d1218;
+    border: 1px solid var(--border);
+    padding: 5px 7px;
+    border-radius: 2px;
+  }
+  .xr-cell-label { color: var(--dim); font-size: 9px; margin-bottom: 2px; }
+  .xr-cell-val { font-family: 'Orbitron', monospace; color: var(--text); font-size: 10px; }
+
+  .haptic-indicator {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .haptic-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent2);
+    border-radius: 2px;
+    transition: width 0.1s;
+  }
+
+  #xr-warning {
+    display: none;
+    background: #1a0a00;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 10px;
+    padding: 6px 8px;
+    border-radius: 2px;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">左官<span>VR</span>TRAINER</div>
+  <div class="status-bar">
+    <div class="status-item"><div class="dot"></div> シミュレーター稼働中</div>
+    <div class="status-item" id="xr-status">🖥 マウスモード</div>
+    <div class="status-item" id="timer-disp">経過: 0:00</div>
+  </div>
+</header>
+
+<main>
+  <div id="canvas-wrap">
+    <canvas id="main-canvas"></canvas>
+    <div class="canvas-overlay">
+      <div class="badge">角度 <span id="ov-angle">45.0</span>°</div>
+      <div class="badge">圧力 <span id="ov-pressure">0.0</span></div>
+      <div class="badge">速度 <span id="ov-speed">0.0</span> m/s</div>
+    </div>
+    <div class="sim-hint">マウス左ドラッグ: コテ塗り ／ 右ドラッグ: 視点回転 ／ ホイール: ズーム</div>
+  </div>
+
+  <div class="panel">
+
+    <!-- SCORE -->
+    <div class="section">
+      <div class="section-title">総合スコア</div>
+      <div class="score-ring-wrap">
+        <div class="ring-container">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#1a2030" stroke-width="10"/>
+            <circle id="ring-circle" cx="60" cy="60" r="50" fill="none"
+              stroke="#00e5ff" stroke-width="10"
+              stroke-dasharray="314" stroke-dashoffset="314"
+              stroke-linecap="round" style="transition:stroke-dashoffset 0.5s ease"/>
+          </svg>
+          <div class="ring-label">
+            <div class="ring-score" id="total-score">0</div>
+            <div class="ring-max">/ 100</div>
+          </div>
+        </div>
+        <div class="score-grade" id="grade-label" style="color:var(--dim)">---</div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="section">
+      <div class="section-title">計測メトリクス</div>
+
+      <div class="metric">
+        <div>
+          <div class="metric-label">角度ブレ率</div>
+          <div class="bar-wrap" style="width:120px">
+            <div class="bar-fill" id="bar-angle" style="width:0%;background:var(--good)"></div>
+          </div>
+        </div>
+        <div class="metric-val" id="val-angle" style="color:var(--good)">--</div>
+      </div>
+
+      <div class="metric">
+        <div>
+          <div class="metric-label">厚みムラ (σ)</div>
+          <div class="bar-wrap" style="width:120px">
+            <div class="bar-fill" id="bar-thick" style="width:0%;background:var(--good)"></div>
+          </div>
+        </div>
+        <div class="metric-val" id="val-thick" style="color:var(--good)">--</div>
+      </div>
+
+      <div class="metric">
+        <div>
+          <div class="metric-label">カバレッジ</div>
+          <div class="bar-wrap" style="width:120px">
+            <div class="bar-fill" id="bar-cover" style="width:0%;background:var(--accent)"></div>
+          </div>
+        </div>
+        <div class="metric-val" id="val-cover" style="color:var(--accent)">0%</div>
+      </div>
+
+      <div class="metric">
+        <div>
+          <div class="metric-label">ストローク数</div>
+        </div>
+        <div class="metric-val" id="val-strokes" style="color:var(--text)">0</div>
+      </div>
+    </div>
+
+    <!-- ANGLE GAUGE -->
+    <div class="section">
+      <div class="section-title">コテ角度ゲージ</div>
+      <div class="angle-gauge">
+        <svg class="gauge-svg" id="angle-svg" viewBox="0 0 240 60">
+          <!-- background -->
+          <rect x="0" y="20" width="240" height="20" rx="3" fill="#1a2030"/>
+          <!-- zones -->
+          <rect x="0" y="20" width="60" height="20" rx="3" fill="#ff3355" opacity="0.3"/>
+          <rect x="60" y="20" width="60" height="20" fill="#ffcc00" opacity="0.3"/>
+          <rect x="120" y="20" width="60" height="20" fill="#00ff88" opacity="0.3"/>
+          <rect x="180" y="20" width="60" height="20" rx="3" fill="#ffcc00" opacity="0.3"/>
+          <!-- labels -->
+          <text x="30" y="15" text-anchor="middle" fill="#ff3355" font-size="8" font-family="Orbitron">浅</text>
+          <text x="90" y="15" text-anchor="middle" fill="#ffcc00" font-size="8" font-family="Orbitron">低め</text>
+          <text x="150" y="15" text-anchor="middle" fill="#00ff88" font-size="8" font-family="Orbitron">適正</text>
+          <text x="210" y="15" text-anchor="middle" fill="#ffcc00" font-size="8" font-family="Orbitron">急角</text>
+          <!-- degree marks -->
+          <text x="0" y="52" fill="#4a5a6a" font-size="7">0°</text>
+          <text x="55" y="52" fill="#4a5a6a" font-size="7">15°</text>
+          <text x="115" y="52" fill="#4a5a6a" font-size="7">30°</text>
+          <text x="175" y="52" fill="#4a5a6a" font-size="7">45°</text>
+          <text x="228" y="52" fill="#4a5a6a" font-size="7">60°</text>
+          <!-- needle -->
+          <rect id="gauge-needle" x="119" y="16" width="2" height="28" rx="1" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- HEATMAP -->
+    <div class="section">
+      <div class="section-title">厚みヒートマップ</div>
+      <canvas id="heatmap" width="40" height="30"></canvas>
+    </div>
+
+    <!-- PARAMS -->
+    <div class="section">
+      <div class="section-title">パラメータ</div>
+      <div class="slider-row">
+        <label>目標角度</label>
+        <input type="range" id="target-angle" min="15" max="60" value="35">
+        <div class="slider-val" id="sv-angle">35°</div>
+      </div>
+      <div class="slider-row">
+        <label>目標厚み</label>
+        <input type="range" id="target-thick" min="3" max="20" value="8">
+        <div class="slider-val" id="sv-thick">8mm</div>
+      </div>
+      <div class="slider-row">
+        <label>許容ブレ</label>
+        <input type="range" id="tol-angle" min="2" max="15" value="5">
+        <div class="slider-val" id="sv-tol">±5°</div>
+      </div>
+    </div>
+
+    <!-- VR CONNECT -->
+    <div class="section">
+      <div class="section-title">WebXR / VRデバイス</div>
+      <button id="vr-btn">🥽 VRセッション開始</button>
+      <div id="xr-warning"></div>
+      <div class="xr-info-grid">
+        <div class="xr-cell">
+          <div class="xr-cell-label">コントローラー</div>
+          <div class="xr-cell-val" id="xr-ctrl-status">未接続</div>
+        </div>
+        <div class="xr-cell">
+          <div class="xr-cell-label">ハンド</div>
+          <div class="xr-cell-val" id="xr-hand">右手</div>
+        </div>
+        <div class="xr-cell">
+          <div class="xr-cell-label">グリップ</div>
+          <div class="xr-cell-val" id="xr-grip">0.00</div>
+        </div>
+        <div class="xr-cell">
+          <div class="xr-cell-label">トリガー</div>
+          <div class="xr-cell-val" id="xr-trigger">0.00</div>
+        </div>
+        <div class="xr-cell" style="grid-column:span 2">
+          <div class="xr-cell-label">クォータニオン (x/y/z/w)</div>
+          <div class="xr-cell-val" id="xr-quat">-- / -- / -- / --</div>
+        </div>
+        <div class="xr-cell" style="grid-column:span 2">
+          <div class="xr-cell-label">ハプティクス強度</div>
+          <div class="haptic-indicator"><div class="haptic-bar" id="haptic-bar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="section">
+      <div class="section-title">操作</div>
+      <div class="mode-toggle" style="margin-bottom:8px">
+        <button class="mode-btn active" id="mode-apply">塗り付け</button>
+        <button class="mode-btn" id="mode-scrape">削り取り</button>
+      </div>
+      <div class="ctrl-grid">
+        <button class="ctrl-btn" id="btn-start">▶ 開始</button>
+        <button class="ctrl-btn" id="btn-pause">⏸ 一時停止</button>
+        <button class="ctrl-btn danger" id="btn-reset">↺ リセット</button>
+        <button class="ctrl-btn" id="btn-report">📊 レポート</button>
+      </div>
+    </div>
+
+    <!-- LOG -->
+    <div class="section">
+      <div class="section-title">イベントログ</div>
+      <div class="log-list" id="log-list"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const GRID_W = 40, GRID_H = 30;
+const CELL_PX = 20; // world size per cell
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  running: false,
+  mode: 'apply',   // 'apply' | 'scrape'
+  targetAngle: 35,
+  targetThick: 8,
+  tolAngle: 5,
+  grid: null,       // Float32Array thickness map
+  strokes: 0,
+  startTime: null,
+  elapsed: 0,
+  timerRef: null,
+  angleHistory: [],
+  currentAngle: 35,
+  pressure: 0,
+  speed: 0,
+  isPainting: false,
+  lastMouse: null,
+};
+
+function initGrid() {
+  state.grid = new Float32Array(GRID_W * GRID_H); // 0 = untouched
+}
+initGrid();
+
+// ============================================================
+// CANVAS 3D-ish RENDERER (orthographic top-down + tilt effect)
+// ============================================================
+const canvas = document.getElementById('main-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  canvas.width = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); render(); });
+
+// Camera
+let cam = { x: 0, y: 0, zoom: 1, rotX: 0.3 };
+
+// Simulated kote (trowel) tool position in grid coords
+let kote = { gx: 20, gy: 15, angle: 35 };
+
+// ============================================================
+// DRAWING
+// ============================================================
+function worldToScreen(gx, gy) {
+  const wx = (gx - GRID_W / 2) * CELL_PX;
+  const wy = (gy - GRID_H / 2) * CELL_PX;
+  // simple pseudo-3d projection
+  const tilt = cam.rotX;
+  const sx = canvas.width / 2 + (wx - cam.x) * cam.zoom;
+  const sy = canvas.height / 2 + (wy * Math.cos(tilt) - cam.y) * cam.zoom;
+  return { sx, sy };
+}
+
+function thickToColor(t, target) {
+  if (t === 0) return 'rgba(20,26,35,0.8)';
+  const ratio = t / target;
+  if (ratio < 0.5) return `rgba(0,100,255,${Math.min(ratio + 0.2, 0.9)})`;
+  if (ratio < 0.85) return `rgba(0,200,150,0.85)`;
+  if (ratio < 1.15) return `rgba(0,255,100,0.9)`;
+  if (ratio < 1.5) return `rgba(255,180,0,0.85)`;
+  return `rgba(255,50,50,0.9)`;
+}
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background grid feel
+  ctx.fillStyle = '#080a0d';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const tilt = cam.rotX;
+  const cellW = CELL_PX * cam.zoom;
+  const cellH = CELL_PX * Math.cos(tilt) * cam.zoom;
+
+  // Draw grid cells
+  for (let gy = 0; gy < GRID_H; gy++) {
+    for (let gx = 0; gx < GRID_W; gx++) {
+      const t = state.grid[gy * GRID_W + gx];
+      const { sx, sy } = worldToScreen(gx, gy);
+      const { sx: sx2, sy: sy2 } = worldToScreen(gx + 1, gy + 1);
+
+      ctx.fillStyle = thickToColor(t, state.targetThick);
+      ctx.fillRect(sx, sy, sx2 - sx - 0.5, sy2 - sy - 0.5);
+
+      // Thickness label for large cells
+      if (cellW > 30 && t > 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = `${Math.min(cellW * 0.3, 9)}px Orbitron`;
+        ctx.textAlign = 'center';
+        ctx.fillText(t.toFixed(1), sx + (sx2 - sx) / 2, sy + (sy2 - sy) / 2 + 3);
+      }
+    }
+  }
+
+  // Border
+  const p0 = worldToScreen(0, 0);
+  const p1 = worldToScreen(GRID_W, GRID_H);
+  ctx.strokeStyle = '#00e5ff44';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(p0.sx, p0.sy, p1.sx - p0.sx, p1.sy - p0.sy);
+
+  // Draw kote cursor
+  if (state.running) drawKote();
+}
+
+function drawKote() {
+  const { sx, sy } = worldToScreen(kote.gx, kote.gy);
+  const angleRad = (kote.angle / 180) * Math.PI;
+  const len = 50 * cam.zoom;
+
+  ctx.save();
+  ctx.translate(sx, sy);
+  ctx.rotate(-angleRad + Math.PI / 4);
+
+  // Blade
+  ctx.fillStyle = 'rgba(200,220,255,0.85)';
+  ctx.shadowColor = '#00e5ff';
+  ctx.shadowBlur = 12;
+  ctx.fillRect(-len * 0.5, -3, len, 6);
+
+  // Handle
+  ctx.fillStyle = '#8b5e3c';
+  ctx.shadowBlur = 0;
+  ctx.fillRect(len * 0.3, -2, 20, 4);
+
+  ctx.restore();
+
+  // Angle arc
+  ctx.beginPath();
+  ctx.arc(sx, sy, 18, 0, (kote.angle / 180) * Math.PI);
+  ctx.strokeStyle = '#00e5ff66';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+// ============================================================
+// SCORING
+// ============================================================
+function calcScore() {
+  const grid = state.grid;
+  const target = state.targetThick;
+  const tol = state.tolAngle;
+
+  // Coverage
+  let covered = 0;
+  for (let i = 0; i < grid.length; i++) if (grid[i] > 0) covered++;
+  const coverage = covered / grid.length;
+
+  // Thickness variance (stddev)
+  const vals = [];
+  for (let i = 0; i < grid.length; i++) if (grid[i] > 0) vals.push(grid[i]);
+  let sigma = 0;
+  if (vals.length > 1) {
+    const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const variance = vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length;
+    sigma = Math.sqrt(variance);
+  }
+
+  // Angle score from history
+  const angleHistory = state.angleHistory;
+  let angleScore = 0;
+  if (angleHistory.length > 0) {
+    const target_ = state.targetAngle;
+    const inRange = angleHistory.filter(a => Math.abs(a - target_) <= tol).length;
+    const blurRate = 1 - inRange / angleHistory.length;
+    angleScore = Math.max(0, 100 - blurRate * 100);
+  }
+
+  // Thickness score: lower sigma = better
+  const thickScore = Math.max(0, 100 - sigma * 8);
+
+  // Coverage score
+  const coverScore = coverage * 100;
+
+  const total = Math.round(angleScore * 0.4 + thickScore * 0.35 + coverScore * 0.25);
+  const blurRate = angleHistory.length > 0
+    ? (1 - angleHistory.filter(a => Math.abs(a - state.targetAngle) <= tol).length / angleHistory.length)
+    : 0;
+
+  return { total, angleScore, thickScore, coverScore, sigma, coverage, blurRate };
+}
+
+function updateUI() {
+  const s = calcScore();
+
+  // Ring
+  const circ = 314;
+  const offset = circ - (s.total / 100) * circ;
+  document.getElementById('ring-circle').style.strokeDashoffset = offset;
+
+  const scoreEl = document.getElementById('total-score');
+  scoreEl.textContent = s.total;
+
+  const grades = [
+    [90, 'S', '#00ff88'], [80, 'A', '#00e5ff'],
+    [65, 'B', '#ffcc00'], [45, 'C', '#ff9900'], [0, 'D', '#ff3355']
+  ];
+  const [, g, gc] = grades.find(([min]) => s.total >= min);
+  const gradeEl = document.getElementById('grade-label');
+  gradeEl.textContent = `GRADE ${g}`;
+  gradeEl.style.color = gc;
+  document.getElementById('ring-circle').style.stroke = gc;
+
+  // Bars
+  setMetric('angle', s.blurRate * 100, `${(s.blurRate * 100).toFixed(0)}%`,
+    s.blurRate < 0.2 ? 'good' : s.blurRate < 0.4 ? 'warn' : 'bad');
+  setMetric('thick', Math.min(s.sigma * 5, 100), `σ${s.sigma.toFixed(1)}`,
+    s.sigma < 2 ? 'good' : s.sigma < 4 ? 'warn' : 'bad');
+
+  const coverEl = document.getElementById('val-cover');
+  const coverFill = document.getElementById('bar-cover');
+  coverEl.textContent = `${(s.coverage * 100).toFixed(0)}%`;
+  coverFill.style.width = `${s.coverage * 100}%`;
+
+  document.getElementById('val-strokes').textContent = state.strokes;
+
+  updateAngleGauge();
+  updateHeatmap();
+  updateOverlay();
+}
+
+function setMetric(id, pct, label, level) {
+  const colors = { good: 'var(--good)', warn: 'var(--warn)', bad: 'var(--bad)' };
+  document.getElementById(`val-${id}`).textContent = label;
+  document.getElementById(`val-${id}`).style.color = colors[level];
+  document.getElementById(`bar-${id}`).style.width = `${Math.min(pct, 100)}%`;
+  document.getElementById(`bar-${id}`).style.background = colors[level];
+}
+
+function updateAngleGauge() {
+  // Map angle 0-60 to 0-240px
+  const x = Math.min(Math.max(kote.angle, 0), 60) / 60 * 238;
+  document.getElementById('gauge-needle').setAttribute('x', x - 1);
+}
+
+function updateHeatmap() {
+  const hm = document.getElementById('heatmap');
+  const hctx = hm.getContext('2d');
+  const img = hctx.createImageData(GRID_W, GRID_H);
+  const target = state.targetThick;
+  for (let i = 0; i < GRID_W * GRID_H; i++) {
+    const t = state.grid[i];
+    const [r, g, b] = t === 0 ? [20, 26, 35]
+      : t < target * 0.85 ? [0, 80, 200]
+      : t < target * 1.15 ? [0, 220, 100]
+      : [220, 80, 0];
+    img.data[i * 4] = r;
+    img.data[i * 4 + 1] = g;
+    img.data[i * 4 + 2] = b;
+    img.data[i * 4 + 3] = 255;
+  }
+  hctx.putImageData(img, 0, 0);
+}
+
+function updateOverlay() {
+  document.getElementById('ov-angle').textContent = kote.angle.toFixed(1);
+  document.getElementById('ov-pressure').textContent = state.pressure.toFixed(2);
+  document.getElementById('ov-speed').textContent = state.speed.toFixed(2);
+}
+
+// ============================================================
+// MOUSE SIMULATION
+// ============================================================
+let mouseDown = false;
+let rightDown = false;
+let lastPos = null;
+
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas.addEventListener('mousedown', e => {
+  if (!state.running) return;
+  if (e.button === 0) { mouseDown = true; state.isPainting = true; state.strokes++; }
+  if (e.button === 2) rightDown = true;
+  lastPos = { x: e.clientX, y: e.clientY };
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (e.button === 0) { mouseDown = false; state.isPainting = false; }
+  if (e.button === 2) rightDown = false;
+  lastPos = null;
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (!state.running) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  // Convert screen to grid
+  const wx = (mx - canvas.width / 2) / cam.zoom + cam.x;
+  const wy = (my - canvas.height / 2) / (Math.cos(cam.rotX) * cam.zoom) + cam.y;
+  kote.gx = wx / CELL_PX + GRID_W / 2;
+  kote.gy = wy / CELL_PX + GRID_H / 2;
+
+  if (lastPos) {
+    const dx = e.clientX - lastPos.x;
+    const dy = e.clientY - lastPos.y;
+    const spd = Math.sqrt(dx * dx + dy * dy);
+    state.speed = spd * 0.05;
+
+    if (rightDown) {
+      cam.x -= dx * 0.5;
+      cam.y -= dy * 0.5;
+    }
+    lastPos = { x: e.clientX, y: e.clientY };
+  }
+
+  // Simulate angle from mouse Y movement speed
+  if (mouseDown) {
+    const jitter = (Math.random() - 0.5) * 4;
+    kote.angle = Math.max(5, Math.min(70, state.targetAngle + jitter));
+    state.angleHistory.push(kote.angle);
+    if (state.angleHistory.length > 500) state.angleHistory.shift();
+
+    // Pressure based on speed
+    state.pressure = Math.min(1, state.speed * 0.3 + 0.3);
+
+    // Paint cells
+    const gxi = Math.floor(kote.gx);
+    const gyi = Math.floor(kote.gy);
+    const radius = 1;
+    for (let dy2 = -radius; dy2 <= radius; dy2++) {
+      for (let dx2 = -radius; dx2 <= radius; dx2++) {
+        const nx = gxi + dx2, ny = gyi + dy2;
+        if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H) {
+          const idx = ny * GRID_W + nx;
+          const delta = state.mode === 'apply'
+            ? state.pressure * 0.8 * (1 - Math.sqrt(dx2 * dx2 + dy2 * dy2) / (radius + 1))
+            : -state.pressure * 0.5;
+          state.grid[idx] = Math.max(0, Math.min(30, state.grid[idx] + delta));
+        }
+      }
+    }
+
+    // Log events occasionally
+    if (Math.random() < 0.02) {
+      const diff = Math.abs(kote.angle - state.targetAngle);
+      if (diff > state.tolAngle * 2) addLog(`⚠ 角度ブレ: ${kote.angle.toFixed(0)}°`, 'bad');
+      else if (diff > state.tolAngle) addLog(`△ 角度注意: ${kote.angle.toFixed(0)}°`, 'warn');
+    }
+  } else {
+    state.pressure = 0;
+    state.speed = Math.max(0, state.speed - 0.1);
+  }
+});
+
+canvas.addEventListener('wheel', e => {
+  cam.zoom = Math.max(0.3, Math.min(3, cam.zoom - e.deltaY * 0.001));
+});
+
+// ============================================================
+// LOG
+// ============================================================
+function addLog(msg, level = '') {
+  const el = document.getElementById('log-list');
+  const d = document.createElement('div');
+  d.className = `log-entry ${level}`;
+  const t = new Date(); 
+  d.textContent = `${t.getMinutes().toString().padStart(2,'0')}:${t.getSeconds().toString().padStart(2,'0')} ${msg}`;
+  el.insertBefore(d, el.firstChild);
+  while (el.children.length > 20) el.removeChild(el.lastChild);
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  if (state.timerRef) clearInterval(state.timerRef);
+  state.startTime = Date.now() - state.elapsed * 1000;
+  state.timerRef = setInterval(() => {
+    state.elapsed = (Date.now() - state.startTime) / 1000;
+    const m = Math.floor(state.elapsed / 60);
+    const s = Math.floor(state.elapsed % 60);
+    document.getElementById('timer-disp').textContent = `経過: ${m}:${s.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+
+// ============================================================
+// CONTROLS
+// ============================================================
+document.getElementById('btn-start').addEventListener('click', () => {
+  state.running = true;
+  startTimer();
+  addLog('セッション開始', 'good');
+  document.getElementById('btn-start').classList.add('active');
+});
+
+document.getElementById('btn-pause').addEventListener('click', () => {
+  state.running = !state.running;
+  if (!state.running) {
+    clearInterval(state.timerRef);
+    addLog('一時停止', 'warn');
+  } else {
+    startTimer();
+    addLog('再開', 'good');
+  }
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  state.running = false;
+  clearInterval(state.timerRef);
+  state.elapsed = 0;
+  state.strokes = 0;
+  state.angleHistory = [];
+  state.pressure = 0;
+  state.speed = 0;
+  document.getElementById('btn-start').classList.remove('active');
+  document.getElementById('timer-disp').textContent = '経過: 0:00';
+  initGrid();
+  addLog('リセット完了', '');
+  updateUI();
+  render();
+});
+
+document.getElementById('btn-report').addEventListener('click', () => {
+  const s = calcScore();
+  alert(
+    `=== セッションレポート ===\n` +
+    `総合スコア: ${s.total} / 100 (GRADE)\n` +
+    `角度ブレ率: ${(s.blurRate * 100).toFixed(1)}%\n` +
+    `厚みσ: ${s.sigma.toFixed(2)} mm\n` +
+    `カバレッジ: ${(s.coverage * 100).toFixed(1)}%\n` +
+    `ストローク: ${state.strokes}回\n` +
+    `経過時間: ${Math.floor(state.elapsed / 60)}分${Math.floor(state.elapsed % 60)}秒`
+  );
+});
+
+// Mode toggle
+document.getElementById('mode-apply').addEventListener('click', () => {
+  state.mode = 'apply';
+  document.getElementById('mode-apply').classList.add('active');
+  document.getElementById('mode-scrape').classList.remove('active');
+});
+document.getElementById('mode-scrape').addEventListener('click', () => {
+  state.mode = 'scrape';
+  document.getElementById('mode-scrape').classList.add('active');
+  document.getElementById('mode-apply').classList.remove('active');
+});
+
+// Sliders
+document.getElementById('target-angle').addEventListener('input', e => {
+  state.targetAngle = +e.target.value;
+  document.getElementById('sv-angle').textContent = `${e.target.value}°`;
+});
+document.getElementById('target-thick').addEventListener('input', e => {
+  state.targetThick = +e.target.value;
+  document.getElementById('sv-thick').textContent = `${e.target.value}mm`;
+});
+document.getElementById('tol-angle').addEventListener('input', e => {
+  state.tolAngle = +e.target.value;
+  document.getElementById('sv-tol').textContent = `±${e.target.value}°`;
+});
+
+// ============================================================
+// MAIN LOOP
+// ============================================================
+let lastFrame = 0;
+function loop(ts) {
+  if (ts - lastFrame > 33) { // ~30fps
+    render();
+    if (state.running) updateUI();
+    lastFrame = ts;
+  }
+  requestAnimationFrame(loop);
+}
+
+addLog('システム起動 — 開始ボタンを押してください', '');
+requestAnimationFrame(loop);
+
+// ============================================================
+// WebXR CONTROLLER INTEGRATION
+// ============================================================
+
+const xr = {
+  session: null,
+  refSpace: null,
+  controllers: [],        // XRInputSource[]
+  activeHand: 'right',    // preferred hand for kote
+  hapticActuator: null,
+  isVR: false,
+  frameCallback: null,
+  prevGripPressed: false,
+  prevTriggerVal: 0,
+  lastControllerPos: null,
+};
+
+// ── Quaternion → Euler (pitch = tilt angle of kote blade) ──
+// Extracts the pitch angle relative to the wall plane (XZ).
+// For a plastering motion, we interpret the local X-axis tilt
+// of the controller as the kote angle (0° = flat, 90° = perpendicular).
+function quatToKoteAngle(q) {
+  // q = { x, y, z, w }
+  // Compute pitch (rotation around local X axis)
+  const sinP = 2 * (q.w * q.x - q.z * q.y);
+  const pitch = Math.asin(Math.max(-1, Math.min(1, sinP)));
+  // Map -90°..+90° pitch to 0°..90° kote angle (absolute tilt from wall)
+  const angleDeg = Math.abs(pitch * (180 / Math.PI));
+  return Math.min(90, Math.max(0, angleDeg));
+}
+
+// ── Controller position → grid XY ──
+function controllerPosToGrid(pos) {
+  // Assume wall is in XZ plane at Y≈0; map X/Z to grid
+  // pos is XRRigidTransform position (meters)
+  const scaleX = GRID_W / 2;   // 1m → grid center
+  const scaleZ = GRID_H / 2;
+  const gx = pos.x * scaleX + GRID_W / 2;
+  const gy = pos.z * scaleZ + GRID_H / 2;
+  return { gx: Math.max(0, Math.min(GRID_W - 1, gx)),
+           gy: Math.max(0, Math.min(GRID_H - 1, gy)) };
+}
+
+// ── Velocity from position delta ──
+function calcVelocity(posNow, posLast, dt) {
+  if (!posLast || dt <= 0) return 0;
+  const dx = posNow.x - posLast.x;
+  const dy = posNow.y - posLast.y;
+  const dz = posNow.z - posLast.z;
+  return Math.sqrt(dx*dx + dy*dy + dz*dz) / dt;
+}
+
+// ── Haptic pulse ──
+async function hapticPulse(intensity, durationMs) {
+  if (!xr.hapticActuator) return;
+  try {
+    await xr.hapticActuator.pulse(Math.min(1, intensity), durationMs);
+    document.getElementById('haptic-bar').style.width = `${intensity * 100}%`;
+    setTimeout(() => { document.getElementById('haptic-bar').style.width = '0%'; }, durationMs + 50);
+  } catch (e) { /* actuator may not support pulse */ }
+}
+
+// ── XR per-frame processing ──
+let xrLastTime = 0;
+function processXRFrame(time, frame) {
+  if (!xr.session) return;
+  xr.session.requestAnimationFrame(xr.frameCallback);
+
+  const dt = (time - xrLastTime) / 1000;
+  xrLastTime = time;
+
+  const sources = frame.session.inputSources;
+  let foundController = false;
+
+  for (const src of sources) {
+    // Pick the preferred hand (or 'none' controllers too)
+    const isTarget = src.handedness === xr.activeHand || src.handedness === 'none';
+    if (!isTarget) continue;
+    foundController = true;
+
+    const gp = src.gamepad;
+
+    // ── Grip button (buttons[1] on Quest / Index) ──
+    // When grip is held, treat as "painting" (コテを壁に当てている)
+    const gripVal  = gp?.buttons[1]?.value ?? 0;
+    const trigVal  = gp?.buttons[0]?.value ?? 0;   // trigger = pressure
+    const gripPressed = gripVal > 0.5;
+
+    // Stroke counter: new stroke each time grip is freshly pressed
+    if (gripPressed && !xr.prevGripPressed && state.running) {
+      state.strokes++;
+      addLog(`コテ接触: grip=${gripVal.toFixed(2)}`, 'good');
+      hapticPulse(0.3, 60);
+    }
+    xr.prevGripPressed = gripPressed;
+    state.isPainting = gripPressed && state.running;
+
+    // ── Pose ──
+    const gripSpace = src.gripSpace;
+    if (!gripSpace) continue;
+
+    const pose = frame.getPose(gripSpace, xr.refSpace);
+    if (!pose) continue;
+
+    const { position: pos, orientation: q } = pose.transform;
+
+    // Angle from quaternion
+    const angle = quatToKoteAngle(q);
+    kote.angle = angle;
+
+    if (state.running && gripPressed) {
+      state.angleHistory.push(angle);
+      if (state.angleHistory.length > 1000) state.angleHistory.shift();
+    }
+
+    // Grid position
+    const { gx, gy } = controllerPosToGrid(pos);
+    kote.gx = gx;
+    kote.gy = gy;
+
+    // Velocity
+    const vel = calcVelocity(pos, xr.lastControllerPos, dt);
+    state.speed = vel;
+    xr.lastControllerPos = { x: pos.x, y: pos.y, z: pos.z };
+
+    // Pressure = trigger value
+    state.pressure = trigVal;
+
+    // ── Paint grid if grip held ──
+    if (state.running && gripPressed) {
+      const gxi = Math.floor(gx), gyi = Math.floor(gy);
+      const radius = Math.ceil(trigVal * 2 + 0.5); // bigger trigger → wider brush
+      for (let dy2 = -radius; dy2 <= radius; dy2++) {
+        for (let dx2 = -radius; dx2 <= radius; dx2++) {
+          const nx = gxi + dx2, ny = gyi + dy2;
+          if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H) {
+            const dist = Math.sqrt(dx2*dx2 + dy2*dy2);
+            if (dist > radius) continue;
+            const idx = ny * GRID_W + nx;
+            const paintAmt = trigVal * 1.2 * (1 - dist / (radius + 1));
+            const delta = state.mode === 'apply' ? paintAmt : -paintAmt * 0.6;
+            state.grid[idx] = Math.max(0, Math.min(30, state.grid[idx] + delta));
+          }
+        }
+      }
+
+      // ── Haptic feedback: buzz when angle is off-target ──
+      const diff = Math.abs(angle - state.targetAngle);
+      if (diff > state.tolAngle * 2) {
+        hapticPulse(Math.min(0.9, diff / 30), 80);
+        if (Math.random() < 0.03) addLog(`⚠ 角度ブレ: ${angle.toFixed(0)}°`, 'bad');
+      } else if (diff > state.tolAngle) {
+        hapticPulse(0.2, 30);
+        if (Math.random() < 0.02) addLog(`△ 角度注意: ${angle.toFixed(0)}°`, 'warn');
+      }
+    }
+
+    // ── A/X button = mode toggle ──
+    const btnA = gp?.buttons[4]; // A on right / X on left
+    if (btnA?.pressed) {
+      state.mode = state.mode === 'apply' ? 'scrape' : 'apply';
+      document.getElementById('mode-apply').classList.toggle('active', state.mode === 'apply');
+      document.getElementById('mode-scrape').classList.toggle('active', state.mode === 'scrape');
+      hapticPulse(0.5, 100);
+      addLog(`モード切替: ${state.mode === 'apply' ? '塗り付け' : '削り取り'}`, '');
+    }
+
+    // ── Update XR panel UI ──
+    document.getElementById('xr-ctrl-status').textContent = `${src.handedness} 接続中`;
+    document.getElementById('xr-ctrl-status').style.color = 'var(--good)';
+    document.getElementById('xr-grip').textContent = gripVal.toFixed(2);
+    document.getElementById('xr-trigger').textContent = trigVal.toFixed(2);
+    document.getElementById('xr-quat').textContent =
+      `${q.x.toFixed(2)} / ${q.y.toFixed(2)} / ${q.z.toFixed(2)} / ${q.w.toFixed(2)}`;
+
+    // Haptic actuator reference
+    if (!xr.hapticActuator && gp?.hapticActuators?.length > 0) {
+      xr.hapticActuator = gp.hapticActuators[0];
+    }
+  }
+
+  if (!foundController) {
+    document.getElementById('xr-ctrl-status').textContent = '検索中…';
+    document.getElementById('xr-ctrl-status').style.color = 'var(--warn)';
+  }
+}
+
+// ── Start XR Session ──
+async function startXRSession() {
+  const btn = document.getElementById('vr-btn');
+  const warn = document.getElementById('xr-warning');
+  warn.style.display = 'none';
+
+  if (!navigator.xr) {
+    warn.style.display = 'block';
+    warn.textContent = '⚠ このブラウザはWebXRに対応していません。\nMeta Quest ブラウザ、またはChrome (PC+headset) をご使用ください。';
+    return;
+  }
+
+  const supported = await navigator.xr.isSessionSupported('immersive-vr').catch(() => false);
+  if (!supported) {
+    warn.style.display = 'block';
+    warn.textContent = '⚠ immersive-vr セッションが利用できません。\nヘッドセットが接続されているか確認してください。';
+    return;
+  }
+
+  try {
+    btn.textContent = '接続中…';
+    btn.disabled = true;
+
+    xr.session = await navigator.xr.requestSession('immersive-vr', {
+      requiredFeatures: ['local-floor'],
+      optionalFeatures: ['hand-tracking'],
+    });
+
+    // Reference space (local-floor: Y=0 is floor level)
+    xr.refSpace = await xr.session.requestReferenceSpace('local-floor');
+
+    xr.isVR = true;
+    document.getElementById('xr-status').textContent = '🥽 VRモード';
+    addLog('VRセッション開始', 'good');
+
+    btn.textContent = '🔴 VR終了';
+    btn.disabled = false;
+    btn.classList.add('connected');
+
+    // Auto-start session
+    if (!state.running) {
+      state.running = true;
+      startTimer();
+      addLog('セッション自動開始', 'good');
+      document.getElementById('btn-start').classList.add('active');
+    }
+
+    xr.frameCallback = (time, frame) => processXRFrame(time, frame);
+    xr.session.requestAnimationFrame(xr.frameCallback);
+
+    xr.session.addEventListener('end', () => {
+      xr.isVR = false;
+      xr.session = null;
+      xr.hapticActuator = null;
+      btn.textContent = '🥽 VRセッション開始';
+      btn.disabled = false;
+      btn.classList.remove('connected');
+      document.getElementById('xr-status').textContent = '🖥 マウスモード';
+      document.getElementById('xr-ctrl-status').textContent = '未接続';
+      document.getElementById('xr-ctrl-status').style.color = '';
+      addLog('VRセッション終了', 'warn');
+    });
+
+  } catch (err) {
+    btn.textContent = '🥽 VRセッション開始';
+    btn.disabled = false;
+    warn.style.display = 'block';
+    warn.textContent = `⚠ セッション開始エラー: ${err.message}`;
+    addLog(`XRエラー: ${err.message}`, 'bad');
+  }
+}
+
+// ── End XR Session ──
+function endXRSession() {
+  if (xr.session) {
+    xr.session.end();
+  }
+}
+
+document.getElementById('vr-btn').addEventListener('click', () => {
+  if (xr.isVR) endXRSession();
+  else startXRSession();
+});
+
+// Hand toggle (right/left)
+document.getElementById('xr-hand').style.cursor = 'pointer';
+document.getElementById('xr-hand').addEventListener('click', () => {
+  xr.activeHand = xr.activeHand === 'right' ? 'left' : 'right';
+  document.getElementById('xr-hand').textContent = xr.activeHand === 'right' ? '右手' : '左手';
+  addLog(`利き手: ${xr.activeHand === 'right' ? '右' : '左'}手に変更`, '');
+});
+</script>
+</body>
+</html>
