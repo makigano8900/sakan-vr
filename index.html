@@ -5,66 +5,100 @@
 <meta charset="UTF-8">
 <title>左官ARトレーナー</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#000; color:#fff; font-family:monospace; overflow:hidden; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:#fff;font-family:monospace;overflow:hidden;}
 
-#ui {
-position:fixed; top:0; left:0; width:100%; height:100%;
-display:flex; flex-direction:column; align-items:center; justify-content:center;
-background:#0a0c10; z-index:10; gap:10px; overflow-y:auto; padding:20px 0;
+/* ===== 起動画面 ===== */
+#ui{
+position:fixed;top:0;left:0;width:100%;height:100%;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:#0a0c10;z-index:10;gap:10px;overflow-y:auto;padding:20px 0;
 }
-h1 { font-size:24px; color:#00e5ff; letter-spacing:4px; }
-p  { color:#4a6a8a; font-size:12px; text-align:center; padding:0 20px; }
-.card { background:#12161e; border:1.5px solid #1e2530; border-radius:10px; padding:14px 18px; width:90%; max-width:420px; }
-.card-title { color:#00e5ff; font-size:10px; letter-spacing:3px; margin-bottom:12px; }
-.set-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.set-label { color:#aac8e0; font-size:13px; flex:1; }
-input[type=range] { width:110px; accent-color:#00e5ff; }
-.set-val { color:#fff; font-size:13px; font-weight:bold; min-width:52px; text-align:right; }
-.preset-row { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
-.preset-btn { flex:1; min-width:70px; background:#1e2530; border:1.5px solid #2a3545; color:#aac8e0; font-size:11px; padding:7px 4px; cursor:pointer; border-radius:6px; text-align:center; transition:all 0.15s; }
-.preset-btn:hover,.preset-btn.active { background:#0a2030; border-color:#00e5ff; color:#00e5ff; }
-.btn-main { background:#00e5ff; color:#000; border:none; padding:16px 44px; font-size:20px; font-weight:bold; cursor:pointer; border-radius:8px; }
-.btn-sub { background:transparent; color:#00e5ff; border:1.5px solid #00e5ff; padding:10px 24px; font-size:14px; cursor:pointer; border-radius:6px; }
-#status { color:#ffcc00; font-size:12px; text-align:center; }
+h1{font-size:24px;color:#00e5ff;letter-spacing:4px;}
+.card{background:#12161e;border:1.5px solid #1e2530;border-radius:10px;padding:14px 18px;width:90%;max-width:420px;}
+.card-title{color:#00e5ff;font-size:10px;letter-spacing:3px;margin-bottom:12px;}
+.set-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.set-label{color:#aac8e0;font-size:13px;flex:1;}
+input[type=range]{width:110px;accent-color:#00e5ff;}
+.set-val{color:#fff;font-size:13px;font-weight:bold;min-width:52px;text-align:right;}
+.preset-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.preset-btn{flex:1;min-width:60px;background:#1e2530;border:1.5px solid #2a3545;color:#aac8e0;font-size:11px;padding:7px 4px;cursor:pointer;border-radius:6px;text-align:center;transition:all 0.15s;}
+.preset-btn:hover,.preset-btn.active{background:#0a2030;border-color:#00e5ff;color:#00e5ff;}
+.btn-main{background:#00e5ff;color:#000;border:none;padding:16px 44px;font-size:20px;font-weight:bold;cursor:pointer;border-radius:8px;}
+.btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 24px;font-size:14px;cursor:pointer;border-radius:6px;}
+#status{color:#ffcc00;font-size:12px;text-align:center;}
 
-#hud { position:fixed; top:16px; right:16px; display:none; z-index:20; pointer-events:none; width:280px; }
-.panel { background:rgba(0,0,0,0.85); border:2px solid #00e5ff; border-radius:12px; padding:14px 18px; margin-bottom:10px; }
-.ptitle { color:#00e5ff; font-size:10px; letter-spacing:3px; margin-bottom:10px; opacity:0.75; }
-.score-wrap { text-align:center; }
-.score-num  { font-size:72px; font-weight:bold; line-height:1; }
-.score-grade{ font-size:18px; letter-spacing:4px; margin-top:4px; }
-.row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-.lbl { color:#aac8e0; font-size:15px; }
-.val { font-size:28px; font-weight:bold; color:#fff; text-align:right; }
-.val.good{color:#00ff88;} .val.warn{color:#ffcc00;} .val.bad{color:#ff4466;} .val.sm{font-size:20px;}
-.bar-bg { width:100%; height:8px; background:rgba(255,255,255,0.12); border-radius:4px; overflow:hidden; margin-top:3px; }
-.bar-fill{ height:100%; border-radius:4px; transition:width 0.3s; }
-.gauge-wrap { position:relative; height:18px; border-radius:9px; overflow:hidden; margin-top:6px; }
-.gauge-zones{ display:flex; width:100%; height:100%; }
+/* ===== セッション中 UI ===== */
+/* スコアHUD 右上 */
+#hud{position:fixed;top:16px;right:16px;display:none;z-index:20;pointer-events:none;width:260px;}
+.panel{background:rgba(0,0,0,0.85);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;}
+.ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
+.score-wrap{text-align:center;}
+.score-num{font-size:64px;font-weight:bold;line-height:1;}
+.score-grade{font-size:16px;letter-spacing:4px;margin-top:4px;}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.lbl{color:#aac8e0;font-size:13px;}
+.val{font-size:24px;font-weight:bold;color:#fff;text-align:right;}
+.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:18px;}
+.bar-bg{width:100%;height:7px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden;margin-top:2px;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.3s;}
+.gauge-wrap{position:relative;height:16px;border-radius:8px;overflow:hidden;margin-top:4px;}
+.gauge-zones{display:flex;width:100%;height:100%;}
 .z-bad{flex:25;background:rgba(255,68,102,0.55);}
 .z-warn{flex:15;background:rgba(255,204,0,0.55);}
 .z-good{flex:20;background:rgba(0,255,136,0.55);}
-.needle { position:absolute; top:0; width:4px; height:100%; background:#fff; border-radius:2px; transition:left 0.1s; transform:translateX(-50%); box-shadow:0 0 5px #fff; }
-#hud-reset-wall { pointer-events:auto; background:rgba(0,0,0,0.85); border:1.5px solid #ff9900; color:#ff9900; font-size:12px; padding:8px 14px; cursor:pointer; border-radius:8px; width:100%; margin-bottom:10px; }
+.needle{position:absolute;top:0;width:4px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
 
-#phone-score { position:fixed; top:0; left:0; width:100%; height:100%; display:none; flex-direction:column; align-items:center; justify-content:center; background:#0a0c10; z-index:30; gap:20px; }
-.ps-score { font-size:120px; font-weight:bold; line-height:1; }
-.ps-grade { font-size:28px; letter-spacing:6px; }
-.ps-row   { display:flex; gap:40px; }
-.ps-item  { text-align:center; }
-.ps-label { color:#4a6a8a; font-size:14px; }
-.ps-val   { font-size:36px; font-weight:bold; color:#fff; }
-.ps-back  { background:#1e2530; color:#aac8e0; border:none; padding:12px 32px; font-size:16px; cursor:pointer; border-radius:8px; }
-canvas { display:block; }
+/* 設定パネル 左側 (セッション中) */
+#session-settings{
+position:fixed;top:16px;left:16px;display:none;z-index:20;
+pointer-events:auto;width:240px;
+}
+#session-settings .panel{border-color:#2a3545;}
+#session-settings .card-title{color:#aac8e0;}
+
+/* 壁ロック/アンロックボタン */
+#wall-lock-btn{
+pointer-events:auto;
+border:2px solid #ffcc00;color:#ffcc00;
+background:rgba(0,0,0,0.85);
+font-size:13px;font-weight:bold;
+padding:10px 14px;border-radius:8px;
+cursor:pointer;width:100%;margin-bottom:6px;
+transition:all 0.2s;
+}
+#wall-lock-btn.locked{border-color:#00ff88;color:#00ff88;}
+
+/* 塗りリセット 左下 小さめ */
+#paint-reset-btn{
+position:fixed;bottom:16px;left:16px;
+pointer-events:auto;z-index:20;
+display:none;
+background:rgba(0,0,0,0.75);border:1.5px solid #ff6644;
+color:#ff6644;font-size:11px;padding:8px 12px;
+border-radius:8px;cursor:pointer;
+}
+
+/* スマホスコア */
+#phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
+.ps-score{font-size:120px;font-weight:bold;line-height:1;}
+.ps-grade{font-size:28px;letter-spacing:6px;}
+.ps-row{display:flex;gap:40px;}
+.ps-item{text-align:center;}
+.ps-label{color:#4a6a8a;font-size:14px;}
+.ps-val{font-size:36px;font-weight:bold;color:#fff;}
+.ps-back{background:#1e2530;color:#aac8e0;border:none;padding:12px 32px;font-size:16px;cursor:pointer;border-radius:8px;}
+
+canvas{display:block;}
 </style>
 
 </head>
 <body>
 
+<!-- 起動画面 -->
+
 <div id="ui">
   <h1>左官AR TRAINER</h1>
-  <p>右手でコテを持ち、壁に近づけると塗れます</p>
 
   <div class="card">
     <div class="card-title">スコア基準設定</div>
@@ -76,15 +110,13 @@ canvas { display:block; }
 
   <div class="card">
     <div class="card-title">壁の位置設定</div>
-    <div style="color:#4a6a8a;font-size:10px;margin-bottom:6px;">プリセット</div>
     <div class="preset-row">
       <button class="preset-btn active" id="pre-front" onclick="applyPreset('front')">正面</button>
-      <button class="preset-btn" id="pre-right"  onclick="applyPreset('right')">右側</button>
-      <button class="preset-btn" id="pre-left"   onclick="applyPreset('left')">左側</button>
-      <button class="preset-btn" id="pre-high"   onclick="applyPreset('high')">高い位置</button>
-      <button class="preset-btn" id="pre-low"    onclick="applyPreset('low')">低い位置</button>
+      <button class="preset-btn" id="pre-right" onclick="applyPreset('right')">右側</button>
+      <button class="preset-btn" id="pre-left" onclick="applyPreset('left')">左側</button>
+      <button class="preset-btn" id="pre-high" onclick="applyPreset('high')">高い</button>
+      <button class="preset-btn" id="pre-low" onclick="applyPreset('low')">低い</button>
     </div>
-    <div style="color:#4a6a8a;font-size:10px;margin-bottom:8px;">微調整</div>
     <div class="set-row"><span class="set-label">前後</span><input type="range" id="wall-z" min="3" max="15" value="5" step="1"><span class="set-val" id="wall-z-val">0.5m</span></div>
     <div class="set-row"><span class="set-label">左右</span><input type="range" id="wall-x" min="-10" max="10" value="0" step="1"><span class="set-val" id="wall-x-val">0.0m</span></div>
     <div class="set-row"><span class="set-label">高さ</span><input type="range" id="wall-y" min="0" max="20" value="8" step="1"><span class="set-val" id="wall-y-val">0.8m</span></div>
@@ -96,8 +128,30 @@ canvas { display:block; }
   <div id="status">WebXR確認中...</div>
 </div>
 
+<!-- セッション中: 設定パネル (左) -->
+
+<div id="session-settings">
+  <div class="panel">
+    <div class="card-title">壁の位置</div>
+    <button id="wall-lock-btn" onclick="toggleWallLock()">🔓 アンロック中 — 壁が追従</button>
+    <div id="wall-sliders">
+      <div class="set-row"><span class="set-label" style="font-size:11px">前後</span><input type="range" id="ws-z" min="3" max="15" value="5" step="1"><span class="set-val" id="ws-z-val" style="font-size:11px">0.5m</span></div>
+      <div class="set-row"><span class="set-label" style="font-size:11px">左右</span><input type="range" id="ws-x" min="-10" max="10" value="0" step="1"><span class="set-val" id="ws-x-val" style="font-size:11px">0.0m</span></div>
+      <div class="set-row"><span class="set-label" style="font-size:11px">高さ</span><input type="range" id="ws-y" min="0" max="20" value="8" step="1"><span class="set-val" id="ws-y-val" style="font-size:11px">0.8m</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="card-title">スコア基準</div>
+    <div class="set-row"><span class="set-label" style="font-size:11px">目標角度</span><input type="range" id="ss-angle" min="10" max="70" value="35"><span class="set-val" id="ss-angle-val" style="font-size:11px">35°</span></div>
+    <div class="set-row"><span class="set-label" style="font-size:11px">許容ブレ</span><input type="range" id="ss-tol" min="2" max="20" value="5"><span class="set-val" id="ss-tol-val" style="font-size:11px">±5°</span></div>
+    <div class="set-row"><span class="set-label" style="font-size:11px">目標厚み</span><input type="range" id="ss-thick" min="2" max="20" value="8"><span class="set-val" id="ss-thick-val" style="font-size:11px">8mm</span></div>
+    <div class="set-row"><span class="set-label" style="font-size:11px">厚み許容</span><input type="range" id="ss-thick-tol" min="1" max="10" value="2"><span class="set-val" id="ss-thick-tol-val" style="font-size:11px">±2mm</span></div>
+  </div>
+</div>
+
+<!-- スコアHUD 右上 -->
+
 <div id="hud">
-  <button id="hud-reset-wall">🔄 壁リセット＆記録クリア</button>
   <div class="panel">
     <div class="ptitle">総合スコア</div>
     <div class="score-wrap">
@@ -108,22 +162,28 @@ canvas { display:block; }
   <div class="panel">
     <div class="ptitle">コテ角度</div>
     <div class="row"><span class="lbl">現在</span><span class="val" id="h-angle">--°</span></div>
-    <div class="row" style="margin-bottom:4px"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-angle">35°±5°</span></div>
+    <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-angle">35°±5°</span></div>
     <div class="gauge-wrap">
       <div class="gauge-zones"><div class="z-bad"></div><div class="z-warn"></div><div class="z-good"></div><div class="z-warn"></div><div class="z-bad"></div></div>
       <div class="needle" id="h-needle" style="left:50%"></div>
     </div>
-    <div class="row" style="margin-top:12px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
+    <div class="row" style="margin-top:10px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
     <div class="bar-bg"><div class="bar-fill" id="h-blur-bar" style="width:0%;background:#00ff88"></div></div>
   </div>
   <div class="panel">
     <div class="row"><span class="lbl">カバレッジ</span><span class="val" id="h-cover">0%</span></div>
     <div class="bar-bg"><div class="bar-fill" id="h-cover-bar" style="width:0%;background:#00e5ff"></div></div>
-    <div class="row" style="margin-top:12px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0.0mm</span></div>
+    <div class="row" style="margin-top:10px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0.0mm</span></div>
     <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-thick">8mm±2mm</span></div>
     <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
   </div>
 </div>
+
+<!-- 塗りリセット 左下 -->
+
+<button id="paint-reset-btn" onclick="clearPaintData()">🗑 塗りリセット</button>
+
+<!-- スマホスコア -->
 
 <div id="phone-score">
   <div class="ps-score" id="ps-score-num">0</div>
@@ -140,59 +200,112 @@ canvas { display:block; }
 
 <script>
 // ============================================================
-// 設定
+// 設定値 (起動画面とセッション中で共有)
 // ============================================================
-let CFG = { angle:35, tol:5, thick:8, thickTol:2 };
-let WALL_CFG = { x:0.0, y:0.8, z:0.5 };
-const PRESETS = {
-  front:{ x:0.0,  y:0.8, z:0.5 },
-  right:{ x:0.6,  y:0.8, z:0.5 },
-  left: { x:-0.6, y:0.8, z:0.5 },
-  high: { x:0.0,  y:1.4, z:0.5 },
-  low:  { x:0.0,  y:0.3, z:0.5 },
+let CFG={angle:35,tol:5,thick:8,thickTol:2};
+let WALL_CFG={x:0.0,y:0.8,z:0.5};
+let wallLocked=false; // false=アンロック(追従), true=ロック(固定)
+
+const PRESETS={
+  front:{x:0.0,y:0.8,z:0.5}, right:{x:0.6,y:0.8,z:0.5},
+  left:{x:-0.6,y:0.8,z:0.5}, high:{x:0.0,y:1.4,z:0.5}, low:{x:0.0,y:0.3,z:0.5}
 };
+
+// 起動画面スライダー → CFG同期
+function bindSlider(id,key,suffix,syncId){
+  const el=document.getElementById(id),vl=document.getElementById(id+'-val');
+  const sync=syncId?document.getElementById(syncId):null;
+  const syncVl=syncId?document.getElementById(syncId+'-val'):null;
+  el.addEventListener('input',()=>{
+    CFG[key]=+el.value; vl.textContent=el.value+suffix;
+    if(sync){sync.value=el.value;} if(syncVl){syncVl.textContent=el.value+suffix;}
+    refreshHUDTargets();
+  });
+}
+bindSlider('cfg-angle','angle','°','ss-angle');
+bindSlider('cfg-tol','tol','°','ss-tol');
+bindSlider('cfg-thick','thick','mm','ss-thick');
+bindSlider('cfg-thick-tol','thickTol','mm','ss-thick-tol');
+
+// セッション中スライダー → CFG同期
+function bindSessionSlider(id,key,suffix,syncId){
+  const el=document.getElementById(id),vl=document.getElementById(id+'-val');
+  const sync=document.getElementById(syncId),syncVl=document.getElementById(syncId+'-val');
+  el.addEventListener('input',()=>{
+    CFG[key]=+el.value; vl.textContent=el.value+suffix;
+    sync.value=el.value; syncVl.textContent=el.value+suffix;
+    refreshHUDTargets();
+  });
+}
+bindSessionSlider('ss-angle','angle','°','cfg-angle');
+bindSessionSlider('ss-tol','tol','°','cfg-tol');
+bindSessionSlider('ss-thick','thick','mm','cfg-thick');
+bindSessionSlider('ss-thick-tol','thickTol','mm','cfg-thick-tol');
+
+function refreshHUDTargets(){
+  document.getElementById('h-target-angle').textContent=`${CFG.angle}°±${CFG.tol}°`;
+  document.getElementById('h-target-thick').textContent=`${CFG.thick}mm±${CFG.thickTol}mm`;
+}
+
+// 壁スライダー共通関数
+function syncWallSliders(z,x,y){
+  ['wall','ws'].forEach(pfx=>{
+    const ez=document.getElementById(pfx+'-z'),ex=document.getElementById(pfx+'-x'),ey=document.getElementById(pfx+'-y');
+    if(!ez)return;
+    ez.value=Math.round(z*10); ex.value=Math.round(x*10); ey.value=Math.round(y*10);
+    document.getElementById(pfx+'-z-val').textContent=z.toFixed(1)+'m';
+    document.getElementById(pfx+'-x-val').textContent=(x>=0?'+':'')+x.toFixed(1)+'m';
+    document.getElementById(pfx+'-y-val').textContent=y.toFixed(1)+'m';
+  });
+}
 
 function applyPreset(name){
   const p=PRESETS[name]; WALL_CFG={...p};
-  document.getElementById('wall-z').value=Math.round(p.z*10);
-  document.getElementById('wall-x').value=Math.round(p.x*10);
-  document.getElementById('wall-y').value=Math.round(p.y*10);
-  document.getElementById('wall-z-val').textContent=p.z.toFixed(1)+'m';
-  document.getElementById('wall-x-val').textContent=(p.x>=0?'+':'')+p.x.toFixed(1)+'m';
-  document.getElementById('wall-y-val').textContent=p.y.toFixed(1)+'m';
+  syncWallSliders(p.z,p.x,p.y);
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pre-'+name).classList.add('active');
-  if(xrSession) doResetWall();
+  document.getElementById('pre-'+name)?.classList.add('active');
+  if(xrSession&&!wallLocked) wallFixed=false;
 }
 
+// 起動画面壁スライダー
 ['wall-z','wall-x','wall-y'].forEach(id=>{
   document.getElementById(id).addEventListener('input',()=>{
     WALL_CFG.z=+document.getElementById('wall-z').value/10;
     WALL_CFG.x=+document.getElementById('wall-x').value/10;
     WALL_CFG.y=+document.getElementById('wall-y').value/10;
-    document.getElementById('wall-z-val').textContent=WALL_CFG.z.toFixed(1)+'m';
-    document.getElementById('wall-x-val').textContent=(WALL_CFG.x>=0?'+':'')+WALL_CFG.x.toFixed(1)+'m';
-    document.getElementById('wall-y-val').textContent=WALL_CFG.y.toFixed(1)+'m';
+    syncWallSliders(WALL_CFG.z,WALL_CFG.x,WALL_CFG.y);
     document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    if(xrSession) doResetWall();
   });
 });
 
-function bindSlider(id,key,suffix){
-  const el=document.getElementById(id),vl=document.getElementById(id+'-val');
-  el.addEventListener('input',()=>{
-    CFG[key]=+el.value; vl.textContent=el.value+suffix;
-    document.getElementById('h-target-angle').textContent=`${CFG.angle}°±${CFG.tol}°`;
-    document.getElementById('h-target-thick').textContent=`${CFG.thick}mm±${CFG.thickTol}mm`;
+// セッション中壁スライダー
+['ws-z','ws-x','ws-y'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    WALL_CFG.z=+document.getElementById('ws-z').value/10;
+    WALL_CFG.x=+document.getElementById('ws-x').value/10;
+    WALL_CFG.y=+document.getElementById('ws-y').value/10;
+    syncWallSliders(WALL_CFG.z,WALL_CFG.x,WALL_CFG.y);
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    if(!wallLocked) wallFixed=false; // アンロック中は追従
   });
+});
+
+// 壁ロック切り替え
+function toggleWallLock(){
+  wallLocked=!wallLocked;
+  const btn=document.getElementById('wall-lock-btn');
+  if(wallLocked){
+    btn.textContent='🔒 ロック中 — 壁固定';
+    btn.classList.add('locked');
+  }else{
+    btn.textContent='🔓 アンロック中 — 壁が追従';
+    btn.classList.remove('locked');
+    wallFixed=false; // アンロック=次フレームで再計算
+  }
 }
-bindSlider('cfg-angle','angle','°');
-bindSlider('cfg-tol','tol','°');
-bindSlider('cfg-thick','thick','mm');
-bindSlider('cfg-thick-tol','thickTol','mm');
 
-document.getElementById('hud-reset-wall').addEventListener('click',()=>{ doResetWall(); clearPaintData(); });
-
+// スマホスコア
+let phoneTimer=null;
 document.getElementById('btn-phone').addEventListener('click',()=>{
   document.getElementById('ui').style.display='none';
   document.getElementById('phone-score').style.display='flex';
@@ -203,7 +316,6 @@ document.getElementById('ps-back').addEventListener('click',()=>{
   document.getElementById('phone-score').style.display='none';
   document.getElementById('ui').style.display='flex';
 });
-let phoneTimer=null;
 function refreshPhoneScore(){
   const s=calcScore();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
@@ -222,7 +334,7 @@ const canvas=document.getElementById('c');
 canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 let gl=canvas.getContext('webgl2',{xrCompatible:true,alpha:true});
 const GL2=!!gl;
-if(!gl) gl=canvas.getContext('webgl',{xrCompatible:true,alpha:true});
+if(!gl)gl=canvas.getContext('webgl',{xrCompatible:true,alpha:true});
 
 const VS=GL2
 ?`#version 300 es
@@ -243,9 +355,9 @@ gl.linkProgram(prog);gl.useProgram(prog);
 const aP=gl.getAttribLocation(prog,'a_p');
 const aC=gl.getAttribLocation(prog,'a_c');
 const aA=gl.getAttribLocation(prog,'a_a');
-const uP=gl.getUniformLocation(prog,'uP');
-const uV=gl.getUniformLocation(prog,'uV');
-const uM=gl.getUniformLocation(prog,'uM');
+const uP_=gl.getUniformLocation(prog,'uP');
+const uV_=gl.getUniformLocation(prog,'uV');
+const uM_=gl.getUniformLocation(prog,'uM');
 const ST=28;
 
 function setAttr(){
@@ -260,82 +372,62 @@ function mkBuf(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);g
 // ============================================================
 function matId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
 
-// ★ クォータニオン→回転行列
-// Quest3コントローラーのグリップ座標系:
-//   +X = 右, +Y = 上, +Z = 手前(グリップから腕方向)
-// コテは手のひらの向きに合わせて描画するため
-// 90度補正(Y軸回転)を加えて刃が壁に正対するようにする
-function quatToMat4(q){
-  const {x,y,z,w}=q;
-  // まず通常の回転行列
-  const m=new Float32Array([
+// クォータニオン → 回転行列 (column-major)
+function quatMat(q){
+  const{x,y,z,w}=q;
+  return new Float32Array([
     1-2*(y*y+z*z), 2*(x*y+w*z),   2*(x*z-w*y),   0,
     2*(x*y-w*z),   1-2*(x*x+z*z), 2*(y*z+w*x),   0,
     2*(x*z+w*y),   2*(y*z-w*x),   1-2*(x*x+y*y), 0,
-    0,             0,             0,             1
+    0,0,0,1
   ]);
-  // Y軸周りに-90度回転を追加で掛ける
-  // Ry(-90) = [[0,0,1,0],[0,1,0,0],[-1,0,0,0],[0,0,0,1]]
-  const c=0, s=-1; // cos(-90)=0, sin(-90)=-1
-  const r=new Float32Array(16);
-  // result = m * Ry(-90)
-  for(let row=0;row<4;row++){
-    r[row+0]  = m[row+0]*0  + m[row+8]*(-1); // col0 = m*Ry col0
-    r[row+4]  = m[row+4];                     // col1 unchanged
-    r[row+8]  = m[row+0]*1  + m[row+8]*0;    // col2
-    r[row+12] = m[row+12];
-  }
-  // 正しいcolumn-majorの掛け算
-  const out=new Float32Array(16);
-  // Ry(-90): col0=(0,0,-1,0), col1=(0,1,0,0), col2=(1,0,0,0), col3=(0,0,0,1)
-  for(let i=0;i<4;i++){
-    out[0+i*4]  = m[0+0]*0 + m[0+4]*0 + m[0+8]*(-1) + 0; // wrong approach
-  }
-  // シンプルに直接計算
-  const ry = new Float32Array([
-     0, 0,-1, 0,
-     0, 1, 0, 0,
-     1, 0, 0, 0,
-     0, 0, 0, 1
-  ]); // Ry(-90deg), column-major
-
-  // mat4 multiply: out = m * ry
-  const res=new Float32Array(16);
-  for(let col=0;col<4;col++){
-    for(let row=0;row<4;row++){
-      let sum=0;
-      for(let k=0;k<4;k++) sum+=m[k*4+row]*ry[col*4+k];
-      res[col*4+row]=sum;
-    }
-  }
-  return res;
 }
 
-function mat4TRS(tx,ty,tz,q){
-  const m=q?quatToMat4(q):matId();
-  m[12]=tx;m[13]=ty;m[14]=tz;return m;
+// mat4 multiply A*B (column-major)
+function mulMat(A,B){
+  const R=new Float32Array(16);
+  for(let c=0;c<4;c++)for(let r=0;r<4;r++){
+    let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];
+    R[c*4+r]=s;
+  }
+  return R;
 }
+
+// ★ Quest3コントローラーのグリップ座標系に合わせた補正
+// グリップ: +Y=上, +Z=コントローラー後方, +X=右
+// コテの刃を壁面(XY平面)に正対させるためX軸周り-90度回転
+function koteModelMat(q,px,py,pz){
+  const rq=quatMat(q);
+  // Rx(-90): col0=(1,0,0,0), col1=(0,0,1,0), col2=(0,-1,0,0), col3=(0,0,0,1)
+  const rx90=new Float32Array([
+    1, 0, 0, 0,
+    0, 0, 1, 0,
+    0,-1, 0, 0,
+    0, 0, 0, 1
+  ]);
+  const m=mulMat(rq,rx90);
+  m[12]=px;m[13]=py;m[14]=pz;
+  return m;
+}
+
+function wallMat(tx,ty,tz){const m=matId();m[12]=tx;m[13]=ty;m[14]=tz;return m;}
 
 // ============================================================
 // 壁グリッド
 // ============================================================
 const GW=20,GH=14,CELL=0.07;
-const PAINT_DIST=0.10;
+const PAINT_DIST=0.12;
 const thick=new Float32Array(GW*GH);
 const angLog=[];
 let strokes=0,wasPainting=false;
 
-// ★ 塗りデータをクリア
 function clearPaintData(){
-  thick.fill(0);
-  angLog.length=0;
-  strokes=0;
-  wasPainting=false;
+  thick.fill(0);angLog.length=0;strokes=0;wasPainting=false;
 }
 
 function wallVerts(){
   const v=[];
-  for(let gy=0;gy<GH;gy++) for(let gx=0;gx<GW;gx++){
+  for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
     const t=thick[gy*GW+gx];if(t===0)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003;
     const y0=gy*CELL,y1=y0+CELL-0.003;
@@ -358,25 +450,58 @@ function gridVerts(){
   return new Float32Array(v);
 }
 
-// ★ コテ形状: 柄が原点、刃はX負方向
-// グリップ座標系でY軸回転-90度補正を行うため
-// 描画上は刃がコントローラーの「前方」に来る
+// コテ: 柄が原点、刃がX負方向 (Rx-90補正後に壁面に正対)
 const koteBuf=mkBuf(new Float32Array([
-  // 刃 (銀, X: -0.28〜0)
-  -0.28,-0.016,0, 0.85,0.90,0.95,0.92,
-   0.00,-0.016,0, 0.85,0.90,0.95,0.92,
-  -0.28, 0.016,0, 0.85,0.90,0.95,0.92,
-   0.00,-0.016,0, 0.85,0.90,0.95,0.92,
-   0.00, 0.016,0, 0.85,0.90,0.95,0.92,
-  -0.28, 0.016,0, 0.85,0.90,0.95,0.92,
-  // 柄 (茶, X: 0〜+0.12)
-   0.00,-0.012,0, 0.55,0.35,0.20,0.92,
-   0.12,-0.012,0, 0.55,0.35,0.20,0.92,
-   0.00, 0.012,0, 0.55,0.35,0.20,0.92,
-   0.12,-0.012,0, 0.55,0.35,0.20,0.92,
-   0.12, 0.012,0, 0.55,0.35,0.20,0.92,
-   0.00, 0.012,0, 0.55,0.35,0.20,0.92,
+  -0.28,-0.016,0,0.85,0.90,0.95,0.92,
+   0.00,-0.016,0,0.85,0.90,0.95,0.92,
+  -0.28, 0.016,0,0.85,0.90,0.95,0.92,
+   0.00,-0.016,0,0.85,0.90,0.95,0.92,
+   0.00, 0.016,0,0.85,0.90,0.95,0.92,
+  -0.28, 0.016,0,0.85,0.90,0.95,0.92,
+   0.00,-0.012,0,0.55,0.35,0.20,0.92,
+   0.12,-0.012,0,0.55,0.35,0.20,0.92,
+   0.00, 0.012,0,0.55,0.35,0.20,0.92,
+   0.12,-0.012,0,0.55,0.35,0.20,0.92,
+   0.12, 0.012,0,0.55,0.35,0.20,0.92,
+   0.00, 0.012,0,0.55,0.35,0.20,0.92,
 ]));
+
+// ★ 手の形状: 8つの球体(近似: 小さい正方形)で指と手のひらを表現
+function buildHandVerts(){
+  const v=[];
+  // 手のひら + 4指 + 親指 の関節位置(ローカル座標, 柄=原点基準)
+  const joints=[
+    // 手のひら
+    {x:0,y:0,z:0,  s:0.025,r:0.9,g:0.75,b:0.6},
+    {x:0.02,y:0.02,z:0, s:0.018,r:0.9,g:0.75,b:0.6},
+    // 人差し指
+    {x:-0.02,y:0.06,z:0,  s:0.014,r:0.9,g:0.75,b:0.6},
+    {x:-0.02,y:0.10,z:0,  s:0.012,r:0.9,g:0.75,b:0.6},
+    // 中指
+    {x:0.01,y:0.07,z:0,   s:0.014,r:0.9,g:0.75,b:0.6},
+    {x:0.01,y:0.11,z:0,   s:0.012,r:0.9,g:0.75,b:0.6},
+    // 薬指
+    {x:0.04,y:0.065,z:0,  s:0.013,r:0.9,g:0.75,b:0.6},
+    {x:0.04,y:0.10,z:0,   s:0.011,r:0.9,g:0.75,b:0.6},
+    // 小指
+    {x:0.07,y:0.055,z:0,  s:0.011,r:0.9,g:0.75,b:0.6},
+    {x:0.07,y:0.085,z:0,  s:0.010,r:0.9,g:0.75,b:0.6},
+    // 親指
+    {x:-0.03,y:-0.01,z:0, s:0.018,r:0.9,g:0.75,b:0.6},
+    {x:-0.055,y:0.02,z:0, s:0.015,r:0.9,g:0.75,b:0.6},
+  ];
+  joints.forEach(({x,y,z,s,r,g,b})=>{
+    const a=0.88;
+    v.push(
+      x-s,y-s,z,r,g,b,a, x+s,y-s,z,r,g,b,a, x-s,y+s,z,r,g,b,a,
+      x+s,y-s,z,r,g,b,a, x+s,y+s,z,r,g,b,a, x-s,y+s,z,r,g,b,a
+    );
+  });
+  return new Float32Array(v);
+}
+const handBuf=mkBuf(buildHandVerts());
+const HAND_TRIS=buildHandVerts().length/7;
+
 const gridBuf=mkBuf(gridVerts());
 const wallBuf=mkBuf(new Float32Array(0),gl.DYNAMIC_DRAW);
 
@@ -429,7 +554,7 @@ const statusEl=document.getElementById('status');
 
 if(navigator.xr){
   navigator.xr.isSessionSupported('immersive-ar').then(ok=>{
-    statusEl.textContent=ok?'✓ AR対応 — 開始できます':'⚠ AR非対応 → VRで起動';
+    statusEl.textContent=ok?'✓ AR対応':'⚠ AR非対応→VRで起動';
     statusEl.style.color=ok?'#00ff88':'#ffcc00';
     if(!ok)document.getElementById('btn-ar').textContent='🥽 VRセッション開始';
   });
@@ -443,31 +568,42 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
     glLayer=new XRWebGLLayer(xrSession,gl,{alpha:true});
     xrSession.updateRenderState({baseLayer:glLayer});
     xrRefSpace=await xrSession.requestReferenceSpace('local-floor');
+
     document.getElementById('ui').style.display='none';
     document.getElementById('hud').style.display='block';
+    document.getElementById('session-settings').style.display='block';
+    document.getElementById('paint-reset-btn').style.display='block';
+
     wallFixed=false;
-    // ★ セッション開始時に必ずクリア
-    clearPaintData();
+    wallLocked=false;
+    document.getElementById('wall-lock-btn').textContent='🔓 アンロック中 — 壁が追従';
+    document.getElementById('wall-lock-btn').classList.remove('locked');
+
+    clearPaintData(); // ★ 毎回クリア
+    refreshHUDTargets();
+
     xrSession.requestAnimationFrame(onXRFrame);
     xrSession.addEventListener('end',()=>{
       document.getElementById('ui').style.display='flex';
       document.getElementById('hud').style.display='none';
+      document.getElementById('session-settings').style.display='none';
+      document.getElementById('paint-reset-btn').style.display='none';
     });
   }catch(e){statusEl.textContent='エラー: '+e.message;statusEl.style.color='#ff4466';}
 });
 
 // ============================================================
-// 壁位置
+// 壁位置計算
 // ============================================================
 let wallFixed=false;
-let wallOX=0,wallOY=0.8,wallOZ=-0.5;
+// 壁の実際の世界座標
+let wallWX=0,wallWY=0.8,wallWZ=-0.5;
 let headX=0,headZ=0,headFwdX=0,headFwdZ=-1;
 
-function doResetWall(){
-  // 頭の正面方向 × 前後距離 + 左右オフセット
-  wallOX = headX + headFwdX*WALL_CFG.z + WALL_CFG.x;
-  wallOY = WALL_CFG.y;
-  wallOZ = headZ + headFwdZ*WALL_CFG.z;
+function calcWallPos(){
+  wallWX=headX+headFwdX*WALL_CFG.z+WALL_CFG.x;
+  wallWY=WALL_CFG.y;
+  wallWZ=headZ+headFwdZ*WALL_CFG.z;
   wallFixed=true;
 }
 
@@ -488,7 +624,8 @@ function onXRFrame(t,frame){
   const fl=Math.sqrt(fx*fx+fz*fz)||1;
   headFwdX=fx/fl;headFwdZ=fz/fl;
 
-  if(!wallFixed)doResetWall();
+  // アンロック中は毎フレーム追従
+  if(!wallLocked||!wallFixed) calcWallPos();
 
   gl.bindFramebuffer(gl.FRAMEBUFFER,glLayer.framebuffer);
   gl.clearColor(0,0,0,0);
@@ -512,23 +649,26 @@ function onXRFrame(t,frame){
     kPos={x:p.x,y:p.y,z:p.z};
     kQuat={x:q.x,y:q.y,z:q.z,w:q.w};
 
-    // ★ 塗り判定: コントローラー位置をそのまま壁座標に変換
-    // 壁はXY平面(Z=wallOZ)なので、コントローラーのX,Yで何番目のセルか決まる
-    const distToWall=Math.abs(p.z-wallOZ);
+    // ★ 塗り位置: コントローラー座標 → グリッドセル
+    // 壁グリッドの描画原点 = wallMat の tx,ty,tz
+    // wallMat tx = wallWX - (GW/2)*CELL  (グリッド左端X)
+    // wallMat ty = wallWY                 (グリッド下端Y)
+    // wallMat tz = wallWZ
+    //
+    // コントローラーがグリッド上の何番目セルか:
+    //   gx = (p.x - wallMat_tx) / CELL = (p.x - wallWX + (GW/2)*CELL) / CELL
+    //      = (p.x - wallWX) / CELL + GW/2
+    //   gy = (p.y - wallMat_ty) / CELL = (p.y - wallWY) / CELL
+    const distToWall=Math.abs(p.z-wallWZ);
     if(distToWall<PAINT_DIST){
       if(!wasPainting){strokes++;wasPainting=true;}
       angLog.push(curAngle);
       if(angLog.length>2000)angLog.shift();
 
-      // ★ グリッド座標: wallOXが壁の左端（グリッドX=0）
-      // wallOXは mat4TRS に wallOX-(GW/2)*CELL を渡しているので
-      // コントローラーXからグリッドセルを求めるには:
-      // gx = (p.x - (wallOX - (GW/2)*CELL)) / CELL
-      //    = (p.x - wallOX) / CELL + GW/2
-      const gx=Math.floor((p.x - wallOX)/CELL + GW/2);
-      const gy=Math.floor((p.y - wallOY)/CELL);
-
-      const pressure=1-distToWall/PAINT_DIST;
+      // ★ ズレなし: wallWX が壁グリッド中央X、wallWY が下端Y
+      const gx=Math.floor((p.x-wallWX)/CELL+GW/2);
+      const gy=Math.floor((p.y-wallWY)/CELL);
+      const pressure=Math.max(0,1-distToWall/PAINT_DIST);
       for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
         const nx=gx+dx,ny=gy+dy;
         if(nx>=0&&nx<GW&&ny>=0&&ny<GH){
@@ -540,19 +680,21 @@ function onXRFrame(t,frame){
 
   if(fc%20===0)updateHUD(curAngle);
 
-  // ★ 壁モデル行列: X座標はグリッド中央が wallOX になるよう補正
-  const wallM=mat4TRS(wallOX-(GW/2)*CELL, wallOY, wallOZ, null);
+  // ★ 壁の描画: グリッド左端X = wallWX - (GW/2)*CELL と一致させる
+  const wm=wallMat(wallWX-(GW/2)*CELL, wallWY, wallWZ);
 
   for(const view of pose.views){
     const vp=glLayer.getViewport(view);
     gl.viewport(vp.x,vp.y,vp.width,vp.height);
-    gl.uniformMatrix4fv(uP,false,view.projectionMatrix);
-    gl.uniformMatrix4fv(uV,false,view.transform.inverse.matrix);
+    gl.uniformMatrix4fv(uP_,false,view.projectionMatrix);
+    gl.uniformMatrix4fv(uV_,false,view.transform.inverse.matrix);
 
-    gl.uniformMatrix4fv(uM,false,wallM);
+    // グリッド
+    gl.uniformMatrix4fv(uM_,false,wm);
     gl.bindBuffer(gl.ARRAY_BUFFER,gridBuf);setAttr();
     gl.drawArrays(gl.LINES,0,(GW+1)*2+(GH+1)*2);
 
+    // 塗り
     const wd=wallVerts();
     if(wd.length>0){
       gl.bindBuffer(gl.ARRAY_BUFFER,wallBuf);
@@ -560,8 +702,13 @@ function onXRFrame(t,frame){
       setAttr();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);
     }
 
-    // ★ コテ描画: 手の位置に手の向きで回転
-    gl.uniformMatrix4fv(uM,false,mat4TRS(kPos.x,kPos.y,kPos.z,kQuat));
+    // 手の形状
+    gl.uniformMatrix4fv(uM_,false,koteModelMat(kQuat,kPos.x,kPos.y,kPos.z));
+    gl.bindBuffer(gl.ARRAY_BUFFER,handBuf);setAttr();
+    gl.drawArrays(gl.TRIANGLES,0,HAND_TRIS);
+
+    // コテ
+    gl.uniformMatrix4fv(uM_,false,koteModelMat(kQuat,kPos.x,kPos.y,kPos.z));
     gl.bindBuffer(gl.ARRAY_BUFFER,koteBuf);setAttr();
     gl.drawArrays(gl.TRIANGLES,0,12);
   }
