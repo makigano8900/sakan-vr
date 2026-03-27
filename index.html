@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#000;color:#fff;font-family:monospace;overflow:hidden;}
 
-/* ===== 起動画面 ===== */
 #ui{
 position:fixed;top:0;left:0;width:100%;height:100%;
 display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -26,11 +25,8 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 .btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 24px;font-size:14px;cursor:pointer;border-radius:6px;}
 #status{color:#ffcc00;font-size:12px;text-align:center;padding:0 20px;}
 
-/* ===== セッション中: 左パネル ===== */
-#session-panel{
-position:fixed;top:16px;left:16px;
-display:none;z-index:20;pointer-events:auto;width:210px;
-}
+/* 左パネル */
+#session-panel{position:fixed;top:16px;left:16px;display:none;z-index:20;pointer-events:auto;width:210px;}
 .s-panel{background:rgba(0,0,0,0.88);border:1.5px solid #2a3545;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
 .s-title{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:10px;opacity:0.8;}
 .s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
@@ -38,33 +34,43 @@ display:none;z-index:20;pointer-events:auto;width:210px;
 input[type=range].sm{width:85px;accent-color:#00e5ff;}
 .s-val{color:#fff;font-size:11px;font-weight:bold;min-width:38px;text-align:right;}
 
-/* 壁操作ボタン群 */
-.wall-btns{display:flex;flex-direction:column;gap:6px;}
-.wall-btn{
-border:none;border-radius:8px;
-font-size:12px;font-weight:bold;padding:10px 12px;
-cursor:pointer;width:100%;transition:all 0.2s;text-align:left;
+/* 操作状態インジケーター */
+.op-status{
+display:flex;flex-direction:column;gap:5px;
+padding:8px 10px;border-radius:8px;
+background:rgba(255,255,255,0.04);
+border:1px solid #2a3545;
+margin-bottom:8px;
 }
+.op-row{display:flex;align-items:center;gap:8px;font-size:11px;}
+.op-dot{width:8px;height:8px;border-radius:50%;background:#2a3545;flex-shrink:0;transition:all 0.2s;}
+.op-dot.move{background:#00e5ff;box-shadow:0 0 6px #00e5ff;}
+.op-dot.rotate{background:#ff9900;box-shadow:0 0 6px #ff9900;}
+.op-dot.detect{background:#00ff88;box-shadow:0 0 6px #00ff88;}
+.op-lbl{color:#4a6a8a;}
+.op-lbl.active{color:#fff;}
+
+.wall-btns{display:flex;flex-direction:column;gap:6px;}
+.wall-btn{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:10px 12px;cursor:pointer;width:100%;transition:all 0.2s;text-align:left;}
 .wall-btn.detect{background:#1a3050;border:1.5px solid #00e5ff;color:#00e5ff;}
-.wall-btn.detect:hover{background:#0a2040;}
-.wall-btn.detect.scanning{background:#002040;border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
-.wall-btn.lock{background:#1a2510;border:1.5px solid #00ff88;color:#00ff88;}
-.wall-btn.lock.locked{background:#102010;}
-.wall-btn.unlock{background:#251a10;border:1.5px solid #ffcc00;color:#ffcc00;}
+.wall-btn.detect.scanning{border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
+.wall-btn.lk{background:#102010;border:1.5px solid #00ff88;color:#00ff88;}
+.wall-btn.ulk{background:#251a10;border:1.5px solid #ffcc00;color:#ffcc00;}
+
+/* 回転角度表示 */
+.angle-display{
+display:flex;justify-content:space-between;
+padding:6px 8px;border-radius:6px;
+background:rgba(255,153,0,0.08);border:1px solid rgba(255,153,0,0.2);
+margin-top:6px;
+}
+.ad-item{text-align:center;}
+.ad-lbl{color:#4a6a8a;font-size:8px;}
+.ad-val{color:#ff9900;font-size:13px;font-weight:bold;}
+
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
 
-/* グラブ状態表示 */
-.grab-status{
-display:flex;align-items:center;gap:8px;
-padding:8px 10px;border-radius:6px;
-background:rgba(255,255,255,0.05);
-font-size:11px;color:#4a6a8a;
-margin-bottom:6px;
-}
-.grab-dot{width:8px;height:8px;border-radius:50%;background:#2a3545;flex-shrink:0;}
-.grab-dot.active{background:#00e5ff;box-shadow:0 0 6px #00e5ff;}
-
-/* スコアHUD 右上 */
+/* スコアHUD */
 #hud{position:fixed;top:16px;right:16px;display:none;z-index:20;pointer-events:none;width:250px;}
 .panel{background:rgba(0,0,0,0.85);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;}
 .ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
@@ -84,35 +90,8 @@ margin-bottom:6px;
 .z-good{flex:20;background:rgba(0,255,136,0.55);}
 .needle{position:absolute;top:0;width:4px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
 
-/* 塗りリセット */
-#paint-reset-btn{
-position:fixed;bottom:16px;left:16px;display:none;
-pointer-events:auto;z-index:20;
-background:rgba(0,0,0,0.75);border:1.5px solid #ff6644;
-color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;
-}
+#paint-reset-btn{position:fixed;bottom:16px;left:16px;display:none;pointer-events:auto;z-index:20;background:rgba(0,0,0,0.75);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
 
-/* hit-testカーソル (壁検出中の十字) */
-#reticle{
-position:fixed;top:50%;left:50%;
-transform:translate(-50%,-50%);
-display:none;z-index:25;pointer-events:none;
-width:60px;height:60px;
-}
-.reticle-ring{
-width:100%;height:100%;border-radius:50%;
-border:3px solid #00e5ff;
-box-shadow:0 0 12px #00e5ff88;
-animation:spin 2s linear infinite;
-}
-.reticle-cross::before,.reticle-cross::after{
-content:’’;position:absolute;background:#00e5ff;
-}
-.reticle-cross::before{width:2px;height:20px;top:50%;left:50%;transform:translate(-50%,-50%);}
-.reticle-cross::after{width:20px;height:2px;top:50%;left:50%;transform:translate(-50%,-50%);}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* スマホスコア */
 #phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
 .ps-score{font-size:120px;font-weight:bold;line-height:1;}
 .ps-grade{font-size:28px;letter-spacing:6px;}
@@ -121,18 +100,15 @@ content:’’;position:absolute;background:#00e5ff;
 .ps-label{color:#4a6a8a;font-size:14px;}
 .ps-val{font-size:36px;font-weight:bold;color:#fff;}
 .ps-back{background:#1e2530;color:#aac8e0;border:none;padding:12px 32px;font-size:16px;cursor:pointer;border-radius:8px;}
-
 canvas{display:block;}
 </style>
 
 </head>
 <body>
 
-<!-- 起動画面 -->
-
 <div id="ui">
   <h1>左官AR TRAINER</h1>
-  <p>右手でコテ塗り / 左手トリガーで壁をつかんで移動</p>
+  <p>右手: コテ塗り　左手トリガー: 壁を移動　左手グリップ: 壁を回転</p>
 
   <div class="card">
     <div class="card-title">スコア基準設定</div>
@@ -148,10 +124,9 @@ canvas{display:block;}
   <div id="status">WebXR確認中...</div>
 </div>
 
-<!-- セッション中: 左パネル -->
+<!-- 左パネル -->
 
 <div id="session-panel">
-  <!-- スコア基準 (セッション中も変更可) -->
   <div class="s-panel">
     <div class="s-title">スコア基準</div>
     <div class="s-row"><span class="s-lbl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="s-val" id="ss-angle-val">35°</span></div>
@@ -160,35 +135,32 @@ canvas{display:block;}
     <div class="s-row"><span class="s-lbl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="s-val" id="ss-thick-tol-val">±2mm</span></div>
   </div>
 
-  <!-- 壁操作 -->
-
   <div class="s-panel">
     <div class="s-title">壁の操作</div>
 
 ```
-<!-- グラブ状態 -->
-<div class="grab-status">
-  <div class="grab-dot" id="grab-dot"></div>
-  <span id="grab-status-txt">左手トリガー → 壁をつかむ</span>
+<!-- 操作状態 -->
+<div class="op-status">
+  <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー: 移動</span></div>
+  <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ: 回転</span></div>
+  <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー: 壁スナップ</span></div>
 </div>
 
 <div class="wall-btns">
-  <!-- 壁面検出 -->
-  <button class="wall-btn detect" id="btn-detect" onclick="startDetect()">
-    🔍 壁を自動検出
-  </button>
+  <button class="wall-btn detect" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
+  <button class="wall-btn lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
+</div>
 
-  <!-- ロック/アンロック -->
-  <button class="wall-btn lock locked" id="btn-lock" onclick="toggleLock()">
-    🔒 ロック中
-  </button>
+<!-- 回転角度表示 -->
+<div class="angle-display">
+  <div class="ad-item"><div class="ad-lbl">Y軸回転</div><div class="ad-val" id="rot-y">0°</div></div>
+  <div class="ad-item"><div class="ad-lbl">X軸傾き</div><div class="ad-val" id="rot-x">0°</div></div>
+  <div class="ad-item"><div class="ad-lbl">Z軸ロール</div><div class="ad-val" id="rot-z">0°</div></div>
 </div>
 ```
 
   </div>
 </div>
-
-<!-- スコアHUD 右上 -->
 
 <div id="hud">
   <div class="panel">
@@ -218,15 +190,7 @@ canvas{display:block;}
   </div>
 </div>
 
-<!-- 塗りリセット -->
-
 <button id="paint-reset-btn" onclick="clearPaintData()">🗑 塗りリセット</button>
-
-<!-- hit-testカーソル -->
-
-<div id="reticle"><div class="reticle-ring"></div></div>
-
-<!-- スマホスコア -->
 
 <div id="phone-score">
   <div class="ps-score" id="ps-score-num">0</div>
@@ -249,7 +213,7 @@ let CFG={angle:35,tol:5,thick:8,thickTol:2};
 
 function bindScore(mainId,subId,key,suffix){
   const me=document.getElementById(mainId),mv=document.getElementById(mainId+'-val');
-  const se=document.getElementById(subId), sv=document.getElementById(subId+'-val');
+  const se=document.getElementById(subId),sv=document.getElementById(subId+'-val');
   function upd(v){CFG[key]=v;mv.textContent=v+suffix;sv.textContent=v+suffix;me.value=v;se.value=v;refreshTargets();}
   me.addEventListener('input',()=>upd(+me.value));
   se.addEventListener('input',()=>upd(+se.value));
@@ -258,13 +222,11 @@ bindScore('cfg-angle','ss-angle','angle','°');
 bindScore('cfg-tol','ss-tol','tol','°');
 bindScore('cfg-thick','ss-thick','thick','mm');
 bindScore('cfg-thick-tol','ss-thick-tol','thickTol','mm');
-
 function refreshTargets(){
   document.getElementById('h-target-angle').textContent=`${CFG.angle}°±${CFG.tol}°`;
   document.getElementById('h-target-thick').textContent=`${CFG.thick}mm±${CFG.thickTol}mm`;
 }
 
-// スマホスコア
 let phoneTimer=null;
 document.getElementById('btn-phone').addEventListener('click',()=>{
   document.getElementById('ui').style.display='none';
@@ -323,9 +285,10 @@ function setAttr(){
 function mkBuf(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW);return b;}
 
 // ============================================================
-// 行列
+// 行列演算
 // ============================================================
 function matId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
+
 function quatMat(q){
   const{x,y,z,w}=q;
   return new Float32Array([
@@ -335,18 +298,48 @@ function quatMat(q){
     0,0,0,1
   ]);
 }
+
 function mulMat(A,B){
   const R=new Float32Array(16);
   for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}
   return R;
 }
-// コテ: グリップ座標 + Rx(-90)補正
+
+// 回転行列: Ry(yaw) * Rx(pitch) * Rz(roll)
+function eulerMat(yaw,pitch,roll){
+  const cy=Math.cos(yaw),  sy=Math.sin(yaw);
+  const cx=Math.cos(pitch),sx=Math.sin(pitch);
+  const cz=Math.cos(roll), sz=Math.sin(roll);
+  // Ry
+  const Ry=new Float32Array([cy,0,-sy,0, 0,1,0,0, sy,0,cy,0, 0,0,0,1]);
+  // Rx
+  const Rx=new Float32Array([1,0,0,0, 0,cx,sx,0, 0,-sx,cx,0, 0,0,0,1]);
+  // Rz
+  const Rz=new Float32Array([cz,sz,0,0, -sz,cz,0,0, 0,0,1,0, 0,0,0,1]);
+  return mulMat(Ry,mulMat(Rx,Rz));
+}
+
+// 壁モデル行列: 位置 + 回転
+function wallModelMat(tx,ty,tz,yaw,pitch,roll){
+  const r=eulerMat(yaw,pitch,roll);
+  // グリッド中心を原点にずらしてから回転、そして平行移動
+  // center offset: -(GW/2)*CELL, 0, 0
+  const cx=-(GW/2)*CELL;
+  // まず中心オフセット適用した行列を作る
+  const m=new Float32Array(r);
+  // translation = position + rotation * centerOffset
+  // centerOffset = (cx, 0, 0)
+  m[12]=tx + r[0]*cx;
+  m[13]=ty + r[1]*cx;
+  m[14]=tz + r[2]*cx;
+  return m;
+}
+
+// コテ行列
 function koteMat(q,px,py,pz){
   const m=mulMat(quatMat(q),new Float32Array([1,0,0,0, 0,0,1,0, 0,-1,0,0, 0,0,0,1]));
   m[12]=px;m[13]=py;m[14]=pz;return m;
 }
-// 壁: 単純平行移動
-function wMat(tx,ty,tz){const m=matId();m[12]=tx;m[13]=ty;m[14]=tz;return m;}
 
 // ============================================================
 // 壁グリッドデータ
@@ -378,33 +371,17 @@ function gridVerts(){
   for(let y=0;y<=GH;y++){const py=y*CELL;v.push(-(GW/2)*CELL,py,0,r,g,b,a,(GW/2)*CELL,py,0,r,g,b,a);}
   return new Float32Array(v);
 }
-
-// hit-test検出中カーソル (平べったい円)
-function reticleVerts(cx,cy,cz,r2){
-  const v=[],segs=24,rc=0.0,gc=0.9,bc=1.0,a=0.85;
+function reticleVerts(cx,cy,cz,radius){
+  const v=[],segs=24;
   for(let i=0;i<segs;i++){
     const a0=(i/segs)*Math.PI*2,a1=((i+1)/segs)*Math.PI*2;
-    v.push(cx,cy,cz,rc,gc,bc,a);
-    v.push(cx+Math.cos(a0)*r2,cy+Math.sin(a0)*r2,cz,rc,gc,bc,a);
-    v.push(cx+Math.cos(a1)*r2,cy+Math.sin(a1)*r2,cz,rc,gc,bc,a);
+    v.push(cx,cy,cz,0,0.9,1.0,0.85);
+    v.push(cx+Math.cos(a0)*radius,cy+Math.sin(a0)*radius,cz,0,0.9,1.0,0.85);
+    v.push(cx+Math.cos(a1)*radius,cy+Math.sin(a1)*radius,cz,0,0.9,1.0,0.85);
   }
   return new Float32Array(v);
 }
 
-const koteBuf=mkBuf(new Float32Array([
-  -0.28,-0.016,0,0.85,0.90,0.95,0.92,
-   0.00,-0.016,0,0.85,0.90,0.95,0.92,
-  -0.28, 0.016,0,0.85,0.90,0.95,0.92,
-   0.00,-0.016,0,0.85,0.90,0.95,0.92,
-   0.00, 0.016,0,0.85,0.90,0.95,0.92,
-  -0.28, 0.016,0,0.85,0.90,0.95,0.92,
-   0.00,-0.012,0,0.55,0.35,0.20,0.92,
-   0.12,-0.012,0,0.55,0.35,0.20,0.92,
-   0.00, 0.012,0,0.55,0.35,0.20,0.92,
-   0.12,-0.012,0,0.55,0.35,0.20,0.92,
-   0.12, 0.012,0,0.55,0.35,0.20,0.92,
-   0.00, 0.012,0,0.55,0.35,0.20,0.92,
-]));
 function buildHandVerts(){
   const v=[],r=0.9,g=0.75,b=0.6,a=0.88;
   const j=[
@@ -424,9 +401,15 @@ function buildHandVerts(){
 const handVD=buildHandVerts();
 const handBuf=mkBuf(handVD);
 const HAND_TRIS=handVD.length/7;
+const koteBuf=mkBuf(new Float32Array([
+  -0.28,-0.016,0,0.85,0.90,0.95,0.92,  0.00,-0.016,0,0.85,0.90,0.95,0.92,  -0.28,0.016,0,0.85,0.90,0.95,0.92,
+   0.00,-0.016,0,0.85,0.90,0.95,0.92,   0.00, 0.016,0,0.85,0.90,0.95,0.92,  -0.28,0.016,0,0.85,0.90,0.95,0.92,
+   0.00,-0.012,0,0.55,0.35,0.20,0.92,   0.12,-0.012,0,0.55,0.35,0.20,0.92,   0.00,0.012,0,0.55,0.35,0.20,0.92,
+   0.12,-0.012,0,0.55,0.35,0.20,0.92,   0.12, 0.012,0,0.55,0.35,0.20,0.92,   0.00,0.012,0,0.55,0.35,0.20,0.92,
+]));
 const gridBuf=mkBuf(gridVerts());
 const wallBuf=mkBuf(new Float32Array(0),gl.DYNAMIC_DRAW);
-const retBuf=mkBuf(new Float32Array(reticleVerts(0,0,0,0.1)),gl.DYNAMIC_DRAW);
+const retBuf=mkBuf(new Float32Array(reticleVerts(0,0,0,0.15)),gl.DYNAMIC_DRAW);
 
 // ============================================================
 // スコア
@@ -469,11 +452,10 @@ function updateHUD(ang){
 }
 
 // ============================================================
-// XRセッション
+// XR
 // ============================================================
 let xrSession=null,xrRefSpace=null,glLayer=null;
-let xrHitTestSource=null;   // hit-test用
-let isDetecting=false;       // 検出モード中
+let xrHitTestSource=null,isDetecting=false;
 let wallLocked=true;
 const statusEl=document.getElementById('status');
 
@@ -487,7 +469,6 @@ if(navigator.xr){
 
 document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
-    // hit-testにはimmersive-arが必要
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
     const features=arOk
@@ -497,19 +478,15 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
     glLayer=new XRWebGLLayer(xrSession,gl,{alpha:true});
     xrSession.updateRenderState({baseLayer:glLayer});
     xrRefSpace=await xrSession.requestReferenceSpace('local-floor');
-
-    // 初期壁位置
     wallWX=0;wallWY=0.8;wallWZ=-0.6;
+    wallYaw=0;wallPitch=0;wallRoll=0;
     wallLocked=true;
-    clearPaintData();
-    refreshTargets();
-
+    clearPaintData();refreshTargets();
     document.getElementById('ui').style.display='none';
     document.getElementById('hud').style.display='block';
     document.getElementById('session-panel').style.display='block';
     document.getElementById('paint-reset-btn').style.display='block';
     updateLockBtn();
-
     xrSession.requestAnimationFrame(onXRFrame);
     xrSession.addEventListener('end',()=>{
       stopDetect();
@@ -519,101 +496,119 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
   }catch(e){statusEl.textContent='エラー: '+e.message;statusEl.style.color='#ff4466';}
 });
 
-// ============================================================
-// 壁ロック/アンロック
-// ============================================================
-function toggleLock(){
-  wallLocked=!wallLocked;
-  updateLockBtn();
-}
+function toggleLock(){wallLocked=!wallLocked;updateLockBtn();}
 function updateLockBtn(){
   const btn=document.getElementById('btn-lock');
-  btn.textContent=wallLocked?'🔒 ロック中':'🔓 アンロック — つかんで移動';
-  btn.className=wallLocked?'wall-btn lock locked':'wall-btn unlock';
+  btn.textContent=wallLocked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';
+  btn.className=wallLocked?'wall-btn lk':'wall-btn ulk';
 }
 
-// ============================================================
-// 壁面自動検出 (hit-test)
-// ============================================================
 async function startDetect(){
   if(!xrSession)return;
-  const btn=document.getElementById('btn-detect');
-
-  if(isDetecting){
-    stopDetect();
-    return;
-  }
-
+  if(isDetecting){stopDetect();return;}
   try{
-    // hit-testソース生成 (視線方向にレイキャスト)
-    const viewerSpace=await xrSession.requestReferenceSpace('viewer');
-    xrHitTestSource=await xrSession.requestHitTestSource({space:viewerSpace});
-    isDetecting=true;
-    wallLocked=false; // 検出中はアンロック
-    updateLockBtn();
-    btn.textContent='✓ 検出中 — 壁に向けてタップ';
-    btn.classList.add('scanning');
-    document.getElementById('reticle').style.display='block';
+    const vs=await xrSession.requestReferenceSpace('viewer');
+    xrHitTestSource=await xrSession.requestHitTestSource({space:vs});
+    isDetecting=true;wallLocked=false;updateLockBtn();
+    document.getElementById('btn-detect').textContent='✓ 検出中 — 壁に向けて右トリガー';
+    document.getElementById('btn-detect').classList.add('scanning');
+    setOpDot('detect',true);
   }catch(e){
-    // hit-test非対応 (VRモードなど)
-    btn.textContent='⚠ 検出非対応 (ARが必要)';
-    setTimeout(()=>{btn.textContent='🔍 壁を自動検出';},2000);
+    document.getElementById('btn-detect').textContent='⚠ 検出非対応';
+    setTimeout(()=>document.getElementById('btn-detect').textContent='🔍 壁を自動検出',2000);
   }
 }
-
 function stopDetect(){
   if(xrHitTestSource){xrHitTestSource.cancel();xrHitTestSource=null;}
   isDetecting=false;
   document.getElementById('btn-detect').textContent='🔍 壁を自動検出';
   document.getElementById('btn-detect').classList.remove('scanning');
-  document.getElementById('reticle').style.display='none';
+  setOpDot('detect',false);
 }
-
-// hit-testで検出した位置に壁をスナップ
-function snapWallToHit(hitResult,frame){
-  const pose=frame.getPose(hitResult.createAnchorNode?.()??hitResult,xrRefSpace);
-  // hit-testResultからpose取得
-  const hp=hitResult.getPose(xrRefSpace);
-  if(!hp)return;
-  const p=hp.transform.position;
-  const q=hp.transform.orientation;
-
-  // 検出した平面の法線方向に壁を向ける
-  // 法線=回転行列のZ列
-  const nz=2*(q.x*q.z+q.w*q.y); // forward Z
-  // 壁をその平面上に配置
-  wallWX=p.x;
-  wallWY=p.y;
-  wallWZ=p.z;
-  wallLocked=true;
-  updateLockBtn();
-  stopDetect();
-  clearPaintData();
+function setOpDot(type,active){
+  document.getElementById('dot-'+type).className='op-dot'+(active?' '+type:'');
+  document.getElementById('lbl-'+type).className='op-lbl'+(active?' active':'');
 }
 
 // ============================================================
-// 壁位置
+// 壁の状態
 // ============================================================
 let wallWX=0,wallWY=0.8,wallWZ=-0.6;
+let wallYaw=0,wallPitch=0,wallRoll=0; // ラジアン
 
-// グラブ (左手で壁をつかんで移動)
-let grabbing=false;
-let grabOffX=0,grabOffY=0,grabOffZ=0; // つかんだ時の手との差分
+// グラブ (移動)
+let grabbing=false,grabOffX=0,grabOffY=0,grabOffZ=0;
+// 回転グラブ
+let rotating=false;
+let rotStartQuat={x:0,y:0,z:0,w:1}; // グリップ開始時の左手クォータニオン
+let rotStartYaw=0,rotStartPitch=0,rotStartRoll=0; // 開始時の壁角度
 
-function updateGrabUI(active){
-  const dot=document.getElementById('grab-dot');
-  const txt=document.getElementById('grab-status-txt');
-  dot.classList.toggle('active',active);
-  txt.textContent=active?'壁をつかんでいます':'左手トリガー → 壁をつかむ';
+// クォータニオンから yaw/pitch/roll を取得
+function quatToEuler(q){
+  const{x,y,z,w}=q;
+  const sinP=2*(w*x-y*z);
+  const pitch=Math.asin(Math.max(-1,Math.min(1,sinP)));
+  const sinY=2*(w*y+x*z),cosY=1-2*(y*y+x*x);
+  const yaw=Math.atan2(sinY,cosY);
+  const sinR=2*(w*z+x*y),cosR=1-2*(z*z+x*x);
+  const roll=Math.atan2(sinR,cosR);
+  return{yaw,pitch,roll};
+}
+
+// 2つのクォータニオンの差分をオイラー角で返す
+function quatDeltaEuler(qStart,qCurrent){
+  // qDelta = qCurrent * inverse(qStart)
+  // inverse(q) = conjugate for unit quaternion
+  const qi={x:-qStart.x,y:-qStart.y,z:-qStart.z,w:qStart.w};
+  // multiply qCurrent * qi
+  const{x:ax,y:ay,z:az,w:aw}=qCurrent;
+  const{x:bx,y:by,z:bz,w:bw}=qi;
+  const d={
+    x:aw*bx+ax*bw+ay*bz-az*by,
+    y:aw*by-ax*bz+ay*bw+az*bx,
+    z:aw*bz+ax*by-ay*bx+az*bw,
+    w:aw*bw-ax*bx-ay*by-az*bz
+  };
+  return quatToEuler(d);
+}
+
+function updateRotDisplay(){
+  document.getElementById('rot-y').textContent=Math.round(wallYaw*180/Math.PI)+'°';
+  document.getElementById('rot-x').textContent=Math.round(wallPitch*180/Math.PI)+'°';
+  document.getElementById('rot-z').textContent=Math.round(wallRoll*180/Math.PI)+'°';
 }
 
 // ============================================================
-// XRレンダリングループ
+// 塗り判定 (回転を考慮したコントローラー→壁ローカル座標変換)
+// ============================================================
+function worldToWallLocal(wx,wy,wz){
+  // 壁の逆回転行列 (転置で逆行列になる) を適用
+  const yaw=-wallYaw,pitch=-wallPitch,roll=-wallRoll;
+  const cy=Math.cos(yaw),sy=Math.sin(yaw);
+  const cx=Math.cos(pitch),sx=Math.sin(pitch);
+  const cz=Math.cos(roll),sz=Math.sin(roll);
+  // 平行移動分を除いた相対座標
+  const dx=wx-wallWX,dy=wy-wallWY,dz=wz-wallWZ;
+  // 逆回転: Rz^T * Rx^T * Ry^T
+  const x1=cz*dx+sz*dy;
+  const y1=-sz*dx+cz*dy;
+  const z1=dz;
+  const x2=x1;
+  const y2=cx*y1+sx*z1;
+  const z2=-sx*y1+cx*z1;
+  const x3=cy*x2-sy*z2;
+  const y3=y2;
+  const z3=sy*x2+cy*z2;
+  return{x:x3,y:y3,z:z3};
+}
+
+// ============================================================
+// XR ループ
 // ============================================================
 let fc=0;
 let kPos={x:0,y:1.0,z:-0.5};
 let kQuat={x:0,y:0,z:0,w:1};
-let hitPos=null; // hit-test候補位置
+let hitPos=null;
 
 function onXRFrame(t,frame){
   xrSession.requestAnimationFrame(onXRFrame);fc++;
@@ -627,50 +622,44 @@ function onXRFrame(t,frame){
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
 
-  // ---- hit-test処理 ----
+  // hit-test
   hitPos=null;
   if(isDetecting&&xrHitTestSource){
     const hits=frame.getHitTestResults(xrHitTestSource);
     if(hits.length>0){
       const hp=hits[0].getPose(xrRefSpace);
-      if(hp){
-        hitPos={
-          x:hp.transform.position.x,
-          y:hp.transform.position.y,
-          z:hp.transform.position.z,
-        };
-      }
+      if(hp)hitPos={x:hp.transform.position.x,y:hp.transform.position.y,z:hp.transform.position.z};
     }
   }
 
   let curAngle=lastAngle;
 
-  // ---- コントローラー処理 ----
   for(const src of xrSession.inputSources){
     if(!src.gripSpace)continue;
     const gp=frame.getPose(src.gripSpace,xrRefSpace);
     if(!gp)continue;
     const q=gp.transform.orientation,p=gp.transform.position;
-    const trigger=(src.gamepad?.buttons[0]?.value??0);
+    const trigger=src.gamepad?.buttons[0]?.value??0;
+    const grip   =src.gamepad?.buttons[1]?.value??0;
 
     if(src.handedness==='right'){
-      // 右手: コテ操作
+      // 右手: コテ
       const cfz=-(1-2*(q.x*q.x+q.y*q.y));
       curAngle=Math.min(90,Math.max(0,90-Math.asin(Math.max(-1,Math.min(1,Math.abs(cfz))))*180/Math.PI));
-      kPos={x:p.x,y:p.y,z:p.z};
-      kQuat={x:q.x,y:q.y,z:q.z,w:q.w};
+      kPos={x:p.x,y:p.y,z:p.z};kQuat={x:q.x,y:q.y,z:q.z,w:q.w};
 
-      // 塗り: hit-test検出中は塗り無効
+      // 塗り
       if(!isDetecting){
-        const distToWall=Math.abs(p.z-wallWZ);
-        if(distToWall<PAINT_DIST){
+        // 壁ローカル座標に変換してZ距離を判定
+        const local=worldToWallLocal(p.x,p.y,p.z);
+        if(Math.abs(local.z)<PAINT_DIST){
           if(!wasPainting){strokes++;wasPainting=true;}
           angLog.push(curAngle);
           if(angLog.length>2000)angLog.shift();
-          // ★ 塗り位置: wallWX=グリッド中央X
-          const gx=Math.floor((p.x-wallWX)/CELL+GW/2);
-          const gy=Math.floor((p.y-wallWY)/CELL);
-          const pressure=Math.max(0,1-distToWall/PAINT_DIST);
+          // ローカルXY → グリッドセル
+          const gx=Math.floor(local.x/CELL+GW/2);
+          const gy=Math.floor(local.y/CELL);
+          const pressure=Math.max(0,1-Math.abs(local.z)/PAINT_DIST);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
             if(nx>=0&&nx<GW&&ny>=0&&ny<GH)
@@ -679,48 +668,55 @@ function onXRFrame(t,frame){
         }else{wasPainting=false;}
       }
 
-      // hit-test確定: 右手トリガーで壁をスナップ
+      // hit-test確定
       if(isDetecting&&trigger>0.5&&hitPos){
-        wallWX=hitPos.x;
-        wallWY=hitPos.y;
-        wallWZ=hitPos.z;
-        wallLocked=true;
-        updateLockBtn();
-        stopDetect();
-        clearPaintData();
+        wallWX=hitPos.x;wallWY=hitPos.y;wallWZ=hitPos.z;
+        wallYaw=0;wallPitch=0;wallRoll=0;
+        wallLocked=true;updateLockBtn();stopDetect();clearPaintData();
       }
     }
 
-    if(src.handedness==='left'){
-      // 左手: 壁グラブ移動
-      if(!wallLocked){
-        if(trigger>0.5){
-          if(!grabbing){
-            // つかみ開始: 手との距離を記録
-            grabbing=true;
-            grabOffX=wallWX-p.x;
-            grabOffY=wallWY-p.y;
-            grabOffZ=wallWZ-p.z;
-            updateGrabUI(true);
-          }else{
-            // つかみ中: 手の移動に追従
-            wallWX=p.x+grabOffX;
-            wallWY=p.y+grabOffY;
-            wallWZ=p.z+grabOffZ;
-          }
+    if(src.handedness==='left'&&!wallLocked){
+      // ---- 移動: トリガー ----
+      if(trigger>0.5){
+        if(!grabbing){
+          grabbing=true;
+          grabOffX=wallWX-p.x;grabOffY=wallWY-p.y;grabOffZ=wallWZ-p.z;
+          setOpDot('move',true);
         }else{
-          if(grabbing){grabbing=false;updateGrabUI(false);}
+          wallWX=p.x+grabOffX;wallWY=p.y+grabOffY;wallWZ=p.z+grabOffZ;
         }
       }else{
-        if(grabbing){grabbing=false;updateGrabUI(false);}
+        if(grabbing){grabbing=false;setOpDot('move',false);}
+      }
+
+      // ---- 回転: グリップ ----
+      if(grip>0.5){
+        if(!rotating){
+          rotating=true;
+          rotStartQuat={x:q.x,y:q.y,z:q.z,w:q.w};
+          rotStartYaw=wallYaw;rotStartPitch=wallPitch;rotStartRoll=wallRoll;
+          setOpDot('rotate',true);
+        }else{
+          // 左手の回転デルタを壁の回転に加算
+          const delta=quatDeltaEuler(rotStartQuat,{x:q.x,y:q.y,z:q.z,w:q.w});
+          wallYaw  =rotStartYaw  +delta.yaw;
+          wallPitch=rotStartPitch+delta.pitch;
+          wallRoll =rotStartRoll +delta.roll;
+        }
+      }else{
+        if(rotating){rotating=false;setOpDot('rotate',false);}
       }
     }
   }
 
-  if(fc%20===0)updateHUD(curAngle);
+  if(fc%20===0){
+    updateHUD(curAngle);
+    updateRotDisplay();
+  }
 
-  // 壁の描画行列
-  const wm=wMat(wallWX-(GW/2)*CELL,wallWY,wallWZ);
+  // 壁モデル行列
+  const wm=wallModelMat(wallWX,wallWY,wallWZ,wallYaw,wallPitch,wallRoll);
 
   for(const view of pose.views){
     const vp=glLayer.getViewport(view);
@@ -728,7 +724,7 @@ function onXRFrame(t,frame){
     gl.uniformMatrix4fv(uP_,false,view.projectionMatrix);
     gl.uniformMatrix4fv(uV_,false,view.transform.inverse.matrix);
 
-    // グリッド枠
+    // グリッド
     gl.uniformMatrix4fv(uM_,false,wm);
     gl.bindBuffer(gl.ARRAY_BUFFER,gridBuf);setAttr();
     gl.drawArrays(gl.LINES,0,(GW+1)*2+(GH+1)*2);
@@ -741,7 +737,7 @@ function onXRFrame(t,frame){
       setAttr();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);
     }
 
-    // hit-testカーソル (壁面上の円)
+    // hit-testカーソル
     if(isDetecting&&hitPos){
       const rd=reticleVerts(hitPos.x,hitPos.y,hitPos.z,0.15);
       gl.uniformMatrix4fv(uM_,false,matId());
