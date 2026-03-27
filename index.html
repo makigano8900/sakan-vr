@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#000;color:#fff;font-family:monospace;overflow:hidden;}
 
-/* ===== 起動画面 ===== */
 #ui{
 position:fixed;top:0;left:0;width:100%;height:100%;
 display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -26,16 +25,14 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 .btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 24px;font-size:14px;cursor:pointer;border-radius:6px;}
 #status{color:#ffcc00;font-size:12px;text-align:center;padding:0 20px;}
 
-/* ===== 左パネル ===== */
-#session-panel{position:fixed;top:16px;left:16px;display:none;z-index:20;pointer-events:auto;width:220px;}
-.s-panel{background:rgba(0,0,0,0.90);border:1.5px solid #2a3545;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+#session-panel{position:fixed;top:16px;left:16px;display:none;z-index:20;pointer-events:auto;width:222px;}
+.s-panel{background:rgba(0,0,0,0.92);border:1.5px solid #2a3545;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
 .s-title{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:10px;opacity:0.8;}
 .s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .s-lbl{color:#aac8e0;font-size:11px;flex:1;}
 input[type=range].sm{width:80px;accent-color:#00e5ff;}
 .s-val{color:#fff;font-size:11px;font-weight:bold;min-width:36px;text-align:right;}
 
-/* 操作状態 */
 .op-status{display:flex;flex-direction:column;gap:5px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid #2a3545;margin-bottom:8px;}
 .op-row{display:flex;align-items:center;gap:7px;font-size:11px;}
 .op-dot{width:7px;height:7px;border-radius:50%;background:#2a3545;flex-shrink:0;transition:all 0.2s;}
@@ -44,7 +41,6 @@ input[type=range].sm{width:80px;accent-color:#00e5ff;}
 .op-dot.detect{background:#00ff88;box-shadow:0 0 5px #00ff88;}
 .op-lbl{color:#4a6a8a;}.op-lbl.active{color:#fff;}
 
-/* 壁ボタン */
 .wall-btns{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
 .wall-btn{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:9px 12px;cursor:pointer;width:100%;transition:all 0.2s;text-align:left;}
 .wall-btn.detect{background:#1a3050;border:1.5px solid #00e5ff;color:#00e5ff;}
@@ -53,43 +49,27 @@ input[type=range].sm{width:80px;accent-color:#00e5ff;}
 .wall-btn.ulk{background:#251a10;border:1.5px solid #ffcc00;color:#ffcc00;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
 
-/* ===== 回転微調整 ===== */
+/* ★ 水平/垂直ボタン */
+.orient-row{display:flex;gap:5px;margin-bottom:8px;}
+.orient-btn{
+flex:1;border:none;border-radius:7px;
+font-size:11px;font-weight:bold;padding:8px 4px;
+cursor:pointer;text-align:center;transition:all 0.15s;
+}
+.orient-btn.horiz{background:#0a2030;border:1.5px solid #00e5ff;color:#00e5ff;}
+.orient-btn.vert{background:#200a30;border:1.5px solid #aa44ff;color:#aa44ff;}
+.orient-btn:active{opacity:0.7;}
+
+/* 回転微調整 */
 .rot-section{margin-top:2px;}
 .rot-title{color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:8px;opacity:0.9;}
-
-.rot-axis{
-display:flex;align-items:center;
-background:rgba(255,153,0,0.07);
-border:1px solid rgba(255,153,0,0.2);
-border-radius:8px;
-padding:6px 8px;
-margin-bottom:6px;
-gap:6px;
-}
+.rot-axis{display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:8px;padding:6px 8px;margin-bottom:6px;gap:6px;}
 .rot-axis-lbl{color:#ff9900;font-size:11px;font-weight:bold;width:18px;flex-shrink:0;}
-.rot-axis-val{
-color:#fff;font-size:13px;font-weight:bold;
-min-width:40px;text-align:center;flex:1;
-}
-.rot-btn{
-background:rgba(255,153,0,0.15);
-border:1.5px solid rgba(255,153,0,0.4);
-color:#ff9900;font-size:16px;font-weight:bold;
-width:30px;height:30px;border-radius:6px;
-cursor:pointer;display:flex;align-items:center;justify-content:center;
-flex-shrink:0;transition:all 0.1s;user-select:none;
--webkit-user-select:none;
-}
+.rot-axis-val{color:#fff;font-size:13px;font-weight:bold;min-width:40px;text-align:center;flex:1;}
+.rot-btn{background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.4);color:#ff9900;font-size:16px;font-weight:bold;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;user-select:none;-webkit-user-select:none;}
 .rot-btn:active{background:rgba(255,153,0,0.35);transform:scale(0.92);}
+.rot-reset{background:rgba(255,153,0,0.08);border:1px solid rgba(255,153,0,0.25);color:#ff9900;font-size:10px;padding:5px;border-radius:6px;cursor:pointer;width:100%;margin-top:2px;}
 
-/* リセットボタン */
-.rot-reset{
-background:rgba(255,153,0,0.08);border:1px solid rgba(255,153,0,0.25);
-color:#ff9900;font-size:10px;padding:5px;border-radius:6px;
-cursor:pointer;width:100%;margin-top:2px;
-}
-
-/* スコアHUD */
 #hud{position:fixed;top:16px;right:16px;display:none;z-index:20;pointer-events:none;width:250px;}
 .panel{background:rgba(0,0,0,0.85);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;}
 .ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
@@ -110,7 +90,6 @@ cursor:pointer;width:100%;margin-top:2px;
 .needle{position:absolute;top:0;width:4px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
 
 #paint-reset-btn{position:fixed;bottom:16px;left:16px;display:none;pointer-events:auto;z-index:20;background:rgba(0,0,0,0.75);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
-
 #phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
 .ps-score{font-size:120px;font-weight:bold;line-height:1;}
 .ps-grade{font-size:28px;letter-spacing:6px;}
@@ -124,8 +103,6 @@ canvas{display:block;}
 
 </head>
 <body>
-
-<!-- 起動画面 -->
 
 <div id="ui">
   <h1>左官AR TRAINER</h1>
@@ -142,12 +119,7 @@ canvas{display:block;}
   <div id="status">WebXR確認中...</div>
 </div>
 
-<!-- 左パネル -->
-
 <div id="session-panel">
-
-  <!-- スコア基準 -->
-
   <div class="s-panel">
     <div class="s-title">スコア基準</div>
     <div class="s-row"><span class="s-lbl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="s-val" id="ss-angle-val">35°</span></div>
@@ -156,60 +128,52 @@ canvas{display:block;}
     <div class="s-row"><span class="s-lbl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="s-val" id="ss-thick-tol-val">±2mm</span></div>
   </div>
 
-  <!-- 壁操作 -->
-
   <div class="s-panel">
     <div class="s-title">壁の操作</div>
+    <div class="op-status">
+      <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー: 移動</span></div>
+      <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ: 回転</span></div>
+      <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー: 壁スナップ</span></div>
+    </div>
 
 ```
-<div class="op-status">
-  <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー: 移動</span></div>
-  <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ: 回転</span></div>
-  <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー: 壁スナップ</span></div>
-</div>
-
 <div class="wall-btns">
   <button class="wall-btn detect" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
   <button class="wall-btn lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
 </div>
 
-<!-- ★ 回転微調整 -->
-<div class="rot-section">
-  <div class="rot-title">回転 微調整 (1°ずつ)</div>
+<!-- ★ 水平/垂直ボタン -->
+<div class="orient-row">
+  <button class="orient-btn horiz" onclick="setOrientation('horizontal')">⬜ 水平</button>
+  <button class="orient-btn vert"  onclick="setOrientation('vertical')">🔲 垂直</button>
+</div>
 
-  <!-- Y軸 (左右向き) -->
+<div class="rot-section">
+  <div class="rot-title">回転 微調整 (1°)</div>
   <div class="rot-axis">
     <span class="rot-axis-lbl">Y</span>
     <button class="rot-btn" ontouchstart="startRepeat('Y',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Y',-1)" onmouseup="stopRepeat()">−</button>
     <span class="rot-axis-val" id="rot-y-val">0°</span>
     <button class="rot-btn" ontouchstart="startRepeat('Y',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Y',1)" onmouseup="stopRepeat()">＋</button>
   </div>
-
-  <!-- X軸 (上下傾き) -->
   <div class="rot-axis">
     <span class="rot-axis-lbl">X</span>
     <button class="rot-btn" ontouchstart="startRepeat('X',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('X',-1)" onmouseup="stopRepeat()">−</button>
     <span class="rot-axis-val" id="rot-x-val">0°</span>
     <button class="rot-btn" ontouchstart="startRepeat('X',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('X',1)" onmouseup="stopRepeat()">＋</button>
   </div>
-
-  <!-- Z軸 (ロール) -->
   <div class="rot-axis">
     <span class="rot-axis-lbl">Z</span>
     <button class="rot-btn" ontouchstart="startRepeat('Z',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Z',-1)" onmouseup="stopRepeat()">−</button>
     <span class="rot-axis-val" id="rot-z-val">0°</span>
     <button class="rot-btn" ontouchstart="startRepeat('Z',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Z',1)" onmouseup="stopRepeat()">＋</button>
   </div>
-
-  <button class="rot-reset" onclick="resetRotation()">↺ 回転リセット (0°)</button>
+  <button class="rot-reset" onclick="resetRotation()">↺ 回転リセット</button>
 </div>
 ```
 
   </div>
-
 </div>
-
-<!-- スコアHUD -->
 
 <div id="hud">
   <div class="panel">
@@ -259,7 +223,6 @@ canvas{display:block;}
 // 設定
 // ============================================================
 let CFG={angle:35,tol:5,thick:8,thickTol:2};
-
 function bindScore(mId,sId,key,sfx){
   const me=document.getElementById(mId),mv=document.getElementById(mId+'-val');
   const se=document.getElementById(sId),sv=document.getElementById(sId+'-val');
@@ -277,32 +240,36 @@ function refreshTargets(){
 }
 
 // ============================================================
-// 回転微調整 (長押しで連続)
+// 水平/垂直プリセット
 // ============================================================
-const D2R=Math.PI/180;
-let repeatTimer=null,repeatInterval=null;
-
-function adjustRot(axis,sign){
-  const step=sign*D2R; // 1度
-  if(axis==='Y') wallYaw  =(wallYaw  +step)%(Math.PI*2);
-  if(axis==='X') wallPitch=(wallPitch +step)%(Math.PI*2);
-  if(axis==='Z') wallRoll =(wallRoll  +step)%(Math.PI*2);
+function setOrientation(type){
+  if(type==='horizontal'){
+    // 床に水平に敷く: X軸を-90度 (真上を向く)
+    wallYaw=0; wallPitch=-Math.PI/2; wallRoll=0;
+  } else {
+    // 壁として垂直: 全回転0 (Z軸正面向き)
+    wallYaw=0; wallPitch=0; wallRoll=0;
+  }
   updateRotDisplay();
 }
 
+// ============================================================
+// 回転微調整
+// ============================================================
+const D2R=Math.PI/180;
+let repeatTimer=null,repeatInterval=null;
+function adjustRot(axis,sign){
+  if(axis==='Y') wallYaw  +=sign*D2R;
+  if(axis==='X') wallPitch+=sign*D2R;
+  if(axis==='Z') wallRoll +=sign*D2R;
+  updateRotDisplay();
+}
 function startRepeat(axis,sign){
   adjustRot(axis,sign);
-  repeatTimer=setTimeout(()=>{
-    repeatInterval=setInterval(()=>adjustRot(axis,sign),80);
-  },400);
+  repeatTimer=setTimeout(()=>{repeatInterval=setInterval(()=>adjustRot(axis,sign),80);},400);
 }
-function stopRepeat(){
-  clearTimeout(repeatTimer);clearInterval(repeatInterval);
-  repeatTimer=null;repeatInterval=null;
-}
-
+function stopRepeat(){clearTimeout(repeatTimer);clearInterval(repeatInterval);repeatTimer=null;repeatInterval=null;}
 function resetRotation(){wallYaw=0;wallPitch=0;wallRoll=0;updateRotDisplay();}
-
 function updateRotDisplay(){
   function fmt(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
   document.getElementById('rot-y-val').textContent=fmt(wallYaw);
@@ -312,16 +279,8 @@ function updateRotDisplay(){
 
 // スマホスコア
 let phoneTimer=null;
-document.getElementById('btn-phone').addEventListener('click',()=>{
-  document.getElementById('ui').style.display='none';
-  document.getElementById('phone-score').style.display='flex';
-  phoneTimer=setInterval(refreshPhone,500);
-});
-document.getElementById('ps-back').addEventListener('click',()=>{
-  clearInterval(phoneTimer);
-  document.getElementById('phone-score').style.display='none';
-  document.getElementById('ui').style.display='flex';
-});
+document.getElementById('btn-phone').addEventListener('click',()=>{document.getElementById('ui').style.display='none';document.getElementById('phone-score').style.display='flex';phoneTimer=setInterval(refreshPhone,500);});
+document.getElementById('ps-back').addEventListener('click',()=>{clearInterval(phoneTimer);document.getElementById('phone-score').style.display='none';document.getElementById('ui').style.display='flex';});
 function refreshPhone(){
   const s=calcScore();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
@@ -341,7 +300,6 @@ canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 let gl=canvas.getContext('webgl2',{xrCompatible:true,alpha:true});
 const GL2=!!gl;
 if(!gl)gl=canvas.getContext('webgl',{xrCompatible:true,alpha:true});
-
 const VS=GL2
 ?`#version 300 es
 in vec4 a_p;in vec3 a_c;in float a_a;uniform mat4 uP,uV,uM;out vec3 vc;out float va;
@@ -352,20 +310,13 @@ const FS=GL2
 ?`#version 300 es
 precision mediump float;in vec3 vc;in float va;out vec4 o;void main(){o=vec4(vc,va);}`
 :`precision mediump float;varying vec3 vc;varying float va;void main(){gl_FragColor=vec4(vc,va);}`;
-
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x;}
 const prog=gl.createProgram();
-gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));
-gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));
-gl.linkProgram(prog);gl.useProgram(prog);
+gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);gl.useProgram(prog);
 const aP=gl.getAttribLocation(prog,'a_p'),aC=gl.getAttribLocation(prog,'a_c'),aA=gl.getAttribLocation(prog,'a_a');
 const uP_=gl.getUniformLocation(prog,'uP'),uV_=gl.getUniformLocation(prog,'uV'),uM_=gl.getUniformLocation(prog,'uM');
 const ST=28;
-function setAttr(){
-  gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);
-  gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);
-  gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);
-}
+function setAttr(){gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);}
 function mkBuf(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW);return b;}
 
 // ============================================================
@@ -374,74 +325,67 @@ function mkBuf(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);g
 function matId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
 function quatMat(q){
   const{x,y,z,w}=q;
-  return new Float32Array([
-    1-2*(y*y+z*z),2*(x*y+w*z),  2*(x*z-w*y),  0,
-    2*(x*y-w*z),  1-2*(x*x+z*z),2*(y*z+w*x),  0,
-    2*(x*z+w*y),  2*(y*z-w*x),  1-2*(x*x+y*y),0,
-    0,0,0,1
-  ]);
+  return new Float32Array([1-2*(y*y+z*z),2*(x*y+w*z),2*(x*z-w*y),0,2*(x*y-w*z),1-2*(x*x+z*z),2*(y*z+w*x),0,2*(x*z+w*y),2*(y*z-w*x),1-2*(x*x+y*y),0,0,0,0,1]);
 }
-function mulMat(A,B){
-  const R=new Float32Array(16);
-  for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}
-  return R;
-}
+function mulMat(A,B){const R=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}return R;}
 
-// Ry * Rx * Rz のオイラー回転行列
+// オイラー回転行列 Ry*Rx*Rz
 function eulerMat(yaw,pitch,roll){
-  const cy=Math.cos(yaw),sy=Math.sin(yaw);
-  const cx=Math.cos(pitch),sx=Math.sin(pitch);
-  const cz=Math.cos(roll),sz=Math.sin(roll);
-  const Ry=new Float32Array([cy,0,-sy,0, 0,1,0,0, sy,0,cy,0, 0,0,0,1]);
-  const Rx=new Float32Array([1,0,0,0, 0,cx,sx,0, 0,-sx,cx,0, 0,0,0,1]);
-  const Rz=new Float32Array([cz,sz,0,0, -sz,cz,0,0, 0,0,1,0, 0,0,0,1]);
+  const cy=Math.cos(yaw),sy=Math.sin(yaw),cx=Math.cos(pitch),sx=Math.sin(pitch),cz=Math.cos(roll),sz=Math.sin(roll);
+  const Ry=new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]);
+  const Rx=new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]);
+  const Rz=new Float32Array([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1]);
   return mulMat(Ry,mulMat(Rx,Rz));
 }
 
-// 壁モデル行列（中心補正込み）
-function wallModelMat(tx,ty,tz,yaw,pitch,roll){
-  const r=eulerMat(yaw,pitch,roll);
-  const cx=0; // グリッドは既に中心揃え
-  const m=new Float32Array(r);
-  m[12]=tx+r[0]*cx; m[13]=ty+r[1]*cx; m[14]=tz+r[2]*cx;
-  return m;
+// ★ 壁モデル行列
+// wallWX/Y/Z = 壁グリッドの「中央下端」のワールド座標
+// グリッドローカル: X方向 -(GW/2)*CELL 〜 +(GW/2)*CELL、Y方向 0〜GH*CELL
+// hit-testで得た座標をそのまま中央下端として使う
+function wallModelMat(cx,cy,cz,yaw,pitch,roll){
+  const R=eulerMat(yaw,pitch,roll);
+  // 平行移動はそのまま cx,cy,cz
+  R[12]=cx; R[13]=cy; R[14]=cz;
+  return R;
 }
 
-function koteMat(q,px,py,pz){
-  const m=mulMat(quatMat(q),new Float32Array([1,0,0,0, 0,0,1,0, 0,-1,0,0, 0,0,0,1]));
+// コテ: 右手位置に小さな点のみ（形状なし）→ 代わりに手の関節を表示
+function buildHandVerts(){
+  const v=[],r=0.9,g=0.75,b=0.6,a=0.88;
+  [{x:0,y:0,z:0,s:.022},{x:.02,y:.02,z:0,s:.016},
+   {x:-.02,y:.06,z:0,s:.013},{x:-.02,y:.10,z:0,s:.011},
+   {x:.01,y:.07,z:0,s:.013},{x:.01,y:.11,z:0,s:.011},
+   {x:.04,y:.065,z:0,s:.012},{x:.04,y:.10,z:0,s:.010},
+   {x:.07,y:.055,z:0,s:.010},{x:.07,y:.085,z:0,s:.009},
+   {x:-.03,y:-.01,z:0,s:.016},{x:-.055,y:.02,z:0,s:.013}
+  ].forEach(({x,y,z,s})=>v.push(x-s,y-s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x-s,y+s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x+s,y+s,z,r,g,b,a,x-s,y+s,z,r,g,b,a));
+  return new Float32Array(v);
+}
+
+// ★ 手の向き補正: グリップ座標系でX軸回転-90度
+function handMat(q,px,py,pz){
+  const Rx90=new Float32Array([1,0,0,0, 0,0,1,0, 0,-1,0,0, 0,0,0,1]);
+  const m=mulMat(quatMat(q),Rx90);
   m[12]=px;m[13]=py;m[14]=pz;return m;
 }
 
-// 壁ローカル座標変換（回転の逆）
-function worldToWallLocal(wx,wy,wz){
-  const yaw=-wallYaw,pitch=-wallPitch,roll=-wallRoll;
-  const cy=Math.cos(yaw),sy=Math.sin(yaw);
-  const cx=Math.cos(pitch),sx=Math.sin(pitch);
-  const cz=Math.cos(roll),sz=Math.sin(roll);
-  const dx=wx-wallWX,dy=wy-wallWY,dz=wz-wallWZ;
-  const x1=cz*dx+sz*dy, y1=-sz*dx+cz*dy, z1=dz;
-  const x2=x1, y2=cx*y1+sx*z1, z2=-sx*y1+cx*z1;
-  const x3=cy*x2-sy*z2, y3=y2, z3=sy*x2+cy*z2;
-  return{x:x3,y:y3,z:z3};
-}
+const handVD=buildHandVerts(),handBuf=mkBuf(handVD),HAND_TRIS=handVD.length/7;
+const gridBuf=mkBuf((()=>{
+  const v=[],r=0.15,g=0.55,b=0.65,a=0.45,GW2=20,GH2=14,C=0.07;
+  for(let x=0;x<=GW2;x++){const px=(x-GW2/2)*C;v.push(px,0,0,r,g,b,a,px,GH2*C,0,r,g,b,a);}
+  for(let y=0;y<=GH2;y++){const py=y*C;v.push(-(GW2/2)*C,py,0,r,g,b,a,(GW2/2)*C,py,0,r,g,b,a);}
+  return new Float32Array(v);
+})());
+const wallBuf=mkBuf(new Float32Array(0),gl.DYNAMIC_DRAW);
+const retBuf=mkBuf(new Float32Array(72*7),gl.DYNAMIC_DRAW);
 
-// クォータニオンのdelta → オイラー角
-function quatDeltaEuler(qs,qc){
-  const qi={x:-qs.x,y:-qs.y,z:-qs.z,w:qs.w};
-  const{x:ax,y:ay,z:az,w:aw}=qc,{x:bx,y:by,z:bz,w:bw}=qi;
-  const d={x:aw*bx+ax*bw+ay*bz-az*by, y:aw*by-ax*bz+ay*bw+az*bx, z:aw*bz+ax*by-ay*bx+az*bw, w:aw*bw-ax*bx-ay*by-az*bz};
-  const sinP=2*(d.w*d.x-d.y*d.z);
-  const pitch=Math.asin(Math.max(-1,Math.min(1,sinP)));
-  const yaw=Math.atan2(2*(d.w*d.y+d.x*d.z),1-2*(d.y*d.y+d.x*d.x));
-  const roll=Math.atan2(2*(d.w*d.z+d.x*d.y),1-2*(d.z*d.z+d.x*d.x));
-  return{yaw,pitch,roll};
-}
-
-// ============================================================
-// 壁グリッド
-// ============================================================
+// グリッドサイズ定数
 const GW=20,GH=14,CELL=0.07;
 const PAINT_DIST=0.12;
+
+// ============================================================
+// 壁グリッドデータ
+// ============================================================
 const thick=new Float32Array(GW*GH);
 const angLog=[];
 let strokes=0,wasPainting=false;
@@ -452,84 +396,79 @@ function wallVerts(){
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
     const t=thick[gy*GW+gx];if(t===0)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003,y0=gy*CELL,y1=y0+CELL-0.003;
-    const tgtM=CFG.thick/1000,ratio=t/tgtM;
+    const ratio=t/(CFG.thick/1000);
     let r,g,b;
     if(ratio<0.85){r=0.1;g=0.4;b=1.0;}else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}else{r=1.0;g=0.4;b=0.1;}
     const a=Math.min(0.88,ratio*0.5+0.3);
-    v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,
-           x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
+    v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
   }
   return new Float32Array(v);
 }
-function gridVerts(){
-  const v=[],r=0.15,g=0.55,b=0.65,a=0.45;
-  for(let x=0;x<=GW;x++){const px=(x-GW/2)*CELL;v.push(px,0,0,r,g,b,a,px,GH*CELL,0,r,g,b,a);}
-  for(let y=0;y<=GH;y++){const py=y*CELL;v.push(-(GW/2)*CELL,py,0,r,g,b,a,(GW/2)*CELL,py,0,r,g,b,a);}
-  return new Float32Array(v);
-}
+
 function reticleVerts(cx,cy,cz,rad){
   const v=[],segs=24;
-  for(let i=0;i<segs;i++){
-    const a0=(i/segs)*Math.PI*2,a1=((i+1)/segs)*Math.PI*2;
-    v.push(cx,cy,cz,0,0.9,1.0,0.85);
-    v.push(cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,0.9,1.0,0.85);
-    v.push(cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,0.9,1.0,0.85);
-  }
+  for(let i=0;i<segs;i++){const a0=(i/segs)*Math.PI*2,a1=((i+1)/segs)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.85,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.85,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.85);}
   return new Float32Array(v);
 }
-function buildHandVerts(){
-  const v=[],r=0.9,g=0.75,b=0.6,a=0.88;
-  [{x:0,y:0,z:0,s:.025},{x:.02,y:.02,z:0,s:.018},{x:-.02,y:.06,z:0,s:.014},{x:-.02,y:.10,z:0,s:.012},
-   {x:.01,y:.07,z:0,s:.014},{x:.01,y:.11,z:0,s:.012},{x:.04,y:.065,z:0,s:.013},{x:.04,y:.10,z:0,s:.011},
-   {x:.07,y:.055,z:0,s:.011},{x:.07,y:.085,z:0,s:.010},{x:-.03,y:-.01,z:0,s:.018},{x:-.055,y:.02,z:0,s:.015}
-  ].forEach(({x,y,z,s})=>v.push(x-s,y-s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x-s,y+s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x+s,y+s,z,r,g,b,a,x-s,y+s,z,r,g,b,a));
-  return new Float32Array(v);
-}
-const handVD=buildHandVerts(),handBuf=mkBuf(handVD),HAND_TRIS=handVD.length/7;
-const koteBuf=mkBuf(new Float32Array([
-  -.28,-.016,0,.85,.90,.95,.92, .00,-.016,0,.85,.90,.95,.92, -.28,.016,0,.85,.90,.95,.92,
-   .00,-.016,0,.85,.90,.95,.92,  .00, .016,0,.85,.90,.95,.92, -.28,.016,0,.85,.90,.95,.92,
-   .00,-.012,0,.55,.35,.20,.92,  .12,-.012,0,.55,.35,.20,.92,  .00,.012,0,.55,.35,.20,.92,
-   .12,-.012,0,.55,.35,.20,.92,  .12, .012,0,.55,.35,.20,.92,  .00,.012,0,.55,.35,.20,.92,
-]));
-const gridBuf=mkBuf(gridVerts());
-const wallBuf=mkBuf(new Float32Array(0),gl.DYNAMIC_DRAW);
-const retBuf=mkBuf(new Float32Array(reticleVerts(0,0,0,.15)),gl.DYNAMIC_DRAW);
 
+// ============================================================
 // スコア
+// ============================================================
 function calcScore(){
   let cov=0,ts=0;
   for(let i=0;i<thick.length;i++)if(thick[i]>0){cov++;ts+=thick[i];}
-  const coverage=cov/thick.length,avg=cov>0?ts/cov:0;
-  const tgtM=CFG.thick/1000,tolM=CFG.thickTol/1000;
-  let blur=0;
-  if(angLog.length>0)blur=angLog.filter(a=>Math.abs(a-CFG.angle)>CFG.tol).length/angLog.length;
-  let thickOk=0;
-  for(let i=0;i<thick.length;i++)if(thick[i]>0&&Math.abs(thick[i]-tgtM)<tolM)thickOk++;
-  return{total:Math.round((1-blur)*40+(coverage*35)+((cov>0?thickOk/cov:0)*25)),blur,coverage,avg};
+  const coverage=cov/thick.length,avg=cov>0?ts/cov:0,tgtM=CFG.thick/1000,tolM=CFG.thickTol/1000;
+  let blur=0;if(angLog.length>0)blur=angLog.filter(a=>Math.abs(a-CFG.angle)>CFG.tol).length/angLog.length;
+  let thickOk=0;for(let i=0;i<thick.length;i++)if(thick[i]>0&&Math.abs(thick[i]-tgtM)<tolM)thickOk++;
+  return{total:Math.round((1-blur)*40+coverage*35+(cov>0?thickOk/cov:0)*25),blur,coverage,avg};
 }
 let lastAngle=35;
 function updateHUD(ang){
   lastAngle=ang;const s=calcScore();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
   const [,g,gc]=gs.find(([m])=>s.total>=m);
-  document.getElementById('h-score').textContent=s.total;
-  document.getElementById('h-score').style.color=gc;
+  document.getElementById('h-score').textContent=s.total;document.getElementById('h-score').style.color=gc;
   const ge=document.getElementById('h-grade');ge.textContent=`--- GRADE ${g} ---`;ge.style.color=gc;
   const diff=Math.abs(ang-CFG.angle);
-  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';
-  ae.className='val '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
+  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='val '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
   document.getElementById('h-needle').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
-  const bp=Math.round(s.blur*100);
-  const be=document.getElementById('h-blur');be.textContent=bp+'%';
-  be.className='val '+(bp<20?'good':bp<40?'warn':'bad');
-  const bb=document.getElementById('h-blur-bar');bb.style.width=bp+'%';
-  bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
-  const cp=Math.round(s.coverage*100);
-  document.getElementById('h-cover').textContent=cp+'%';
-  document.getElementById('h-cover-bar').style.width=cp+'%';
-  document.getElementById('h-strokes').textContent=strokes+'回';
-  document.getElementById('h-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
+  const bp=Math.round(s.blur*100);const be=document.getElementById('h-blur');be.textContent=bp+'%';be.className='val '+(bp<20?'good':bp<40?'warn':'bad');
+  const bb=document.getElementById('h-blur-bar');bb.style.width=bp+'%';bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
+  const cp=Math.round(s.coverage*100);document.getElementById('h-cover').textContent=cp+'%';document.getElementById('h-cover-bar').style.width=cp+'%';
+  document.getElementById('h-strokes').textContent=strokes+'回';document.getElementById('h-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
+}
+
+// ============================================================
+// ★ 壁ローカル座標変換 (回転の逆行列を適用)
+// コントローラーのワールド座標 → 壁のローカル座標
+// 壁の原点 = wallWX,wallWY,wallWZ (グリッド中央X=0, 下端Y=0)
+// ============================================================
+function worldToLocal(wx,wy,wz){
+  // 平行移動を除いた差分
+  const dx=wx-wallWX, dy=wy-wallWY, dz=wz-wallWZ;
+  // 逆回転 = 転置 (直交行列なので)
+  // eulerMat の列ベクトルを使って逆変換
+  const R=eulerMat(wallYaw,wallPitch,wallRoll);
+  // R は column-major: R[col*4+row]
+  // 逆変換: local = R^T * (world - pos)
+  // x_local = R[0]*dx + R[1]*dy + R[2]*dz  (row0 of R = col0 elements)
+  const lx=R[0]*dx+R[1]*dy+R[2]*dz;
+  const ly=R[4]*dx+R[5]*dy+R[6]*dz;
+  const lz=R[8]*dx+R[9]*dy+R[10]*dz;
+  return{x:lx,y:ly,z:lz};
+}
+
+// クォータニオンdelta→オイラー
+function quatDeltaEuler(qs,qc){
+  const qi={x:-qs.x,y:-qs.y,z:-qs.z,w:qs.w};
+  const{x:ax,y:ay,z:az,w:aw}=qc,{x:bx,y:by,z:bz,w:bw}=qi;
+  const d={x:aw*bx+ax*bw+ay*bz-az*by,y:aw*by-ax*bz+ay*bw+az*bx,z:aw*bz+ax*by-ay*bx+az*bw,w:aw*bw-ax*bx-ay*by-az*bz};
+  const sinP=2*(d.w*d.x-d.y*d.z);
+  return{
+    pitch:Math.asin(Math.max(-1,Math.min(1,sinP))),
+    yaw:Math.atan2(2*(d.w*d.y+d.x*d.z),1-2*(d.y*d.y+d.x*d.x)),
+    roll:Math.atan2(2*(d.w*d.z+d.x*d.y),1-2*(d.z*d.z+d.x*d.x))
+  };
 }
 
 // ============================================================
@@ -538,7 +477,6 @@ function updateHUD(ang){
 let xrSession=null,xrRefSpace=null,glLayer=null;
 let xrHitTestSource=null,isDetecting=false,wallLocked=true;
 const statusEl=document.getElementById('status');
-
 if(navigator.xr){
   navigator.xr.isSessionSupported('immersive-ar').then(ok=>{
     statusEl.textContent=ok?'✓ AR対応':'⚠ AR非対応→VRで起動';
@@ -551,11 +489,11 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
-    xrSession=await navigator.xr.requestSession(mode,
-      arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test']}:{requiredFeatures:['local-floor']});
+    xrSession=await navigator.xr.requestSession(mode,arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test']}:{requiredFeatures:['local-floor']});
     glLayer=new XRWebGLLayer(xrSession,gl,{alpha:true});
     xrSession.updateRenderState({baseLayer:glLayer});
     xrRefSpace=await xrSession.requestReferenceSpace('local-floor');
+    // ★ 初期位置: 正面0.6m、高さ0.8m、中央
     wallWX=0;wallWY=0.8;wallWZ=-0.6;wallYaw=0;wallPitch=0;wallRoll=0;
     wallLocked=true;clearPaintData();refreshTargets();updateRotDisplay();
     document.getElementById('ui').style.display='none';
@@ -578,10 +516,7 @@ function updateLockBtn(){
   btn.textContent=wallLocked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';
   btn.className=wallLocked?'wall-btn lk':'wall-btn ulk';
 }
-function setOpDot(t,a){
-  document.getElementById('dot-'+t).className='op-dot'+(a?' '+t:'');
-  document.getElementById('lbl-'+t).className='op-lbl'+(a?' active':'');
-}
+function setOpDot(t,a){document.getElementById('dot-'+t).className='op-dot'+(a?' '+t:'');document.getElementById('lbl-'+t).className='op-lbl'+(a?' active':'');}
 
 async function startDetect(){
   if(!xrSession)return;
@@ -607,44 +542,32 @@ function stopDetect(){
 }
 
 // ============================================================
-// 壁の状態
+// 壁状態
 // ============================================================
 let wallWX=0,wallWY=0.8,wallWZ=-0.6;
 let wallYaw=0,wallPitch=0,wallRoll=0;
-let grabbing=false,grabOffX=0,grabOffY=0,grabOffZ=0;
-let rotating=false,rotStartQ={x:0,y:0,z:0,w:1};
-let rotStartYaw=0,rotStartPitch=0,rotStartRoll=0;
-let hitPos=null;
-let fc=0,kPos={x:0,y:1,z:-.5},kQuat={x:0,y:0,z:0,w:1};
+let grabbing=false,grabOX=0,grabOY=0,grabOZ=0;
+let rotating=false,rotSQ={x:0,y:0,z:0,w:1},rotSY=0,rotSP=0,rotSR=0;
+let hitPos=null,fc=0;
+let kPos={x:0,y:1,z:-.5},kQuat={x:0,y:0,z:0,w:1};
 
 function onXRFrame(t,frame){
   xrSession.requestAnimationFrame(onXRFrame);fc++;
-  const pose=frame.getViewerPose(xrRefSpace);
-  if(!pose)return;
-
+  const pose=frame.getViewerPose(xrRefSpace);if(!pose)return;
   gl.bindFramebuffer(gl.FRAMEBUFFER,glLayer.framebuffer);
   gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
 
-  // hit-test
   hitPos=null;
   if(isDetecting&&xrHitTestSource){
     const hits=frame.getHitTestResults(xrHitTestSource);
-    if(hits.length>0){
-      const hp=hits[0].getPose(xrRefSpace);
-      if(hp){
-        const p=hp.transform.position,q=hp.transform.orientation;
-        hitPos={x:p.x,y:p.y,z:p.z,qx:q.x,qy:q.y,qz:q.z,qw:q.w};
-      }
-    }
+    if(hits.length>0){const hp=hits[0].getPose(xrRefSpace);if(hp){const p=hp.transform.position,q=hp.transform.orientation;hitPos={x:p.x,y:p.y,z:p.z,qx:q.x,qy:q.y,qz:q.z,qw:q.w};}}
   }
 
   let curAngle=lastAngle;
-
   for(const src of xrSession.inputSources){
     if(!src.gripSpace)continue;
-    const gp=frame.getPose(src.gripSpace,xrRefSpace);
-    if(!gp)continue;
+    const gp=frame.getPose(src.gripSpace,xrRefSpace);if(!gp)continue;
     const q=gp.transform.orientation,p=gp.transform.position;
     const trigger=src.gamepad?.buttons[0]?.value??0;
     const grip=src.gamepad?.buttons[1]?.value??0;
@@ -653,27 +576,35 @@ function onXRFrame(t,frame){
       const cfz=-(1-2*(q.x*q.x+q.y*q.y));
       curAngle=Math.min(90,Math.max(0,90-Math.asin(Math.max(-1,Math.min(1,Math.abs(cfz))))*180/Math.PI));
       kPos={x:p.x,y:p.y,z:p.z};kQuat={x:q.x,y:q.y,z:q.z,w:q.w};
+
       if(!isDetecting){
-        const local=worldToWallLocal(p.x,p.y,p.z);
-        if(Math.abs(local.z)<PAINT_DIST){
+        // ★ 壁ローカル座標に変換して塗り判定
+        const L=worldToLocal(p.x,p.y,p.z);
+        if(Math.abs(L.z)<PAINT_DIST){
           if(!wasPainting){strokes++;wasPainting=true;}
           angLog.push(curAngle);if(angLog.length>2000)angLog.shift();
-          const gx=Math.floor(local.x/CELL+GW/2),gy=Math.floor(local.y/CELL);
-          const pres=Math.max(0,1-Math.abs(local.z)/PAINT_DIST);
+          // ★ ローカルX=0がグリッド中央 → gx = L.x/CELL + GW/2
+          // ★ ローカルY=0がグリッド下端 → gy = L.y/CELL
+          const gx=Math.floor(L.x/CELL+GW/2);
+          const gy=Math.floor(L.y/CELL);
+          const pres=Math.max(0,1-Math.abs(L.z)/PAINT_DIST);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
             if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pres*0.0005);
           }
         }else wasPainting=false;
       }
-      // hit-test確定: 右トリガー
+
+      // ★ hit-test確定: 壁の中央下端にスナップ
       if(isDetecting&&trigger>0.5&&hitPos){
-        wallWX=hitPos.x;wallWY=hitPos.y;wallWZ=hitPos.z;
-        // ★ hit-testの法線から壁の向きを自動設定（水平スナップ）
-        // hit-testの回転でYaw角を取得、PitchとRollは0にして水平を保つ
+        // hit-test座標をそのまま壁の中央X,下端Yとして使う
+        wallWX=hitPos.x;
+        wallWY=hitPos.y;
+        wallWZ=hitPos.z;
+        // ★ hit-testのYaw取得 + Pitch/Roll=0で垂直固定
         const hq={x:hitPos.qx,y:hitPos.qy,z:hitPos.qz,w:hitPos.qw};
         wallYaw=Math.atan2(2*(hq.w*hq.y+hq.x*hq.z),1-2*(hq.y*hq.y+hq.x*hq.x));
-        wallPitch=0; wallRoll=0; // ★ 水平固定
+        wallPitch=0;wallRoll=0;
         updateRotDisplay();
         wallLocked=true;updateLockBtn();stopDetect();clearPaintData();
       }
@@ -681,22 +612,20 @@ function onXRFrame(t,frame){
 
     if(src.handedness==='left'&&!wallLocked){
       if(trigger>0.5){
-        if(!grabbing){grabbing=true;grabOffX=wallWX-p.x;grabOffY=wallWY-p.y;grabOffZ=wallWZ-p.z;setOpDot('move',true);}
-        else{wallWX=p.x+grabOffX;wallWY=p.y+grabOffY;wallWZ=p.z+grabOffZ;}
+        if(!grabbing){grabbing=true;grabOX=wallWX-p.x;grabOY=wallWY-p.y;grabOZ=wallWZ-p.z;setOpDot('move',true);}
+        else{wallWX=p.x+grabOX;wallWY=p.y+grabOY;wallWZ=p.z+grabOZ;}
       }else{if(grabbing){grabbing=false;setOpDot('move',false);}}
       if(grip>0.5){
-        if(!rotating){rotating=true;rotStartQ={x:q.x,y:q.y,z:q.z,w:q.w};rotStartYaw=wallYaw;rotStartPitch=wallPitch;rotStartRoll=wallRoll;setOpDot('rotate',true);}
-        else{
-          const d=quatDeltaEuler(rotStartQ,{x:q.x,y:q.y,z:q.z,w:q.w});
-          wallYaw=rotStartYaw+d.yaw;wallPitch=rotStartPitch+d.pitch;wallRoll=rotStartRoll+d.roll;
-        }
+        if(!rotating){rotating=true;rotSQ={x:q.x,y:q.y,z:q.z,w:q.w};rotSY=wallYaw;rotSP=wallPitch;rotSR=wallRoll;setOpDot('rotate',true);}
+        else{const d=quatDeltaEuler(rotSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wallYaw=rotSY+d.yaw;wallPitch=rotSP+d.pitch;wallRoll=rotSR+d.roll;}
       }else{if(rotating){rotating=false;setOpDot('rotate',false);}}
     }
   }
 
   if(fc%20===0){updateHUD(curAngle);updateRotDisplay();}
 
-  const wm=wallModelMat(wallWX-(GW/2)*CELL,wallWY,wallWZ,wallYaw,wallPitch,wallRoll);
+  // ★ 壁描画: wallWX/Y/Zはグリッド中央X=0,下端Y=0の位置
+  const wm=wallModelMat(wallWX,wallWY,wallWZ,wallYaw,wallPitch,wallRoll);
 
   for(const view of pose.views){
     const vp=glLayer.getViewport(view);
@@ -707,21 +636,20 @@ function onXRFrame(t,frame){
     gl.uniformMatrix4fv(uM_,false,wm);
     gl.bindBuffer(gl.ARRAY_BUFFER,gridBuf);setAttr();
     gl.drawArrays(gl.LINES,0,(GW+1)*2+(GH+1)*2);
+
     const wd=wallVerts();
     if(wd.length>0){gl.bindBuffer(gl.ARRAY_BUFFER,wallBuf);gl.bufferData(gl.ARRAY_BUFFER,wd,gl.DYNAMIC_DRAW);setAttr();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);}
 
     if(isDetecting&&hitPos){
       const rd=reticleVerts(hitPos.x,hitPos.y,hitPos.z,.15);
       gl.uniformMatrix4fv(uM_,false,matId());
-      gl.bindBuffer(gl.ARRAY_BUFFER,retBuf);gl.bufferData(gl.ARRAY_BUFFER,rd,gl.DYNAMIC_DRAW);
-      setAttr();gl.drawArrays(gl.TRIANGLES,0,rd.length/7);
+      gl.bindBuffer(gl.ARRAY_BUFFER,retBuf);gl.bufferData(gl.ARRAY_BUFFER,rd,gl.DYNAMIC_DRAW);setAttr();gl.drawArrays(gl.TRIANGLES,0,rd.length/7);
     }
 
-    const km=koteMat(kQuat,kPos.x,kPos.y,kPos.z);
-    gl.uniformMatrix4fv(uM_,false,km);
+    // ★ 手のみ表示（コテ形状を削除）
+    const hm=handMat(kQuat,kPos.x,kPos.y,kPos.z);
+    gl.uniformMatrix4fv(uM_,false,hm);
     gl.bindBuffer(gl.ARRAY_BUFFER,handBuf);setAttr();gl.drawArrays(gl.TRIANGLES,0,HAND_TRIS);
-    gl.uniformMatrix4fv(uM_,false,km);
-    gl.bindBuffer(gl.ARRAY_BUFFER,koteBuf);setAttr();gl.drawArrays(gl.TRIANGLES,0,12);
   }
 }
 </script>
