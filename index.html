@@ -25,79 +25,88 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 #ar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;display:none;pointer-events:none;z-index:100;}
 
 /* 壁設定ウィンドウ */
-#wall-window{position:absolute;top:20px;left:20px;width:236px;pointer-events:auto;background:rgba(4,8,16,0.94);border:2px solid #00e5ff;border-radius:14px;overflow:hidden;box-shadow:0 0 24px rgba(0,229,255,0.3);}
-.ww-header{background:rgba(0,229,255,0.1);padding:10px 14px;border-bottom:1px solid rgba(0,229,255,0.2);}
-.ww-title{color:#00e5ff;font-size:10px;letter-spacing:3px;font-weight:bold;}
-.ww-body{padding:12px 14px;}
+#wall-window{position:absolute;top:16px;left:16px;width:240px;pointer-events:auto;background:rgba(2,6,14,0.96);border:2px solid #00e5ff;border-radius:14px;overflow:hidden;box-shadow:0 0 28px rgba(0,229,255,0.35);}
+.ww-hdr{background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(0,229,255,0.05));padding:10px 14px;border-bottom:1px solid rgba(0,229,255,0.25);}
+.ww-ttl{color:#00e5ff;font-size:10px;letter-spacing:3px;font-weight:bold;}
+.ww-body{padding:12px 14px;max-height:calc(100vh - 80px);overflow-y:auto;}
 .ww-sep{height:1px;background:rgba(0,229,255,0.15);margin:10px 0;}
 
-.op-status{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.03);border:1px solid #1e2a3a;margin-bottom:10px;}
+.op-box{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid #1e2a3a;margin-bottom:10px;}
 .op-row{display:flex;align-items:center;gap:7px;font-size:11px;}
-.op-dot{width:7px;height:7px;border-radius:50%;background:#1e2a3a;flex-shrink:0;transition:all 0.2s;}
-.op-dot.move{background:#00e5ff;box-shadow:0 0 5px #00e5ff;}
-.op-dot.rotate{background:#ff9900;box-shadow:0 0 5px #ff9900;}
-.op-dot.detect{background:#00ff88;box-shadow:0 0 5px #00ff88;}
-.op-lbl{color:#4a6a8a;font-size:11px;}.op-lbl.active{color:#fff;}
+.od{width:7px;height:7px;border-radius:50%;background:#1e2a3a;flex-shrink:0;transition:all 0.2s;}
+.od.move{background:#00e5ff;box-shadow:0 0 5px #00e5ff;}
+.od.rot{background:#ff9900;box-shadow:0 0 5px #ff9900;}
+.od.det{background:#00ff88;box-shadow:0 0 5px #00ff88;}
+.ol{color:#4a6a8a;font-size:11px;}.ol.on{color:#fff;}
 
-.ww-btn{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:9px 12px;cursor:pointer;width:100%;margin-bottom:6px;text-align:left;transition:all 0.15s;}
-.ww-btn.detect{background:#0d2040;border:1.5px solid #00e5ff;color:#00e5ff;}
-.ww-btn.detect.scanning{border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
-.ww-btn.lk{background:#0a1a0a;border:1.5px solid #00ff88;color:#00ff88;}
-.ww-btn.ulk{background:#1a1000;border:1.5px solid #ffcc00;color:#ffcc00;}
+.wb{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:9px 12px;cursor:pointer;width:100%;margin-bottom:6px;text-align:left;transition:all 0.15s;}
+.wb.det{background:#0d2040;border:1.5px solid #00e5ff;color:#00e5ff;}
+.wb.det.sc{border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
+.wb.lk{background:#0a1a0a;border:1.5px solid #00ff88;color:#00ff88;}
+.wb.ulk{background:#1a1000;border:1.5px solid #ffcc00;color:#ffcc00;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
 
-.orient-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
-.orient-btn{border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;transition:all 0.15s;}
-.orient-btn.vert{background:#100620;border:1.5px solid #aa44ff;color:#aa44ff;}
-.orient-btn.horiz{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
-.orient-btn.rst{background:#181006;border:1.5px solid #ff9900;color:#ff9900;}
-.orient-btn:active{opacity:0.6;}
+.dep-box{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.25);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.dep-ttl{color:#00e5ff;font-size:9px;letter-spacing:2px;margin-bottom:10px;}
+.dep-ctrl{display:flex;align-items:center;background:rgba(0,0,0,0.4);border:1.5px solid rgba(0,229,255,0.3);border-radius:10px;overflow:hidden;}
+.dep-btn{background:rgba(0,229,255,0.12);border:none;color:#00e5ff;font-size:22px;font-weight:bold;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;-webkit-user-select:none;}
+.dep-btn:active{background:rgba(0,229,255,0.3);}
+.dep-disp{flex:1;text-align:center;color:#fff;font-size:22px;font-weight:bold;line-height:44px;}
+.dep-unit{color:#4a6a8a;font-size:11px;text-align:center;margin-top:4px;}
+.dep-presets{display:flex;gap:4px;margin-top:8px;}
+.dep-pre{flex:1;border:none;border-radius:6px;font-size:11px;font-weight:bold;padding:6px 2px;cursor:pointer;text-align:center;}
+.dp1{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
+.dp2{background:#0a1808;border:1.5px solid #00ff88;color:#00ff88;}
+.dp3{background:#1a1000;border:1.5px solid #ff9900;color:#ff9900;}
 
-.rot-title{color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:6px;}
-.rot-axis{display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;}
-.rot-axis-lbl{color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;}
-.rot-axis-val{color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;}
-.rot-btn{background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;-webkit-user-select:none;}
-.rot-btn:active{background:rgba(255,153,0,0.35);}
+.sec-ttl{color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:6px;}
+.ori-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.ob{border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;}
+.ob.v{background:#100620;border:1.5px solid #aa44ff;color:#aa44ff;}
+.ob.h{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
+.ob.r{background:#181006;border:1.5px solid #ff9900;color:#ff9900;grid-column:1/-1;}
+.ob:active{opacity:0.6;}
 
-/* ★ 奥行き設定 */
-.depth-section{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:8px 10px;margin-bottom:8px;}
-.depth-title{color:#00e5ff;font-size:9px;letter-spacing:2px;margin-bottom:8px;}
-.depth-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
-.depth-lbl{color:#aac8e0;font-size:11px;flex:1;}
-.depth-val{color:#00e5ff;font-size:13px;font-weight:bold;min-width:42px;text-align:right;}
-input[type=range].dep{flex:1;accent-color:#00e5ff;}
-.depth-btns{display:flex;gap:4px;margin-top:4px;}
-.dep-btn{flex:1;border:none;border-radius:6px;font-size:11px;font-weight:bold;padding:6px 4px;cursor:pointer;text-align:center;}
-.dep-btn.thin{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
-.dep-btn.std{background:#0a1808;border:1.5px solid #00ff88;color:#00ff88;}
-.dep-btn.thick{background:#181206;border:1.5px solid #ff9900;color:#ff9900;}
+.ra{display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;}
+.ral{color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;}
+.rav{color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;}
+.rb{background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;-webkit-user-select:none;}
+.rb:active{background:rgba(255,153,0,0.35);}
 
-.s-title{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;}
-.s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
-.s-lbl{color:#aac8e0;font-size:11px;flex:1;}
+.st{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;}
+.sr2{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.sl{color:#aac8e0;font-size:11px;flex:1;}
 input[type=range].sm{width:80px;accent-color:#00e5ff;}
-.s-val{color:#fff;font-size:11px;font-weight:bold;min-width:34px;text-align:right;}
+.sv{color:#fff;font-size:11px;font-weight:bold;min-width:34px;text-align:right;}
 
-/* スコアHUD */
-#hud{position:absolute;top:20px;right:20px;pointer-events:none;width:230px;}
-.panel{background:rgba(4,8,16,0.92);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 0 16px rgba(0,229,255,0.2);}
-.ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
-.score-wrap{text-align:center;}
-.score-num{font-size:60px;font-weight:bold;line-height:1;}
-.score-grade{font-size:14px;letter-spacing:4px;margin-top:4px;}
-.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.lbl{color:#aac8e0;font-size:12px;}
-.val{font-size:20px;font-weight:bold;color:#fff;text-align:right;}
-.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:15px;}
-.bar-bg{width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:2px;}
+/* ★ スコアHUD — 常時表示、大きく見やすく */
+#hud{position:absolute;top:16px;right:16px;pointer-events:none;width:200px;}
+.panel{background:rgba(2,6,14,0.94);border:2px solid #00e5ff;border-radius:12px;padding:10px 14px;margin-bottom:8px;box-shadow:0 0 16px rgba(0,229,255,0.2);}
+.ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:6px;opacity:0.75;}
+
+/* ★ スコア大きく */
+.score-wrap{text-align:center;padding:4px 0;}
+.score-num{font-size:72px;font-weight:bold;line-height:1;}
+.score-grade{font-size:16px;letter-spacing:4px;margin-top:2px;}
+
+/* ★ アングルメーター */
+.angle-big{text-align:center;padding:4px 0;}
+.angle-num{font-size:40px;font-weight:bold;line-height:1;}
+.angle-lbl{font-size:10px;color:#4a6a8a;margin-top:2px;}
+.gwrap{position:relative;height:12px;border-radius:6px;overflow:hidden;margin-top:6px;}
+.gzones{display:flex;width:100%;height:100%;}
+.zb{flex:25;background:rgba(255,68,102,0.6);}.zw{flex:15;background:rgba(255,204,0,0.6);}.zg{flex:20;background:rgba(0,255,136,0.6);}
+.ndl{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
+
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.lbl{color:#aac8e0;font-size:11px;}
+.val{font-size:18px;font-weight:bold;color:#fff;text-align:right;}
+.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:14px;}
+.bar-bg{width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:2px;}
 .bar-fill{height:100%;border-radius:3px;transition:width 0.3s;}
-.gauge-wrap{position:relative;height:14px;border-radius:7px;overflow:hidden;margin-top:4px;}
-.gauge-zones{display:flex;width:100%;height:100%;}
-.z-bad{flex:25;background:rgba(255,68,102,0.55);}.z-warn{flex:15;background:rgba(255,204,0,0.55);}.z-good{flex:20;background:rgba(0,255,136,0.55);}
-.needle{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 4px #fff;}
 
-#paint-reset-btn{position:absolute;bottom:20px;left:20px;pointer-events:auto;background:rgba(4,8,16,0.9);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
+#prb{position:absolute;bottom:16px;left:16px;pointer-events:auto;background:rgba(2,6,14,0.92);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
+
 #phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
 .ps-score{font-size:120px;font-weight:bold;line-height:1;}
 .ps-grade{font-size:28px;letter-spacing:6px;}
@@ -114,7 +123,7 @@ canvas{display:block;}
 
 <div id="ui">
   <h1>左官AR TRAINER</h1>
-  <p>右手: コテ塗り / 左手トリガー: 壁移動 / 左手グリップ: 壁回転</p>
+  <p>右手: コテ塗り / 左手トリガー: 移動 / 左手グリップ: 回転</p>
   <div class="card">
     <div class="card-title">スコア基準設定</div>
     <div class="set-row"><span class="set-label">目標角度</span><input type="range" id="cfg-angle" min="10" max="70" value="35"><span class="set-val" id="cfg-angle-val">35°</span></div>
@@ -128,100 +137,94 @@ canvas{display:block;}
 </div>
 
 <div id="ar-overlay">
+  <!-- 壁設定ウィンドウ -->
   <div id="wall-window">
-    <div class="ww-header"><span class="ww-title">🧱 壁設定ウィンドウ</span></div>
+    <div class="ww-hdr"><span class="ww-ttl">🧱 壁設定</span></div>
     <div class="ww-body">
+      <div class="op-box">
+        <div class="op-row"><div class="od" id="dm"></div><span class="ol" id="lm">左トリガー → 移動</span></div>
+        <div class="op-row"><div class="od" id="dr"></div><span class="ol" id="lr">左グリップ → 回転</span></div>
+        <div class="op-row"><div class="od" id="dd"></div><span class="ol" id="ld">右トリガー → スナップ</span></div>
+      </div>
+      <button class="wb det" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
+      <button class="wb lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
+      <div class="ww-sep"></div>
 
 ```
-  <div class="op-status">
-    <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー → 移動</span></div>
-    <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ → 回転</span></div>
-    <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー → スナップ</span></div>
-  </div>
-
-  <button class="ww-btn detect" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
-  <button class="ww-btn lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
-
-  <div class="ww-sep"></div>
-
-  <!-- ★ 奥行き設定 -->
-  <div class="depth-section">
-    <div class="depth-title">塗り壁の奥行き（厚み表示）</div>
-    <div class="depth-row">
-      <span class="depth-lbl">奥行き</span>
-      <input type="range" class="dep" id="dep-slider" min="1" max="30" value="8" step="1">
-      <span class="depth-val" id="dep-val">8mm</span>
+  <!-- 奥行き -->
+  <div class="dep-box">
+    <div class="dep-ttl">コテ当たり判定の奥行き</div>
+    <div class="dep-ctrl">
+      <button class="dep-btn" ontouchstart="chDep(-1)" onmousedown="chDep(-1)">−</button>
+      <div class="dep-disp" id="dep-disp">50</div>
+      <button class="dep-btn" ontouchstart="chDep(1)" onmousedown="chDep(1)">＋</button>
     </div>
-    <div class="depth-btns">
-      <button class="dep-btn thin" onclick="setDepth(5)">薄 5mm</button>
-      <button class="dep-btn std"  onclick="setDepth(12)">標準 12mm</button>
-      <button class="dep-btn thick" onclick="setDepth(20)">厚 20mm</button>
+    <div class="dep-unit">mm</div>
+    <div class="dep-presets">
+      <button class="dep-pre dp1" onclick="setDep(20)">20mm</button>
+      <button class="dep-pre dp2" onclick="setDep(50)">50mm</button>
+      <button class="dep-pre dp3" onclick="setDep(100)">100mm</button>
     </div>
   </div>
 
   <!-- 向き -->
-  <div class="rot-title">壁の向き</div>
-  <div class="orient-grid">
-    <button class="orient-btn vert"  onclick="setOri('vertical')">🔲 垂直</button>
-    <button class="orient-btn horiz" onclick="setOri('horizontal')">⬜ 水平</button>
-    <button class="orient-btn rst" style="grid-column:1/-1" onclick="resetRot()">↺ 回転リセット</button>
+  <div class="sec-ttl">向き</div>
+  <div class="ori-grid">
+    <button class="ob v" onclick="setOri('v')">🔲 垂直</button>
+    <button class="ob h" onclick="setOri('h')">⬜ 水平</button>
+    <button class="ob r" onclick="resetRot()">↺ 回転リセット</button>
   </div>
-
-  <!-- 微調整 -->
-  <div class="rot-title">微調整 (1°)</div>
-  <div class="rot-axis">
-    <span class="rot-axis-lbl">Y</span>
-    <button class="rot-btn" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button>
-    <span class="rot-axis-val" id="ry">0°</span>
-    <button class="rot-btn" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button>
-  </div>
-  <div class="rot-axis">
-    <span class="rot-axis-lbl">X</span>
-    <button class="rot-btn" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button>
-    <span class="rot-axis-val" id="rx">0°</span>
-    <button class="rot-btn" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button>
-  </div>
-  <div class="rot-axis">
-    <span class="rot-axis-lbl">Z</span>
-    <button class="rot-btn" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button>
-    <span class="rot-axis-val" id="rz">0°</span>
-    <button class="rot-btn" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button>
-  </div>
-
+  <div class="sec-ttl">微調整 (1°)</div>
+  <div class="ra"><span class="ral">Y</span><button class="rb" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button><span class="rav" id="ry">0°</span><button class="rb" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button></div>
+  <div class="ra"><span class="ral">X</span><button class="rb" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button><span class="rav" id="rx">0°</span><button class="rb" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button></div>
+  <div class="ra"><span class="ral">Z</span><button class="rb" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button><span class="rav" id="rz">0°</span><button class="rb" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button></div>
   <div class="ww-sep"></div>
-  <div class="s-title">スコア基準</div>
-  <div class="s-row"><span class="s-lbl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="s-val" id="ss-angle-val">35°</span></div>
-  <div class="s-row"><span class="s-lbl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="s-val" id="ss-tol-val">±5°</span></div>
-  <div class="s-row"><span class="s-lbl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="s-val" id="ss-thick-val">8mm</span></div>
-  <div class="s-row"><span class="s-lbl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="s-val" id="ss-thick-tol-val">±2mm</span></div>
+  <div class="st">スコア基準</div>
+  <div class="sr2"><span class="sl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="sv" id="ss-angle-val">35°</span></div>
+  <div class="sr2"><span class="sl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="sv" id="ss-tol-val">±5°</span></div>
+  <div class="sr2"><span class="sl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="sv" id="ss-thick-val">8mm</span></div>
+  <div class="sr2"><span class="sl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="sv" id="ss-thick-tol-val">±2mm</span></div>
 </div>
 ```
 
   </div>
 
+  <!-- ★ スコアHUD — 常時AR内表示 -->
+
   <div id="hud">
+    <!-- 総合スコア -->
     <div class="panel">
       <div class="ptitle">総合スコア</div>
-      <div class="score-wrap"><div class="score-num" id="h-score">0</div><div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div></div>
+      <div class="score-wrap">
+        <div class="score-num" id="h-score">0</div>
+        <div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div>
+      </div>
     </div>
+    <!-- 角度 -->
     <div class="panel">
       <div class="ptitle">コテ角度</div>
-      <div class="row"><span class="lbl">現在</span><span class="val" id="h-angle">--°</span></div>
-      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-angle">35°±5°</span></div>
-      <div class="gauge-wrap"><div class="gauge-zones"><div class="z-bad"></div><div class="z-warn"></div><div class="z-good"></div><div class="z-warn"></div><div class="z-bad"></div></div><div class="needle" id="h-needle" style="left:50%"></div></div>
+      <div class="angle-big">
+        <div class="angle-num" id="h-angle">--°</div>
+        <div class="angle-lbl" id="h-ta">目標 35°±5°</div>
+      </div>
+      <div class="gwrap">
+        <div class="gzones"><div class="zb"></div><div class="zw"></div><div class="zg"></div><div class="zw"></div><div class="zb"></div></div>
+        <div class="ndl" id="h-ndl" style="left:50%"></div>
+      </div>
       <div class="row" style="margin-top:8px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
-      <div class="bar-bg"><div class="bar-fill" id="h-blur-bar" style="width:0%;background:#00ff88"></div></div>
+      <div class="bar-bg"><div class="bar-fill" id="h-bbar" style="width:0%;background:#00ff88"></div></div>
     </div>
+    <!-- 詳細 -->
     <div class="panel">
       <div class="row"><span class="lbl">カバレッジ</span><span class="val" id="h-cover">0%</span></div>
-      <div class="bar-bg"><div class="bar-fill" id="h-cover-bar" style="width:0%;background:#00e5ff"></div></div>
+      <div class="bar-bg"><div class="bar-fill" id="h-cbar" style="width:0%;background:#00e5ff"></div></div>
       <div class="row" style="margin-top:8px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0mm</span></div>
-      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-thick">8mm±2mm</span></div>
+      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-tt">8±2mm</span></div>
       <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
     </div>
   </div>
 
-<button id="paint-reset-btn" onclick="clearPaint()">🗑 塗りリセット</button>
+<button id="prb" onclick="clrP()">🗑 塗りリセット</button>
 
 </div>
 
@@ -239,10 +242,8 @@ canvas{display:block;}
 <canvas id="c"></canvas>
 
 <script>
-// CONFIG
 let CFG={angle:35,tol:5,thick:8,thickTol:2};
-// ★ 奥行き設定 (mm): グリッドの塗り判定に使うペイントゾーンの厚み
-let WALL_DEPTH=8; // mm
+let DEPTH=50;
 
 function bS(mId,sId,k,sfx){
   const me=document.getElementById(mId),mv=document.getElementById(mId+'-val');
@@ -251,40 +252,23 @@ function bS(mId,sId,k,sfx){
   me.addEventListener('input',()=>u(+me.value));se.addEventListener('input',()=>u(+se.value));
 }
 bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cfg-thick','ss-thick','thick','mm');bS('cfg-thick-tol','ss-thick-tol','thickTol','mm');
-function rT(){document.getElementById('h-target-angle').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-target-thick').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
+function rT(){document.getElementById('h-ta').textContent='目標 '+CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'±'+CFG.thickTol+'mm';}
 
-// ★ 奥行きスライダー
-document.getElementById('dep-slider').addEventListener('input',function(){
-  WALL_DEPTH=+this.value;
-  document.getElementById('dep-val').textContent=WALL_DEPTH+'mm';
-});
-function setDepth(v){
-  WALL_DEPTH=v;
-  document.getElementById('dep-slider').value=v;
-  document.getElementById('dep-val').textContent=v+'mm';
-}
+function chDep(d){DEPTH=Math.max(5,Math.min(200,DEPTH+d));document.getElementById('dep-disp').textContent=DEPTH;}
+function setDep(v){DEPTH=v;document.getElementById('dep-disp').textContent=v;}
+function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else if(t==='h'){wY=0;wP=-Math.PI/2;wR=0;}uRot();}
+function resetRot(){wY=0;wP=0;wR=0;uRot();}
 
-// ORIENTATION
-function setOri(t){
-  const PI=Math.PI;
-  if(t==='vertical'){wY=0;wP=0;wR=0;}
-  else if(t==='horizontal'){wY=0;wP=-PI/2;wR=0;}
-  updRot();
-}
-function resetRot(){wY=0;wP=0;wR=0;updRot();}
-
-// ROTATION FINE TUNE
 const D2R=Math.PI/180;
 let rpt=null,rpi=null;
 function sr(ax,sg){adj(ax,sg);rpt=setTimeout(()=>{rpi=setInterval(()=>adj(ax,sg),80);},400);}
-function stopR(){clearTimeout(rpt);clearInterval(rpi);rpt=null;rpi=null;}
-function adj(ax,sg){if(ax==='Y')wY+=sg*D2R;if(ax==='X')wP+=sg*D2R;if(ax==='Z')wR+=sg*D2R;updRot();}
-function updRot(){
+function stopR(){clearTimeout(rpt);clearInterval(rpi);}
+function adj(ax,sg){if(ax==='Y')wY+=sg*D2R;if(ax==='X')wP+=sg*D2R;if(ax==='Z')wR+=sg*D2R;uRot();}
+function uRot(){
   function f(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
   document.getElementById('ry').textContent=f(wY);document.getElementById('rx').textContent=f(wP);document.getElementById('rz').textContent=f(wR);
 }
 
-// PHONE SCORE
 let pT=null;
 document.getElementById('btn-phone').addEventListener('click',()=>{document.getElementById('ui').style.display='none';document.getElementById('phone-score').style.display='flex';pT=setInterval(rfP,500);});
 document.getElementById('ps-back').addEventListener('click',()=>{clearInterval(pT);document.getElementById('phone-score').style.display='none';document.getElementById('ui').style.display='flex';});
@@ -298,7 +282,7 @@ function rfP(){
   document.getElementById('ps-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
-// WEBGL
+// WebGL
 const canvas=document.getElementById('c');
 canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 let gl=canvas.getContext('webgl2',{xrCompatible:true,alpha:true});
@@ -316,17 +300,19 @@ const ST=28;
 function sA(){gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);}
 function mkB(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW);return b;}
 
-// MATRICES
 function mId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
 function mm(A,B){const R=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}return R;}
-function eM(y,p,r){
+function eMf(y,p,r){
   const cy=Math.cos(y),sy=Math.sin(y),cx=Math.cos(p),sx=Math.sin(p),cz=Math.cos(r),sz=Math.sin(r);
-  return mm(new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]),mm(new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]),new Float32Array([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1])));
+  const Ry=new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]);
+  const Rx=new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]);
+  const Rz=new Float32Array([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1]);
+  return mm(Ry,mm(Rx,Rz));
 }
-function wMM(cx,cy,cz,y,p,r){const R=eM(y,p,r);R[12]=cx;R[13]=cy;R[14]=cz;return R;}
+function wMM(cx,cy,cz,y,p,r){const R=eMf(y,p,r);R[12]=cx;R[13]=cy;R[14]=cz;return R;}
 function w2L(wx,wy,wz){
   const dx=wx-wX,dy=wy-wWY,dz=wz-wZ;
-  const R=eM(wY,wP,wR);
+  const R=eMf(wY,wP,wR);
   return{x:R[0]*dx+R[1]*dy+R[2]*dz,y:R[4]*dx+R[5]*dy+R[6]*dz,z:R[8]*dx+R[9]*dy+R[10]*dz};
 }
 function qdE(qs,qc){
@@ -336,48 +322,70 @@ function qdE(qs,qc){
   return{pitch:Math.asin(Math.max(-1,Math.min(1,2*(d.w*d.x-d.y*d.z)))),yaw:Math.atan2(2*(d.w*d.y+d.x*d.z),1-2*(d.y*d.y+d.x*d.x)),roll:Math.atan2(2*(d.w*d.z+d.x*d.y),1-2*(d.z*d.z+d.x*d.x))};
 }
 
-// GRID & PAINT
 const GW=20,GH=14,CELL=0.07;
 const thick=new Float32Array(GW*GH);
 const angLog=[];let strokes=0,wasPaint=false;
-function clearPaint(){thick.fill(0);angLog.length=0;strokes=0;wasPaint=false;}
+function clrP(){thick.fill(0);angLog.length=0;strokes=0;wasPaint=false;}
 
+// ★ 塗りマス: グリッドは完全フラット、赤マスのみ奥に凹む
 function wallV(){
   const v=[];
+  const tgtM=CFG.thick/1000;
+  const TOO_THICK_RATIO=1.15; // これ以上は赤(凹み)
+  const maxSink=0.015; // 最大凹み量(m) = 15mm
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
     const t=thick[gy*GW+gx];if(!t)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003,y0=gy*CELL,y1=y0+CELL-0.003;
-    const ratio=t/(CFG.thick/1000);
-    let r,g,b;
-    if(ratio<0.85){r=0.1;g=0.4;b=1.0;}else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}else{r=1.0;g=0.4;b=0.1;}
-    const a=Math.min(0.88,ratio*0.5+0.3);
-    // ★ 奥行きに応じてZ方向に押し出した3D表示
-    const depth=WALL_DEPTH/1000; // mm→m
-    // 前面
-    v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
-    // 奥面 (少し暗め)
-    const da=a*0.65;
-    v.push(x0,y0,depth,r*0.6,g*0.6,b*0.6,da,x0,y1,depth,r*0.6,g*0.6,b*0.6,da,x1,y0,depth,r*0.6,g*0.6,b*0.6,da,
-           x1,y0,depth,r*0.6,g*0.6,b*0.6,da,x0,y1,depth,r*0.6,g*0.6,b*0.6,da,x1,y1,depth,r*0.6,g*0.6,b*0.6,da);
-    // 上面
-    v.push(x0,y1,0,r*0.75,g*0.75,b*0.75,a,x0,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8,x1,y1,0,r*0.75,g*0.75,b*0.75,a,
-           x1,y1,0,r*0.75,g*0.75,b*0.75,a,x0,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8,x1,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8);
+    const ratio=t/tgtM;
+    let r,g,b,a;
+    let zOffset=0; // Z方向オフセット (正=壁面から浮く, 負=凹む)
+    if(ratio<0.85){
+      // 薄: 青
+      r=0.1;g=0.4;b=1.0;a=Math.min(0.85,ratio*0.6+0.25);
+      zOffset=0;
+    } else if(ratio<TOO_THICK_RATIO){
+      // 適正: 緑
+      r=0.0;g=1.0;b=0.5;a=0.85;
+      zOffset=0;
+    } else {
+      // ★ 厚すぎ: 赤 → 奥に凹む
+      r=1.0;g=0.15;b=0.1;a=0.90;
+      // 塗りすぎるほど深く凹む (最大15mm)
+      const excess=Math.min(ratio-TOO_THICK_RATIO,1.0);
+      zOffset=-(excess*maxSink); // マイナス=壁面奥へ
+    }
+    // フラットな四角形 (Z=zOffset)
+    const z=zOffset;
+    v.push(
+      x0,y0,z,r,g,b,a, x1,y0,z,r,g,b,a, x0,y1,z,r,g,b,a,
+      x1,y0,z,r,g,b,a, x1,y1,z,r,g,b,a, x0,y1,z,r,g,b,a
+    );
+    // 凹みがある場合、縁を暗くして凹み感を演出
+    if(zOffset<0){
+      const ea=0.5,er=0.6,eg=0.05,eb=0.05;
+      // 上縁
+      v.push(x0,y1,0,er,eg,eb,ea, x0,y1,z,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea,
+             x1,y1,0,er,eg,eb,ea, x0,y1,z,er,eg,eb,ea, x1,y1,z,er,eg,eb,ea);
+      // 右縁
+      v.push(x1,y0,0,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea, x1,y0,z,er,eg,eb,ea,
+             x1,y0,z,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea, x1,y1,z,er,eg,eb,ea);
+    }
   }
   return new Float32Array(v);
 }
 
+// グリッド線 (外枠シアン + 内側白)
 function gridV(){
   const v=[];
   const bx=-(GW/2)*CELL,ex=(GW/2)*CELL,by=0,ey=GH*CELL;
-  const[br,bg,bb,ba]=[0.0,0.95,1.0,1.0];
-  v.push(bx,by,0,br,bg,bb,ba,ex,by,0,br,bg,bb,ba,ex,by,0,br,bg,bb,ba,ex,ey,0,br,bg,bb,ba,ex,ey,0,br,bg,bb,ba,bx,ey,0,br,bg,bb,ba,bx,ey,0,br,bg,bb,ba,bx,by,0,br,bg,bb,ba);
-  const[gr,gg,gb,ga]=[1.0,1.0,1.0,0.7];
-  for(let x=1;x<GW;x++){const px=(x-GW/2)*CELL;v.push(px,0,0,gr,gg,gb,ga,px,GH*CELL,0,gr,gg,gb,ga);}
-  for(let y=1;y<GH;y++){const py=y*CELL;v.push(-(GW/2)*CELL,py,0,gr,gg,gb,ga,(GW/2)*CELL,py,0,gr,gg,gb,ga);}
+  v.push(bx,by,0,0,.95,1,1,ex,by,0,0,.95,1,1,ex,by,0,0,.95,1,1,ex,ey,0,0,.95,1,1,ex,ey,0,0,.95,1,1,bx,ey,0,0,.95,1,1,bx,ey,0,0,.95,1,1,bx,by,0,0,.95,1,1);
+  for(let x=1;x<GW;x++){const px=(x-GW/2)*CELL;v.push(px,0,0,1,1,1,.7,px,GH*CELL,0,1,1,1,.7);}
+  for(let y=1;y<GH;y++){const py=y*CELL;v.push(-(GW/2)*CELL,py,0,1,1,1,.7,(GW/2)*CELL,py,0,1,1,1,.7);}
   return new Float32Array(v);
 }
 function retV(cx,cy,cz,rad){
-  const v=[],seg=24;for(let i=0;i<seg;i++){const a0=(i/seg)*Math.PI*2,a1=((i+1)/seg)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.9,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.9,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.9);}
+  const v=[],seg=24;
+  for(let i=0;i<seg;i++){const a0=(i/seg)*Math.PI*2,a1=((i+1)/seg)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.9,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.9,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.9);}
   return new Float32Array(v);
 }
 
@@ -385,7 +393,6 @@ const gBuf=mkB(gridV());
 const wBuf=mkB(new Float32Array(0),gl.DYNAMIC_DRAW);
 const rBuf=mkB(new Float32Array(24*3*7),gl.DYNAMIC_DRAW);
 
-// SCORE
 function calcS(){
   let cov=0,ts=0;for(let i=0;i<thick.length;i++)if(thick[i]>0){cov++;ts+=thick[i];}
   const coverage=cov/thick.length,avg=cov>0?ts/cov:0,tgtM=CFG.thick/1000,tolM=CFG.thickTol/1000;
@@ -398,14 +405,16 @@ function updHUD(ang){
   lastAng=ang;const s=calcS();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
   const[,g,gc]=gs.find(([m])=>s.total>=m);
+  // スコア
   document.getElementById('h-score').textContent=s.total;document.getElementById('h-score').style.color=gc;
   const ge=document.getElementById('h-grade');ge.textContent='--- GRADE '+g+' ---';ge.style.color=gc;
+  // 角度
   const diff=Math.abs(ang-CFG.angle);
-  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='val '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
-  document.getElementById('h-needle').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
+  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='angle-num '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
+  document.getElementById('h-ndl').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
   const bp=Math.round(s.blur*100);const be=document.getElementById('h-blur');be.textContent=bp+'%';be.className='val '+(bp<20?'good':bp<40?'warn':'bad');
-  const bb=document.getElementById('h-blur-bar');bb.style.width=bp+'%';bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
-  const cp=Math.round(s.coverage*100);document.getElementById('h-cover').textContent=cp+'%';document.getElementById('h-cover-bar').style.width=cp+'%';
+  const bb=document.getElementById('h-bbar');bb.style.width=bp+'%';bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
+  const cp=Math.round(s.coverage*100);document.getElementById('h-cover').textContent=cp+'%';document.getElementById('h-cbar').style.width=cp+'%';
   document.getElementById('h-strokes').textContent=strokes+'回';document.getElementById('h-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
@@ -420,13 +429,15 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
-    const opts=arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}:{requiredFeatures:['local-floor']};
+    const opts=arOk
+      ?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}
+      :{requiredFeatures:['local-floor']};
     xrSess=await navigator.xr.requestSession(mode,opts);
     glLay=new XRWebGLLayer(xrSess,gl,{alpha:true});
     xrSess.updateRenderState({baseLayer:glLay});
     xrRef=await xrSess.requestReferenceSpace('local-floor');
     wX=0;wWY=0.8;wZ=-0.6;wY=0;wP=0;wR=0;
-    locked=true;clearPaint();rT();updRot();
+    locked=true;clrP();rT();uRot();
     document.getElementById('ui').style.display='none';
     document.getElementById('ar-overlay').style.display='block';
     updLock();
@@ -436,8 +447,8 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
 });
 
 function toggleLock(){locked=!locked;updLock();}
-function updLock(){const btn=document.getElementById('btn-lock');btn.textContent=locked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';btn.className=locked?'ww-btn lk':'ww-btn ulk';}
-function sOD(t,a){document.getElementById('dot-'+t).className='op-dot'+(a?' '+t:'');document.getElementById('lbl-'+t).className='op-lbl'+(a?' active':'');}
+function updLock(){const b=document.getElementById('btn-lock');b.textContent=locked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';b.className=locked?'wb lk':'wb ulk';}
+function sOD(t,a){document.getElementById('d'+t).className='od'+(a?' '+t:'');document.getElementById('l'+t).className='ol'+(a?' on':'');}
 
 async function startDetect(){
   if(!xrSess)return;if(detecting){stopDet();return;}
@@ -446,12 +457,11 @@ async function startDetect(){
     xrHit=await xrSess.requestHitTestSource({space:vs});
     detecting=true;locked=false;updLock();
     document.getElementById('btn-detect').textContent='✓ 検出中 — 右トリガーでスナップ';
-    document.getElementById('btn-detect').classList.add('scanning');sOD('detect',true);
+    document.getElementById('btn-detect').classList.add('sc');sOD('d',true);
   }catch(e){document.getElementById('btn-detect').textContent='⚠ ARが必要です';setTimeout(()=>document.getElementById('btn-detect').textContent='🔍 壁を自動検出',2000);}
 }
-function stopDet(){if(xrHit){xrHit.cancel();xrHit=null;}detecting=false;document.getElementById('btn-detect').textContent='🔍 壁を自動検出';document.getElementById('btn-detect').classList.remove('scanning');sOD('detect',false);}
+function stopDet(){if(xrHit){xrHit.cancel();xrHit=null;}detecting=false;document.getElementById('btn-detect').textContent='🔍 壁を自動検出';document.getElementById('btn-detect').classList.remove('sc');sOD('d',false);}
 
-// WALL STATE
 let wX=0,wWY=0.8,wZ=-0.6,wY=0,wP=0,wR=0;
 let grab=false,gOX=0,gOY=0,gOZ=0;
 let rot=false,rSQ={x:0,y:0,z:0,w:1},rSY=0,rSP=0,rSR=0;
@@ -476,62 +486,52 @@ function xrF(t,frame){
     const gr=src.gamepad?.buttons[1]?.value??0;
 
     if(src.handedness==='right'){
-      // ★ コテ角度: グリップ前方向と壁面法線の角度を正しく計算
-      // Quest3グリップ: +Z = コントローラー後方, -Z = 前方
-      // 前方ベクトル = rotate(0,0,-1) by q
       const fwdX=2*(q.x*q.z+q.w*q.y);
       const fwdY=2*(q.y*q.z-q.w*q.x);
       const fwdZ=-(1-2*(q.x*q.x+q.y*q.y));
-      // 壁法線はローカルZ方向 = eM(wY,wP,wR)の第3列
-      const R=eM(wY,wP,wR);
-      const nX=R[8],nY=R[9],nZ=R[10];
-      // 前方ベクトルと壁法線の内積 → 角度
-      const dot=fwdX*nX+fwdY*nY+fwdZ*nZ;
-      const ang=Math.acos(Math.max(-1,Math.min(1,Math.abs(dot))))*180/Math.PI;
-      curA=Math.min(90,Math.max(0,ang));
+      const R=eMf(wY,wP,wR);
+      const dot=fwdX*R[8]+fwdY*R[9]+fwdZ*R[10];
+      curA=Math.acos(Math.max(-1,Math.min(1,Math.abs(dot))))*180/Math.PI;
 
       if(!detecting){
-        // ★ 奥行きをWALL_DEPTHから計算
-        const PD=WALL_DEPTH/1000;
+        const PD=DEPTH/1000;
         const L=w2L(p.x,p.y,p.z);
         if(Math.abs(L.z)<PD){
           if(!wasPaint){strokes++;wasPaint=true;}
           angLog.push(curA);if(angLog.length>2000)angLog.shift();
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
           const pr=Math.max(0,1-Math.abs(L.z)/PD);
-          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=gx+dx,ny=gy+dy;if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pr*0.0005);}
+          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+            const nx=gx+dx,ny=gy+dy;
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.0005);
+          }
         }else wasPaint=false;
       }
       if(detecting&&tr>0.5&&hitPos){
         wX=hitPos.x;wWY=hitPos.y;wZ=hitPos.z;
         const q2={x:hitPos.qx,y:hitPos.qy,z:hitPos.qz,w:hitPos.qw};
         wY=Math.atan2(2*(q2.w*q2.y+q2.x*q2.z),1-2*(q2.y*q2.y+q2.x*q2.x));
-        wP=0;wR=0;updRot();locked=true;updLock();stopDet();clearPaint();
+        wP=0;wR=0;uRot();locked=true;updLock();stopDet();clrP();
       }
     }
     if(src.handedness==='left'&&!locked){
-      if(tr>0.5){if(!grab){grab=true;gOX=wX-p.x;gOY=wWY-p.y;gOZ=wZ-p.z;sOD('move',true);}else{wX=p.x+gOX;wWY=p.y+gOY;wZ=p.z+gOZ;}}else{if(grab){grab=false;sOD('move',false);}}
-      if(gr>0.5){if(!rot){rot=true;rSQ={x:q.x,y:q.y,z:q.z,w:q.w};rSY=wY;rSP=wP;rSR=wR;sOD('rotate',true);}else{const d=qdE(rSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wY=rSY+d.yaw;wP=rSP+d.pitch;wR=rSR+d.roll;}}else{if(rot){rot=false;sOD('rotate',false);}}
+      if(tr>0.5){if(!grab){grab=true;gOX=wX-p.x;gOY=wWY-p.y;gOZ=wZ-p.z;sOD('m',true);}else{wX=p.x+gOX;wWY=p.y+gOY;wZ=p.z+gOZ;}}else{if(grab){grab=false;sOD('m',false);}}
+      if(gr>0.5){if(!rot){rot=true;rSQ={x:q.x,y:q.y,z:q.z,w:q.w};rSY=wY;rSP=wP;rSR=wR;sOD('r',true);}else{const d=qdE(rSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wY=rSY+d.yaw;wP=rSP+d.pitch;wR=rSR+d.roll;}}else{if(rot){rot=false;sOD('r',false);}}
     }
   }
 
-  if(fc%20===0){updHUD(curA);updRot();}
+  if(fc%20===0){updHUD(curA);uRot();}
 
   const wm=wMM(wX,wWY,wZ,wY,wP,wR);
-
   for(const view of pose.views){
     const vp=glLay.getViewport(view);
     gl.viewport(vp.x,vp.y,vp.width,vp.height);
     gl.uniformMatrix4fv(uP_,false,view.projectionMatrix);
     gl.uniformMatrix4fv(uV_,false,view.transform.inverse.matrix);
-
     gl.uniformMatrix4fv(uM_,false,wm);
-    gl.bindBuffer(gl.ARRAY_BUFFER,gBuf);sA();
-    const gv=gridV();gl.drawArrays(gl.LINES,0,gv.length/7);
-
+    gl.bindBuffer(gl.ARRAY_BUFFER,gBuf);sA();gl.drawArrays(gl.LINES,0,gridV().length/7);
     const wd=wallV();
     if(wd.length>0){gl.bindBuffer(gl.ARRAY_BUFFER,wBuf);gl.bufferData(gl.ARRAY_BUFFER,wd,gl.DYNAMIC_DRAW);sA();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);}
-
     if(detecting&&hitPos){
       const rd=retV(hitPos.x,hitPos.y,hitPos.z,.15);
       gl.uniformMatrix4fv(uM_,false,mId());
