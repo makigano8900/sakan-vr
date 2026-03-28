@@ -423,13 +423,17 @@ function wallV(){
       // ★ 厚塗り(赤): グリッドマスが奥に凹む
       // 壁ローカル座標でZ+ = 壁の奥方向
       const over = ratio - 1.15;
-      // Z-方向(壁の奥)に凹む。負値にすることで壁の奥側に押し込む
-      const dz = -Math.min(over * 0.15, 0.18); // 最大18cm凹む(負値=奥)
+      // 凹み深さ: 壁面から内側(カメラから遠ざかる)方向
+      // 壁のローカル座標でZ=0が壁面、凹みはZ値をマイナスに
+      const dz = Math.min(over * 0.15, 0.18);
+      // 実際の凹み方向: カメラは壁のZ+側から見ているので
+      // 凹みはZ-方向 = dzを負で渡す
+      const dzFinal = -dz;
 
       // 凹んだ底面 (暗くして穴感を出す)
       const dr=r*0.4, dg=g*0.4, db=b*0.4, da=a*0.85;
-      v.push(x0,y0,dz,dr,dg,db,da,x1,y0,dz,dr,dg,db,da,x0,y1,dz,dr,dg,db,da,
-             x1,y0,dz,dr,dg,db,da,x1,y1,dz,dr,dg,db,da,x0,y1,dz,dr,dg,db,da);
+      v.push(x0,y0,dzFinal,dr,dg,db,da,x1,y0,dzFinal,dr,dg,db,da,x0,y1,dzFinal,dr,dg,db,da,
+             x1,y0,dzFinal,dr,dg,db,da,x1,y1,dzFinal,dr,dg,db,da,x0,y1,dzFinal,dr,dg,db,da);
 
       // 凹みの縁（手前の枠） - 穴の入口を縁取り
       const er=1.0,eg=0.3,eb=0.1,ea=0.9; // 濃いオレンジで縁
@@ -450,17 +454,17 @@ function wallV(){
       // 側面: 穴の内壁 (グラデーション)
       const w1=r*0.6,w2=g*0.6,w3=b*0.6,wa=a*0.7;
       // 下内壁
-      v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y0,dz,w1,w2,w3,wa,
-             x1,y0,0,r,g,b,a,x1,y0,dz,w1,w2,w3,wa,x0,y0,dz,w1,w2,w3,wa);
+      v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y0,dzFinal,w1,w2,w3,wa,
+             x1,y0,0,r,g,b,a,x1,y0,dzFinal,w1,w2,w3,wa,x0,y0,dzFinal,w1,w2,w3,wa);
       // 上内壁
-      v.push(x0,y1,dz,w1,w2,w3,wa,x1,y1,dz,w1,w2,w3,wa,x0,y1,0,r,g,b,a,
-             x1,y1,dz,w1,w2,w3,wa,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
+      v.push(x0,y1,dzFinal,w1,w2,w3,wa,x1,y1,dzFinal,w1,w2,w3,wa,x0,y1,0,r,g,b,a,
+             x1,y1,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
       // 左内壁
-      v.push(x0,y0,dz,w1,w2,w3,wa,x0,y0,0,r,g,b,a,x0,y1,dz,w1,w2,w3,wa,
-             x0,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x0,y1,dz,w1,w2,w3,wa);
+      v.push(x0,y0,dzFinal,w1,w2,w3,wa,x0,y0,0,r,g,b,a,x0,y1,dzFinal,w1,w2,w3,wa,
+             x0,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x0,y1,dzFinal,w1,w2,w3,wa);
       // 右内壁
-      v.push(x1,y0,0,r,g,b,a,x1,y0,dz,w1,w2,w3,wa,x1,y1,0,r,g,b,a,
-             x1,y0,dz,w1,w2,w3,wa,x1,y1,dz,w1,w2,w3,wa,x1,y1,0,r,g,b,a);
+      v.push(x1,y0,0,r,g,b,a,x1,y0,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a,
+             x1,y0,dzFinal,w1,w2,w3,wa,x1,y1,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a);
     }
   }
   return new Float32Array(v);
