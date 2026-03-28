@@ -411,18 +411,18 @@ function wallV(){
     const ratio=t/tgtM;
     let r,g,b;
     if(ratio<0.85){r=0.1;g=0.4;b=1.0;}
-    else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}
+    else if(ratio<2.0){r=0.0;g=1.0;b=0.5;}
     else{r=1.0;g=0.4;b=0.1;}
     const a=Math.min(0.88,ratio*0.5+0.3);
 
-    if(ratio<=1.15){
+    if(ratio<2.0){
       // 通常・薄塗り: フラット (Z=0)
       v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,
              x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
     } else {
-      // ★ 厚塗り(赤): グリッドマスが奥に凹む
+      // ★ 厚塗り(赤=目標2倍以上): グリッドマスが奥に凹む
       // 壁ローカル座標でZ+ = 壁の奥方向
-      const over = ratio - 1.15;
+      const over = ratio - 2.0;
       // 凹み深さ: 壁面から内側(カメラから遠ざかる)方向
       // 壁のローカル座標でZ=0が壁面、凹みはZ値をマイナスに
       const dz = Math.min(over * 0.15, 0.18);
@@ -591,7 +591,7 @@ function xrF(t,frame){
           const pr=Math.max(0,1-Math.abs(L.z)/PD);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.002);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.0005);
           }
         }else wasPaint=false;
       }
