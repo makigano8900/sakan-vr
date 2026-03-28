@@ -423,7 +423,8 @@ function wallV(){
       // ★ 厚塗り(赤): グリッドマスが奥に凹む
       // 壁ローカル座標でZ+ = 壁の奥方向
       const over = ratio - 1.15;
-      const dz = Math.min(over * 0.10, 0.12); // 最大12cm凹む
+      // Z-方向(壁の奥)に凹む。負値にすることで壁の奥側に押し込む
+      const dz = -Math.min(over * 0.15, 0.18); // 最大18cm凹む(負値=奥)
 
       // 凹んだ底面 (暗くして穴感を出す)
       const dr=r*0.4, dg=g*0.4, db=b*0.4, da=a*0.85;
@@ -586,7 +587,7 @@ function xrF(t,frame){
           const pr=Math.max(0,1-Math.abs(L.z)/PD);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pr*0.0005);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.002);
           }
         }else wasPaint=false;
       }
