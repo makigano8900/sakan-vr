@@ -179,6 +179,21 @@ canvas{display:block;}
           <button class="dep-pre dp3" onclick="setDep(100)">100mm</button>
         </div>
       </div>
+      <!-- ★ 当たり判定の厚み設定 -->
+      <div class="dep-box" style="border-color:rgba(255,153,0,0.4);background:rgba(255,153,0,0.06);">
+        <div class="dep-ttl" style="color:#ff9900">塗り厚み上限（赤になる閾値）</div>
+        <div class="dep-ctrl" style="border-color:rgba(255,153,0,0.4);">
+          <button class="dep-btn" style="color:#ff9900" ontouchstart="chRed(-1)" onmousedown="chRed(-1)">−</button>
+          <div class="dep-disp" id="red-disp" style="color:#ff9900">5</div>
+          <button class="dep-btn" style="color:#ff9900" ontouchstart="chRed(1)" onmousedown="chRed(1)">＋</button>
+        </div>
+        <div class="dep-unit">× 目標厚み で赤になる</div>
+        <div class="dep-presets">
+          <button class="dep-pre" style="background:#0a1808;border:1.5px solid #00ff88;color:#00ff88" onclick="setRed(3)">ゆるい×3</button>
+          <button class="dep-pre" style="background:#181006;border:1.5px solid #ff9900;color:#ff9900" onclick="setRed(5)">標準×5</button>
+          <button class="dep-pre" style="background:#200a0a;border:1.5px solid #ff4466;color:#ff4466" onclick="setRed(8)">厳しい×8</button>
+        </div>
+      </div>
       <!-- 向き -->
       <div class="sec-ttl">壁の向き</div>
       <div class="ori-grid">
@@ -276,6 +291,10 @@ bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cf
 function rT(){document.getElementById('h-ta').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
 
 function chDep(d){DEPTH=Math.max(5,Math.min(200,DEPTH+d));document.getElementById('dep-disp').textContent=DEPTH;}
+// ★ 赤閾値 (RED_RATIO: 目標厚みの何倍で赤になるか)
+let RED_RATIO=5;
+function chRed(d){RED_RATIO=Math.max(1.5,Math.min(20,+(RED_RATIO+d*0.5).toFixed(1)));document.getElementById('red-disp').textContent=RED_RATIO;}
+function setRed(v){RED_RATIO=v;document.getElementById('red-disp').textContent=v;}
 function setDep(v){DEPTH=v;document.getElementById('dep-disp').textContent=v;}
 
 function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else{wY=0;wP=-Math.PI/2;wR=0;}uRot();}
@@ -411,18 +430,18 @@ function wallV(){
     const ratio=t/tgtM;
     let r,g,b;
     if(ratio<0.85){r=0.1;g=0.4;b=1.0;}
-    else if(ratio<2.0){r=0.0;g=1.0;b=0.5;}
+    else if(ratio<RED_RATIO){r=0.0;g=1.0;b=0.5;}
     else{r=1.0;g=0.4;b=0.1;}
     const a=Math.min(0.88,ratio*0.5+0.3);
 
-    if(ratio<2.0){
+    if(ratio<RED_RATIO){
       // 通常・薄塗り: フラット (Z=0)
       v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,
              x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
     } else {
       // ★ 厚塗り(赤=目標2倍以上): グリッドマスが奥に凹む
       // 壁ローカル座標でZ+ = 壁の奥方向
-      const over = ratio - 2.0;
+      const over = ratio - RED_RATIO;
       // 凹み深さ: 壁面から内側(カメラから遠ざかる)方向
       // 壁のローカル座標でZ=0が壁面、凹みはZ値をマイナスに
       const dz = Math.min(over * 0.15, 0.18);
@@ -591,7 +610,7 @@ function xrF(t,frame){
           const pr=Math.max(0,1-Math.abs(L.z)/PD);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.0005);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.08,thick[ny*GW+nx]+pr*0.00015);
           }
         }else wasPaint=false;
       }
