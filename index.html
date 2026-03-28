@@ -8,11 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#000;color:#fff;font-family:monospace;overflow:hidden;}
 
-#ui{
-position:fixed;top:0;left:0;width:100%;height:100%;
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-background:#0a0c10;z-index:10;gap:10px;overflow-y:auto;padding:20px 0;
-}
+#ui{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:10;gap:10px;overflow-y:auto;padding:20px 0;}
 h1{font-size:24px;color:#00e5ff;letter-spacing:4px;}
 p{color:#4a6a8a;font-size:12px;text-align:center;padding:0 20px;}
 .card{background:#12161e;border:1.5px solid #1e2530;border-radius:10px;padding:14px 18px;width:90%;max-width:420px;}
@@ -25,71 +21,83 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 .btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 24px;font-size:14px;cursor:pointer;border-radius:6px;}
 #status{color:#ffcc00;font-size:12px;text-align:center;padding:0 20px;}
 
-#session-panel{position:fixed;top:16px;left:16px;display:none;z-index:20;pointer-events:auto;width:222px;}
-.s-panel{background:rgba(0,0,0,0.92);border:1.5px solid #2a3545;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
-.s-title{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:10px;opacity:0.8;}
-.s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.s-lbl{color:#aac8e0;font-size:11px;flex:1;}
-input[type=range].sm{width:80px;accent-color:#00e5ff;}
-.s-val{color:#fff;font-size:11px;font-weight:bold;min-width:36px;text-align:right;}
+/* DOM Overlay */
+#ar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;display:none;pointer-events:none;z-index:100;}
 
-.op-status{display:flex;flex-direction:column;gap:5px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid #2a3545;margin-bottom:8px;}
+/* 壁設定ウィンドウ */
+#wall-window{position:absolute;top:20px;left:20px;width:236px;pointer-events:auto;background:rgba(4,8,16,0.94);border:2px solid #00e5ff;border-radius:14px;overflow:hidden;box-shadow:0 0 24px rgba(0,229,255,0.3);}
+.ww-header{background:rgba(0,229,255,0.1);padding:10px 14px;border-bottom:1px solid rgba(0,229,255,0.2);}
+.ww-title{color:#00e5ff;font-size:10px;letter-spacing:3px;font-weight:bold;}
+.ww-body{padding:12px 14px;}
+.ww-sep{height:1px;background:rgba(0,229,255,0.15);margin:10px 0;}
+
+.op-status{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.03);border:1px solid #1e2a3a;margin-bottom:10px;}
 .op-row{display:flex;align-items:center;gap:7px;font-size:11px;}
-.op-dot{width:7px;height:7px;border-radius:50%;background:#2a3545;flex-shrink:0;transition:all 0.2s;}
+.op-dot{width:7px;height:7px;border-radius:50%;background:#1e2a3a;flex-shrink:0;transition:all 0.2s;}
 .op-dot.move{background:#00e5ff;box-shadow:0 0 5px #00e5ff;}
 .op-dot.rotate{background:#ff9900;box-shadow:0 0 5px #ff9900;}
 .op-dot.detect{background:#00ff88;box-shadow:0 0 5px #00ff88;}
-.op-lbl{color:#4a6a8a;}.op-lbl.active{color:#fff;}
+.op-lbl{color:#4a6a8a;font-size:11px;}.op-lbl.active{color:#fff;}
 
-.wall-btns{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
-.wall-btn{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:9px 12px;cursor:pointer;width:100%;transition:all 0.2s;text-align:left;}
-.wall-btn.detect{background:#1a3050;border:1.5px solid #00e5ff;color:#00e5ff;}
-.wall-btn.detect.scanning{border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
-.wall-btn.lk{background:#102010;border:1.5px solid #00ff88;color:#00ff88;}
-.wall-btn.ulk{background:#251a10;border:1.5px solid #ffcc00;color:#ffcc00;}
+.ww-btn{border:none;border-radius:8px;font-size:12px;font-weight:bold;padding:9px 12px;cursor:pointer;width:100%;margin-bottom:6px;text-align:left;transition:all 0.15s;}
+.ww-btn.detect{background:#0d2040;border:1.5px solid #00e5ff;color:#00e5ff;}
+.ww-btn.detect.scanning{border-color:#00ff88;color:#00ff88;animation:blink 1s infinite;}
+.ww-btn.lk{background:#0a1a0a;border:1.5px solid #00ff88;color:#00ff88;}
+.ww-btn.ulk{background:#1a1000;border:1.5px solid #ffcc00;color:#ffcc00;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
 
-/* ★ 水平/垂直ボタン */
-.orient-row{display:flex;gap:5px;margin-bottom:8px;}
-.orient-btn{
-flex:1;border:none;border-radius:7px;
-font-size:11px;font-weight:bold;padding:8px 4px;
-cursor:pointer;text-align:center;transition:all 0.15s;
-}
-.orient-btn.horiz{background:#0a2030;border:1.5px solid #00e5ff;color:#00e5ff;}
-.orient-btn.vert{background:#200a30;border:1.5px solid #aa44ff;color:#aa44ff;}
-.orient-btn:active{opacity:0.7;}
+.orient-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.orient-btn{border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;transition:all 0.15s;}
+.orient-btn.vert{background:#100620;border:1.5px solid #aa44ff;color:#aa44ff;}
+.orient-btn.horiz{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
+.orient-btn.rst{background:#181006;border:1.5px solid #ff9900;color:#ff9900;}
+.orient-btn:active{opacity:0.6;}
 
-/* 回転微調整 */
-.rot-section{margin-top:2px;}
-.rot-title{color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:8px;opacity:0.9;}
-.rot-axis{display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:8px;padding:6px 8px;margin-bottom:6px;gap:6px;}
-.rot-axis-lbl{color:#ff9900;font-size:11px;font-weight:bold;width:18px;flex-shrink:0;}
-.rot-axis-val{color:#fff;font-size:13px;font-weight:bold;min-width:40px;text-align:center;flex:1;}
-.rot-btn{background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.4);color:#ff9900;font-size:16px;font-weight:bold;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;user-select:none;-webkit-user-select:none;}
-.rot-btn:active{background:rgba(255,153,0,0.35);transform:scale(0.92);}
-.rot-reset{background:rgba(255,153,0,0.08);border:1px solid rgba(255,153,0,0.25);color:#ff9900;font-size:10px;padding:5px;border-radius:6px;cursor:pointer;width:100%;margin-top:2px;}
+.rot-title{color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:6px;}
+.rot-axis{display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;}
+.rot-axis-lbl{color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;}
+.rot-axis-val{color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;}
+.rot-btn{background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;-webkit-user-select:none;}
+.rot-btn:active{background:rgba(255,153,0,0.35);}
 
-#hud{position:fixed;top:16px;right:16px;display:none;z-index:20;pointer-events:none;width:250px;}
-.panel{background:rgba(0,0,0,0.85);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;}
+/* ★ 奥行き設定 */
+.depth-section{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:8px 10px;margin-bottom:8px;}
+.depth-title{color:#00e5ff;font-size:9px;letter-spacing:2px;margin-bottom:8px;}
+.depth-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.depth-lbl{color:#aac8e0;font-size:11px;flex:1;}
+.depth-val{color:#00e5ff;font-size:13px;font-weight:bold;min-width:42px;text-align:right;}
+input[type=range].dep{flex:1;accent-color:#00e5ff;}
+.depth-btns{display:flex;gap:4px;margin-top:4px;}
+.dep-btn{flex:1;border:none;border-radius:6px;font-size:11px;font-weight:bold;padding:6px 4px;cursor:pointer;text-align:center;}
+.dep-btn.thin{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
+.dep-btn.std{background:#0a1808;border:1.5px solid #00ff88;color:#00ff88;}
+.dep-btn.thick{background:#181206;border:1.5px solid #ff9900;color:#ff9900;}
+
+.s-title{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;}
+.s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.s-lbl{color:#aac8e0;font-size:11px;flex:1;}
+input[type=range].sm{width:80px;accent-color:#00e5ff;}
+.s-val{color:#fff;font-size:11px;font-weight:bold;min-width:34px;text-align:right;}
+
+/* スコアHUD */
+#hud{position:absolute;top:20px;right:20px;pointer-events:none;width:230px;}
+.panel{background:rgba(4,8,16,0.92);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 0 16px rgba(0,229,255,0.2);}
 .ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
 .score-wrap{text-align:center;}
-.score-num{font-size:64px;font-weight:bold;line-height:1;}
-.score-grade{font-size:16px;letter-spacing:4px;margin-top:4px;}
+.score-num{font-size:60px;font-weight:bold;line-height:1;}
+.score-grade{font-size:14px;letter-spacing:4px;margin-top:4px;}
 .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.lbl{color:#aac8e0;font-size:13px;}
-.val{font-size:24px;font-weight:bold;color:#fff;text-align:right;}
-.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:18px;}
-.bar-bg{width:100%;height:7px;background:rgba(255,255,255,0.12);border-radius:4px;overflow:hidden;margin-top:2px;}
-.bar-fill{height:100%;border-radius:4px;transition:width 0.3s;}
-.gauge-wrap{position:relative;height:16px;border-radius:8px;overflow:hidden;margin-top:4px;}
+.lbl{color:#aac8e0;font-size:12px;}
+.val{font-size:20px;font-weight:bold;color:#fff;text-align:right;}
+.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:15px;}
+.bar-bg{width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:2px;}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.3s;}
+.gauge-wrap{position:relative;height:14px;border-radius:7px;overflow:hidden;margin-top:4px;}
 .gauge-zones{display:flex;width:100%;height:100%;}
-.z-bad{flex:25;background:rgba(255,68,102,0.55);}
-.z-warn{flex:15;background:rgba(255,204,0,0.55);}
-.z-good{flex:20;background:rgba(0,255,136,0.55);}
-.needle{position:absolute;top:0;width:4px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
+.z-bad{flex:25;background:rgba(255,68,102,0.55);}.z-warn{flex:15;background:rgba(255,204,0,0.55);}.z-good{flex:20;background:rgba(0,255,136,0.55);}
+.needle{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 4px #fff;}
 
-#paint-reset-btn{position:fixed;bottom:16px;left:16px;display:none;pointer-events:auto;z-index:20;background:rgba(0,0,0,0.75);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
+#paint-reset-btn{position:absolute;bottom:20px;left:20px;pointer-events:auto;background:rgba(4,8,16,0.9);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
 #phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
 .ps-score{font-size:120px;font-weight:bold;line-height:1;}
 .ps-grade{font-size:28px;letter-spacing:6px;}
@@ -106,7 +114,7 @@ canvas{display:block;}
 
 <div id="ui">
   <h1>左官AR TRAINER</h1>
-  <p>右手: コテ塗り　左手トリガー: 壁移動　左手グリップ: 壁回転</p>
+  <p>右手: コテ塗り / 左手トリガー: 壁移動 / 左手グリップ: 壁回転</p>
   <div class="card">
     <div class="card-title">スコア基準設定</div>
     <div class="set-row"><span class="set-label">目標角度</span><input type="range" id="cfg-angle" min="10" max="70" value="35"><span class="set-val" id="cfg-angle-val">35°</span></div>
@@ -119,94 +127,106 @@ canvas{display:block;}
   <div id="status">WebXR確認中...</div>
 </div>
 
-<div id="session-panel">
-  <div class="s-panel">
-    <div class="s-title">スコア基準</div>
-    <div class="s-row"><span class="s-lbl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="s-val" id="ss-angle-val">35°</span></div>
-    <div class="s-row"><span class="s-lbl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="s-val" id="ss-tol-val">±5°</span></div>
-    <div class="s-row"><span class="s-lbl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="s-val" id="ss-thick-val">8mm</span></div>
-    <div class="s-row"><span class="s-lbl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="s-val" id="ss-thick-tol-val">±2mm</span></div>
-  </div>
-
-  <div class="s-panel">
-    <div class="s-title">壁の操作</div>
-    <div class="op-status">
-      <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー: 移動</span></div>
-      <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ: 回転</span></div>
-      <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー: 壁スナップ</span></div>
-    </div>
+<div id="ar-overlay">
+  <div id="wall-window">
+    <div class="ww-header"><span class="ww-title">🧱 壁設定ウィンドウ</span></div>
+    <div class="ww-body">
 
 ```
-<div class="wall-btns">
-  <button class="wall-btn detect" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
-  <button class="wall-btn lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
-</div>
+  <div class="op-status">
+    <div class="op-row"><div class="op-dot" id="dot-move"></div><span class="op-lbl" id="lbl-move">左トリガー → 移動</span></div>
+    <div class="op-row"><div class="op-dot" id="dot-rotate"></div><span class="op-lbl" id="lbl-rotate">左グリップ → 回転</span></div>
+    <div class="op-row"><div class="op-dot" id="dot-detect"></div><span class="op-lbl" id="lbl-detect">右トリガー → スナップ</span></div>
+  </div>
 
-<!-- ★ 水平/垂直ボタン -->
-<div class="orient-row">
-  <button class="orient-btn horiz" onclick="setOrientation('horizontal')">⬜ 水平</button>
-  <button class="orient-btn vert"  onclick="setOrientation('vertical')">🔲 垂直</button>
-</div>
+  <button class="ww-btn detect" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
+  <button class="ww-btn lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
 
-<div class="rot-section">
-  <div class="rot-title">回転 微調整 (1°)</div>
+  <div class="ww-sep"></div>
+
+  <!-- ★ 奥行き設定 -->
+  <div class="depth-section">
+    <div class="depth-title">塗り壁の奥行き（厚み表示）</div>
+    <div class="depth-row">
+      <span class="depth-lbl">奥行き</span>
+      <input type="range" class="dep" id="dep-slider" min="1" max="30" value="8" step="1">
+      <span class="depth-val" id="dep-val">8mm</span>
+    </div>
+    <div class="depth-btns">
+      <button class="dep-btn thin" onclick="setDepth(5)">薄 5mm</button>
+      <button class="dep-btn std"  onclick="setDepth(12)">標準 12mm</button>
+      <button class="dep-btn thick" onclick="setDepth(20)">厚 20mm</button>
+    </div>
+  </div>
+
+  <!-- 向き -->
+  <div class="rot-title">壁の向き</div>
+  <div class="orient-grid">
+    <button class="orient-btn vert"  onclick="setOri('vertical')">🔲 垂直</button>
+    <button class="orient-btn horiz" onclick="setOri('horizontal')">⬜ 水平</button>
+    <button class="orient-btn rst" style="grid-column:1/-1" onclick="resetRot()">↺ 回転リセット</button>
+  </div>
+
+  <!-- 微調整 -->
+  <div class="rot-title">微調整 (1°)</div>
   <div class="rot-axis">
     <span class="rot-axis-lbl">Y</span>
-    <button class="rot-btn" ontouchstart="startRepeat('Y',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Y',-1)" onmouseup="stopRepeat()">−</button>
-    <span class="rot-axis-val" id="rot-y-val">0°</span>
-    <button class="rot-btn" ontouchstart="startRepeat('Y',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Y',1)" onmouseup="stopRepeat()">＋</button>
+    <button class="rot-btn" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button>
+    <span class="rot-axis-val" id="ry">0°</span>
+    <button class="rot-btn" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button>
   </div>
   <div class="rot-axis">
     <span class="rot-axis-lbl">X</span>
-    <button class="rot-btn" ontouchstart="startRepeat('X',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('X',-1)" onmouseup="stopRepeat()">−</button>
-    <span class="rot-axis-val" id="rot-x-val">0°</span>
-    <button class="rot-btn" ontouchstart="startRepeat('X',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('X',1)" onmouseup="stopRepeat()">＋</button>
+    <button class="rot-btn" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button>
+    <span class="rot-axis-val" id="rx">0°</span>
+    <button class="rot-btn" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button>
   </div>
   <div class="rot-axis">
     <span class="rot-axis-lbl">Z</span>
-    <button class="rot-btn" ontouchstart="startRepeat('Z',-1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Z',-1)" onmouseup="stopRepeat()">−</button>
-    <span class="rot-axis-val" id="rot-z-val">0°</span>
-    <button class="rot-btn" ontouchstart="startRepeat('Z',1)" ontouchend="stopRepeat()" onmousedown="startRepeat('Z',1)" onmouseup="stopRepeat()">＋</button>
+    <button class="rot-btn" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button>
+    <span class="rot-axis-val" id="rz">0°</span>
+    <button class="rot-btn" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button>
   </div>
-  <button class="rot-reset" onclick="resetRotation()">↺ 回転リセット</button>
+
+  <div class="ww-sep"></div>
+  <div class="s-title">スコア基準</div>
+  <div class="s-row"><span class="s-lbl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="s-val" id="ss-angle-val">35°</span></div>
+  <div class="s-row"><span class="s-lbl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="s-val" id="ss-tol-val">±5°</span></div>
+  <div class="s-row"><span class="s-lbl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="s-val" id="ss-thick-val">8mm</span></div>
+  <div class="s-row"><span class="s-lbl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="s-val" id="ss-thick-tol-val">±2mm</span></div>
 </div>
 ```
 
   </div>
-</div>
 
-<div id="hud">
-  <div class="panel">
-    <div class="ptitle">総合スコア</div>
-    <div class="score-wrap">
-      <div class="score-num" id="h-score">0</div>
-      <div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div>
+  <div id="hud">
+    <div class="panel">
+      <div class="ptitle">総合スコア</div>
+      <div class="score-wrap"><div class="score-num" id="h-score">0</div><div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">コテ角度</div>
+      <div class="row"><span class="lbl">現在</span><span class="val" id="h-angle">--°</span></div>
+      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-angle">35°±5°</span></div>
+      <div class="gauge-wrap"><div class="gauge-zones"><div class="z-bad"></div><div class="z-warn"></div><div class="z-good"></div><div class="z-warn"></div><div class="z-bad"></div></div><div class="needle" id="h-needle" style="left:50%"></div></div>
+      <div class="row" style="margin-top:8px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
+      <div class="bar-bg"><div class="bar-fill" id="h-blur-bar" style="width:0%;background:#00ff88"></div></div>
+    </div>
+    <div class="panel">
+      <div class="row"><span class="lbl">カバレッジ</span><span class="val" id="h-cover">0%</span></div>
+      <div class="bar-bg"><div class="bar-fill" id="h-cover-bar" style="width:0%;background:#00e5ff"></div></div>
+      <div class="row" style="margin-top:8px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0mm</span></div>
+      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-thick">8mm±2mm</span></div>
+      <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
     </div>
   </div>
-  <div class="panel">
-    <div class="ptitle">コテ角度</div>
-    <div class="row"><span class="lbl">現在</span><span class="val" id="h-angle">--°</span></div>
-    <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-angle">35°±5°</span></div>
-    <div class="gauge-wrap">
-      <div class="gauge-zones"><div class="z-bad"></div><div class="z-warn"></div><div class="z-good"></div><div class="z-warn"></div><div class="z-bad"></div></div>
-      <div class="needle" id="h-needle" style="left:50%"></div>
-    </div>
-    <div class="row" style="margin-top:10px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
-    <div class="bar-bg"><div class="bar-fill" id="h-blur-bar" style="width:0%;background:#00ff88"></div></div>
-  </div>
-  <div class="panel">
-    <div class="row"><span class="lbl">カバレッジ</span><span class="val" id="h-cover">0%</span></div>
-    <div class="bar-bg"><div class="bar-fill" id="h-cover-bar" style="width:0%;background:#00e5ff"></div></div>
-    <div class="row" style="margin-top:10px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0.0mm</span></div>
-    <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-target-thick">8mm±2mm</span></div>
-    <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
-  </div>
-</div>
 
-<button id="paint-reset-btn" onclick="clearPaintData()">🗑 塗りリセット</button>
+<button id="paint-reset-btn" onclick="clearPaint()">🗑 塗りリセット</button>
+
+</div>
 
 <div id="phone-score">
-  <div class="ps-score" id="ps-score-num">0</div>
+  <div class="ps-score" id="ps-num">0</div>
   <div class="ps-grade" id="ps-grade">--- GRADE ---</div>
   <div class="ps-row">
     <div class="ps-item"><div class="ps-label">角度ブレ</div><div class="ps-val" id="ps-blur">0%</div></div>
@@ -219,216 +239,167 @@ canvas{display:block;}
 <canvas id="c"></canvas>
 
 <script>
-// ============================================================
-// 設定
-// ============================================================
+// CONFIG
 let CFG={angle:35,tol:5,thick:8,thickTol:2};
-function bindScore(mId,sId,key,sfx){
+// ★ 奥行き設定 (mm): グリッドの塗り判定に使うペイントゾーンの厚み
+let WALL_DEPTH=8; // mm
+
+function bS(mId,sId,k,sfx){
   const me=document.getElementById(mId),mv=document.getElementById(mId+'-val');
   const se=document.getElementById(sId),sv=document.getElementById(sId+'-val');
-  function upd(v){CFG[key]=v;mv.textContent=v+sfx;sv.textContent=v+sfx;me.value=v;se.value=v;refreshTargets();}
-  me.addEventListener('input',()=>upd(+me.value));
-  se.addEventListener('input',()=>upd(+se.value));
+  function u(v){CFG[k]=v;mv.textContent=v+sfx;sv.textContent=v+sfx;me.value=v;se.value=v;rT();}
+  me.addEventListener('input',()=>u(+me.value));se.addEventListener('input',()=>u(+se.value));
 }
-bindScore('cfg-angle','ss-angle','angle','°');
-bindScore('cfg-tol','ss-tol','tol','°');
-bindScore('cfg-thick','ss-thick','thick','mm');
-bindScore('cfg-thick-tol','ss-thick-tol','thickTol','mm');
-function refreshTargets(){
-  document.getElementById('h-target-angle').textContent=`${CFG.angle}°±${CFG.tol}°`;
-  document.getElementById('h-target-thick').textContent=`${CFG.thick}mm±${CFG.thickTol}mm`;
+bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cfg-thick','ss-thick','thick','mm');bS('cfg-thick-tol','ss-thick-tol','thickTol','mm');
+function rT(){document.getElementById('h-target-angle').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-target-thick').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
+
+// ★ 奥行きスライダー
+document.getElementById('dep-slider').addEventListener('input',function(){
+  WALL_DEPTH=+this.value;
+  document.getElementById('dep-val').textContent=WALL_DEPTH+'mm';
+});
+function setDepth(v){
+  WALL_DEPTH=v;
+  document.getElementById('dep-slider').value=v;
+  document.getElementById('dep-val').textContent=v+'mm';
 }
 
-// ============================================================
-// 水平/垂直プリセット
-// ============================================================
-function setOrientation(type){
-  if(type==='horizontal'){
-    // 床に水平に敷く: X軸を-90度 (真上を向く)
-    wallYaw=0; wallPitch=-Math.PI/2; wallRoll=0;
-  } else {
-    // 壁として垂直: 全回転0 (Z軸正面向き)
-    wallYaw=0; wallPitch=0; wallRoll=0;
-  }
-  updateRotDisplay();
+// ORIENTATION
+function setOri(t){
+  const PI=Math.PI;
+  if(t==='vertical'){wY=0;wP=0;wR=0;}
+  else if(t==='horizontal'){wY=0;wP=-PI/2;wR=0;}
+  updRot();
 }
+function resetRot(){wY=0;wP=0;wR=0;updRot();}
 
-// ============================================================
-// 回転微調整
-// ============================================================
+// ROTATION FINE TUNE
 const D2R=Math.PI/180;
-let repeatTimer=null,repeatInterval=null;
-function adjustRot(axis,sign){
-  if(axis==='Y') wallYaw  +=sign*D2R;
-  if(axis==='X') wallPitch+=sign*D2R;
-  if(axis==='Z') wallRoll +=sign*D2R;
-  updateRotDisplay();
-}
-function startRepeat(axis,sign){
-  adjustRot(axis,sign);
-  repeatTimer=setTimeout(()=>{repeatInterval=setInterval(()=>adjustRot(axis,sign),80);},400);
-}
-function stopRepeat(){clearTimeout(repeatTimer);clearInterval(repeatInterval);repeatTimer=null;repeatInterval=null;}
-function resetRotation(){wallYaw=0;wallPitch=0;wallRoll=0;updateRotDisplay();}
-function updateRotDisplay(){
-  function fmt(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
-  document.getElementById('rot-y-val').textContent=fmt(wallYaw);
-  document.getElementById('rot-x-val').textContent=fmt(wallPitch);
-  document.getElementById('rot-z-val').textContent=fmt(wallRoll);
+let rpt=null,rpi=null;
+function sr(ax,sg){adj(ax,sg);rpt=setTimeout(()=>{rpi=setInterval(()=>adj(ax,sg),80);},400);}
+function stopR(){clearTimeout(rpt);clearInterval(rpi);rpt=null;rpi=null;}
+function adj(ax,sg){if(ax==='Y')wY+=sg*D2R;if(ax==='X')wP+=sg*D2R;if(ax==='Z')wR+=sg*D2R;updRot();}
+function updRot(){
+  function f(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
+  document.getElementById('ry').textContent=f(wY);document.getElementById('rx').textContent=f(wP);document.getElementById('rz').textContent=f(wR);
 }
 
-// スマホスコア
-let phoneTimer=null;
-document.getElementById('btn-phone').addEventListener('click',()=>{document.getElementById('ui').style.display='none';document.getElementById('phone-score').style.display='flex';phoneTimer=setInterval(refreshPhone,500);});
-document.getElementById('ps-back').addEventListener('click',()=>{clearInterval(phoneTimer);document.getElementById('phone-score').style.display='none';document.getElementById('ui').style.display='flex';});
-function refreshPhone(){
-  const s=calcScore();
-  const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
-  const [,g,gc]=gs.find(([m])=>s.total>=m);
-  const sn=document.getElementById('ps-score-num');sn.textContent=s.total;sn.style.color=gc;
-  const gd=document.getElementById('ps-grade');gd.textContent=`--- GRADE ${g} ---`;gd.style.color=gc;
+// PHONE SCORE
+let pT=null;
+document.getElementById('btn-phone').addEventListener('click',()=>{document.getElementById('ui').style.display='none';document.getElementById('phone-score').style.display='flex';pT=setInterval(rfP,500);});
+document.getElementById('ps-back').addEventListener('click',()=>{clearInterval(pT);document.getElementById('phone-score').style.display='none';document.getElementById('ui').style.display='flex';});
+function rfP(){
+  const s=calcS();const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
+  const[,g,gc]=gs.find(([m])=>s.total>=m);
+  const sn=document.getElementById('ps-num');sn.textContent=s.total;sn.style.color=gc;
+  const gd=document.getElementById('ps-grade');gd.textContent='--- GRADE '+g+' ---';gd.style.color=gc;
   document.getElementById('ps-blur').textContent=Math.round(s.blur*100)+'%';
   document.getElementById('ps-cover').textContent=Math.round(s.coverage*100)+'%';
   document.getElementById('ps-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
-// ============================================================
-// WebGL
-// ============================================================
+// WEBGL
 const canvas=document.getElementById('c');
 canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 let gl=canvas.getContext('webgl2',{xrCompatible:true,alpha:true});
-const GL2=!!gl;
-if(!gl)gl=canvas.getContext('webgl',{xrCompatible:true,alpha:true});
-const VS=GL2
-?`#version 300 es
+const GL2=!!gl;if(!gl)gl=canvas.getContext('webgl',{xrCompatible:true,alpha:true});
+const VS=GL2?`#version 300 es
 in vec4 a_p;in vec3 a_c;in float a_a;uniform mat4 uP,uV,uM;out vec3 vc;out float va;
-void main(){gl_Position=uP*uV*uM*a_p;vc=a_c;va=a_a;}`
-:`attribute vec4 a_p;attribute vec3 a_c;attribute float a_a;uniform mat4 uP,uV,uM;varying vec3 vc;varying float va;
-void main(){gl_Position=uP*uV*uM*a_p;vc=a_c;va=a_a;}`;
-const FS=GL2
-?`#version 300 es
-precision mediump float;in vec3 vc;in float va;out vec4 o;void main(){o=vec4(vc,va);}`
-:`precision mediump float;varying vec3 vc;varying float va;void main(){gl_FragColor=vec4(vc,va);}`;
-function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x;}
-const prog=gl.createProgram();
-gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);gl.useProgram(prog);
+void main(){gl_Position=uP*uV*uM*a_p;vc=a_c;va=a_a;}`:`attribute vec4 a_p;attribute vec3 a_c;attribute float a_a;uniform mat4 uP,uV,uM;varying vec3 vc;varying float va;void main(){gl_Position=uP*uV*uM*a_p;vc=a_c;va=a_a;}`;
+const FS=GL2?`#version 300 es
+precision mediump float;in vec3 vc;in float va;out vec4 o;void main(){o=vec4(vc,va);}`:`precision mediump float;varying vec3 vc;varying float va;void main(){gl_FragColor=vec4(vc,va);}`;
+function mkSh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x;}
+const prog=gl.createProgram();gl.attachShader(prog,mkSh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,mkSh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);gl.useProgram(prog);
 const aP=gl.getAttribLocation(prog,'a_p'),aC=gl.getAttribLocation(prog,'a_c'),aA=gl.getAttribLocation(prog,'a_a');
 const uP_=gl.getUniformLocation(prog,'uP'),uV_=gl.getUniformLocation(prog,'uV'),uM_=gl.getUniformLocation(prog,'uM');
 const ST=28;
-function setAttr(){gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);}
-function mkBuf(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW);return b;}
+function sA(){gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,ST,0);gl.enableVertexAttribArray(aC);gl.vertexAttribPointer(aC,3,gl.FLOAT,false,ST,12);gl.enableVertexAttribArray(aA);gl.vertexAttribPointer(aA,1,gl.FLOAT,false,ST,24);}
+function mkB(d,h){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,d,h||gl.STATIC_DRAW);return b;}
 
-// ============================================================
-// 行列
-// ============================================================
-function matId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
-function quatMat(q){
-  const{x,y,z,w}=q;
-  return new Float32Array([1-2*(y*y+z*z),2*(x*y+w*z),2*(x*z-w*y),0,2*(x*y-w*z),1-2*(x*x+z*z),2*(y*z+w*x),0,2*(x*z+w*y),2*(y*z-w*x),1-2*(x*x+y*y),0,0,0,0,1]);
+// MATRICES
+function mId(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
+function mm(A,B){const R=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}return R;}
+function eM(y,p,r){
+  const cy=Math.cos(y),sy=Math.sin(y),cx=Math.cos(p),sx=Math.sin(p),cz=Math.cos(r),sz=Math.sin(r);
+  return mm(new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]),mm(new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]),new Float32Array([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1])));
 }
-function mulMat(A,B){const R=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=A[k*4+r]*B[c*4+k];R[c*4+r]=s;}return R;}
-
-// オイラー回転行列 Ry*Rx*Rz
-function eulerMat(yaw,pitch,roll){
-  const cy=Math.cos(yaw),sy=Math.sin(yaw),cx=Math.cos(pitch),sx=Math.sin(pitch),cz=Math.cos(roll),sz=Math.sin(roll);
-  const Ry=new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]);
-  const Rx=new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]);
-  const Rz=new Float32Array([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1]);
-  return mulMat(Ry,mulMat(Rx,Rz));
+function wMM(cx,cy,cz,y,p,r){const R=eM(y,p,r);R[12]=cx;R[13]=cy;R[14]=cz;return R;}
+function w2L(wx,wy,wz){
+  const dx=wx-wX,dy=wy-wWY,dz=wz-wZ;
+  const R=eM(wY,wP,wR);
+  return{x:R[0]*dx+R[1]*dy+R[2]*dz,y:R[4]*dx+R[5]*dy+R[6]*dz,z:R[8]*dx+R[9]*dy+R[10]*dz};
 }
-
-// ★ 壁モデル行列
-// wallWX/Y/Z = 壁グリッドの「中央下端」のワールド座標
-// グリッドローカル: X方向 -(GW/2)*CELL 〜 +(GW/2)*CELL、Y方向 0〜GH*CELL
-// hit-testで得た座標をそのまま中央下端として使う
-function wallModelMat(cx,cy,cz,yaw,pitch,roll){
-  const R=eulerMat(yaw,pitch,roll);
-  // 平行移動はそのまま cx,cy,cz
-  R[12]=cx; R[13]=cy; R[14]=cz;
-  return R;
+function qdE(qs,qc){
+  const qi={x:-qs.x,y:-qs.y,z:-qs.z,w:qs.w};
+  const{x:ax,y:ay,z:az,w:aw}=qc,{x:bx,y:by,z:bz,w:bw}=qi;
+  const d={x:aw*bx+ax*bw+ay*bz-az*by,y:aw*by-ax*bz+ay*bw+az*bx,z:aw*bz+ax*by-ay*bx+az*bw,w:aw*bw-ax*bx-ay*by-az*bz};
+  return{pitch:Math.asin(Math.max(-1,Math.min(1,2*(d.w*d.x-d.y*d.z)))),yaw:Math.atan2(2*(d.w*d.y+d.x*d.z),1-2*(d.y*d.y+d.x*d.x)),roll:Math.atan2(2*(d.w*d.z+d.x*d.y),1-2*(d.z*d.z+d.x*d.x))};
 }
 
-// コテ: 右手位置に小さな点のみ（形状なし）→ 代わりに手の関節を表示
-function buildHandVerts(){
-  const v=[],r=0.9,g=0.75,b=0.6,a=0.88;
-  [{x:0,y:0,z:0,s:.022},{x:.02,y:.02,z:0,s:.016},
-   {x:-.02,y:.06,z:0,s:.013},{x:-.02,y:.10,z:0,s:.011},
-   {x:.01,y:.07,z:0,s:.013},{x:.01,y:.11,z:0,s:.011},
-   {x:.04,y:.065,z:0,s:.012},{x:.04,y:.10,z:0,s:.010},
-   {x:.07,y:.055,z:0,s:.010},{x:.07,y:.085,z:0,s:.009},
-   {x:-.03,y:-.01,z:0,s:.016},{x:-.055,y:.02,z:0,s:.013}
-  ].forEach(({x,y,z,s})=>v.push(x-s,y-s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x-s,y+s,z,r,g,b,a,x+s,y-s,z,r,g,b,a,x+s,y+s,z,r,g,b,a,x-s,y+s,z,r,g,b,a));
-  return new Float32Array(v);
-}
-
-// ★ 手の向き補正: グリップ座標系でX軸回転-90度
-function handMat(q,px,py,pz){
-  const Rx90=new Float32Array([1,0,0,0, 0,0,1,0, 0,-1,0,0, 0,0,0,1]);
-  const m=mulMat(quatMat(q),Rx90);
-  m[12]=px;m[13]=py;m[14]=pz;return m;
-}
-
-const handVD=buildHandVerts(),handBuf=mkBuf(handVD),HAND_TRIS=handVD.length/7;
-const gridBuf=mkBuf((()=>{
-  const v=[],r=0.15,g=0.55,b=0.65,a=0.45,GW2=20,GH2=14,C=0.07;
-  for(let x=0;x<=GW2;x++){const px=(x-GW2/2)*C;v.push(px,0,0,r,g,b,a,px,GH2*C,0,r,g,b,a);}
-  for(let y=0;y<=GH2;y++){const py=y*C;v.push(-(GW2/2)*C,py,0,r,g,b,a,(GW2/2)*C,py,0,r,g,b,a);}
-  return new Float32Array(v);
-})());
-const wallBuf=mkBuf(new Float32Array(0),gl.DYNAMIC_DRAW);
-const retBuf=mkBuf(new Float32Array(72*7),gl.DYNAMIC_DRAW);
-
-// グリッドサイズ定数
+// GRID & PAINT
 const GW=20,GH=14,CELL=0.07;
-const PAINT_DIST=0.12;
-
-// ============================================================
-// 壁グリッドデータ
-// ============================================================
 const thick=new Float32Array(GW*GH);
-const angLog=[];
-let strokes=0,wasPainting=false;
-function clearPaintData(){thick.fill(0);angLog.length=0;strokes=0;wasPainting=false;}
+const angLog=[];let strokes=0,wasPaint=false;
+function clearPaint(){thick.fill(0);angLog.length=0;strokes=0;wasPaint=false;}
 
-function wallVerts(){
+function wallV(){
   const v=[];
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
-    const t=thick[gy*GW+gx];if(t===0)continue;
+    const t=thick[gy*GW+gx];if(!t)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003,y0=gy*CELL,y1=y0+CELL-0.003;
     const ratio=t/(CFG.thick/1000);
     let r,g,b;
     if(ratio<0.85){r=0.1;g=0.4;b=1.0;}else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}else{r=1.0;g=0.4;b=0.1;}
     const a=Math.min(0.88,ratio*0.5+0.3);
+    // ★ 奥行きに応じてZ方向に押し出した3D表示
+    const depth=WALL_DEPTH/1000; // mm→m
+    // 前面
     v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
+    // 奥面 (少し暗め)
+    const da=a*0.65;
+    v.push(x0,y0,depth,r*0.6,g*0.6,b*0.6,da,x0,y1,depth,r*0.6,g*0.6,b*0.6,da,x1,y0,depth,r*0.6,g*0.6,b*0.6,da,
+           x1,y0,depth,r*0.6,g*0.6,b*0.6,da,x0,y1,depth,r*0.6,g*0.6,b*0.6,da,x1,y1,depth,r*0.6,g*0.6,b*0.6,da);
+    // 上面
+    v.push(x0,y1,0,r*0.75,g*0.75,b*0.75,a,x0,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8,x1,y1,0,r*0.75,g*0.75,b*0.75,a,
+           x1,y1,0,r*0.75,g*0.75,b*0.75,a,x0,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8,x1,y1,depth,r*0.75,g*0.75,b*0.75,a*0.8);
   }
   return new Float32Array(v);
 }
 
-function reticleVerts(cx,cy,cz,rad){
-  const v=[],segs=24;
-  for(let i=0;i<segs;i++){const a0=(i/segs)*Math.PI*2,a1=((i+1)/segs)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.85,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.85,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.85);}
+function gridV(){
+  const v=[];
+  const bx=-(GW/2)*CELL,ex=(GW/2)*CELL,by=0,ey=GH*CELL;
+  const[br,bg,bb,ba]=[0.0,0.95,1.0,1.0];
+  v.push(bx,by,0,br,bg,bb,ba,ex,by,0,br,bg,bb,ba,ex,by,0,br,bg,bb,ba,ex,ey,0,br,bg,bb,ba,ex,ey,0,br,bg,bb,ba,bx,ey,0,br,bg,bb,ba,bx,ey,0,br,bg,bb,ba,bx,by,0,br,bg,bb,ba);
+  const[gr,gg,gb,ga]=[1.0,1.0,1.0,0.7];
+  for(let x=1;x<GW;x++){const px=(x-GW/2)*CELL;v.push(px,0,0,gr,gg,gb,ga,px,GH*CELL,0,gr,gg,gb,ga);}
+  for(let y=1;y<GH;y++){const py=y*CELL;v.push(-(GW/2)*CELL,py,0,gr,gg,gb,ga,(GW/2)*CELL,py,0,gr,gg,gb,ga);}
+  return new Float32Array(v);
+}
+function retV(cx,cy,cz,rad){
+  const v=[],seg=24;for(let i=0;i<seg;i++){const a0=(i/seg)*Math.PI*2,a1=((i+1)/seg)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.9,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.9,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.9);}
   return new Float32Array(v);
 }
 
-// ============================================================
-// スコア
-// ============================================================
-function calcScore(){
-  let cov=0,ts=0;
-  for(let i=0;i<thick.length;i++)if(thick[i]>0){cov++;ts+=thick[i];}
+const gBuf=mkB(gridV());
+const wBuf=mkB(new Float32Array(0),gl.DYNAMIC_DRAW);
+const rBuf=mkB(new Float32Array(24*3*7),gl.DYNAMIC_DRAW);
+
+// SCORE
+function calcS(){
+  let cov=0,ts=0;for(let i=0;i<thick.length;i++)if(thick[i]>0){cov++;ts+=thick[i];}
   const coverage=cov/thick.length,avg=cov>0?ts/cov:0,tgtM=CFG.thick/1000,tolM=CFG.thickTol/1000;
   let blur=0;if(angLog.length>0)blur=angLog.filter(a=>Math.abs(a-CFG.angle)>CFG.tol).length/angLog.length;
-  let thickOk=0;for(let i=0;i<thick.length;i++)if(thick[i]>0&&Math.abs(thick[i]-tgtM)<tolM)thickOk++;
-  return{total:Math.round((1-blur)*40+coverage*35+(cov>0?thickOk/cov:0)*25),blur,coverage,avg};
+  let tok=0;for(let i=0;i<thick.length;i++)if(thick[i]>0&&Math.abs(thick[i]-tgtM)<tolM)tok++;
+  return{total:Math.round((1-blur)*40+coverage*35+(cov>0?tok/cov:0)*25),blur,coverage,avg};
 }
-let lastAngle=35;
-function updateHUD(ang){
-  lastAngle=ang;const s=calcScore();
+let lastAng=35;
+function updHUD(ang){
+  lastAng=ang;const s=calcS();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
-  const [,g,gc]=gs.find(([m])=>s.total>=m);
+  const[,g,gc]=gs.find(([m])=>s.total>=m);
   document.getElementById('h-score').textContent=s.total;document.getElementById('h-score').style.color=gc;
-  const ge=document.getElementById('h-grade');ge.textContent=`--- GRADE ${g} ---`;ge.style.color=gc;
+  const ge=document.getElementById('h-grade');ge.textContent='--- GRADE '+g+' ---';ge.style.color=gc;
   const diff=Math.abs(ang-CFG.angle);
   const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='val '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
   document.getElementById('h-needle').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
@@ -438,218 +409,134 @@ function updateHUD(ang){
   document.getElementById('h-strokes').textContent=strokes+'回';document.getElementById('h-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
-// ============================================================
-// ★ 壁ローカル座標変換 (回転の逆行列を適用)
-// コントローラーのワールド座標 → 壁のローカル座標
-// 壁の原点 = wallWX,wallWY,wallWZ (グリッド中央X=0, 下端Y=0)
-// ============================================================
-function worldToLocal(wx,wy,wz){
-  // 平行移動を除いた差分
-  const dx=wx-wallWX, dy=wy-wallWY, dz=wz-wallWZ;
-  // 逆回転 = 転置 (直交行列なので)
-  // eulerMat の列ベクトルを使って逆変換
-  const R=eulerMat(wallYaw,wallPitch,wallRoll);
-  // R は column-major: R[col*4+row]
-  // 逆変換: local = R^T * (world - pos)
-  // x_local = R[0]*dx + R[1]*dy + R[2]*dz  (row0 of R = col0 elements)
-  const lx=R[0]*dx+R[1]*dy+R[2]*dz;
-  const ly=R[4]*dx+R[5]*dy+R[6]*dz;
-  const lz=R[8]*dx+R[9]*dy+R[10]*dz;
-  return{x:lx,y:ly,z:lz};
-}
-
-// クォータニオンdelta→オイラー
-function quatDeltaEuler(qs,qc){
-  const qi={x:-qs.x,y:-qs.y,z:-qs.z,w:qs.w};
-  const{x:ax,y:ay,z:az,w:aw}=qc,{x:bx,y:by,z:bz,w:bw}=qi;
-  const d={x:aw*bx+ax*bw+ay*bz-az*by,y:aw*by-ax*bz+ay*bw+az*bx,z:aw*bz+ax*by-ay*bx+az*bw,w:aw*bw-ax*bx-ay*by-az*bz};
-  const sinP=2*(d.w*d.x-d.y*d.z);
-  return{
-    pitch:Math.asin(Math.max(-1,Math.min(1,sinP))),
-    yaw:Math.atan2(2*(d.w*d.y+d.x*d.z),1-2*(d.y*d.y+d.x*d.x)),
-    roll:Math.atan2(2*(d.w*d.z+d.x*d.y),1-2*(d.z*d.z+d.x*d.x))
-  };
-}
-
-// ============================================================
 // XR
-// ============================================================
-let xrSession=null,xrRefSpace=null,glLayer=null;
-let xrHitTestSource=null,isDetecting=false,wallLocked=true;
-const statusEl=document.getElementById('status');
+let xrSess=null,xrRef=null,glLay=null,xrHit=null,detecting=false,locked=true;
+const stEl=document.getElementById('status');
 if(navigator.xr){
-  navigator.xr.isSessionSupported('immersive-ar').then(ok=>{
-    statusEl.textContent=ok?'✓ AR対応':'⚠ AR非対応→VRで起動';
-    statusEl.style.color=ok?'#00ff88':'#ffcc00';
-    if(!ok)document.getElementById('btn-ar').textContent='🥽 VRセッション開始';
-  });
-}else{statusEl.textContent='✗ WebXR非対応';statusEl.style.color='#ff4466';}
+  navigator.xr.isSessionSupported('immersive-ar').then(ok=>{stEl.textContent=ok?'✓ AR対応':'⚠ AR非対応→VRで起動';stEl.style.color=ok?'#00ff88':'#ffcc00';if(!ok)document.getElementById('btn-ar').textContent='🥽 VRセッション開始';});
+}else{stEl.textContent='✗ WebXR非対応';stEl.style.color='#ff4466';}
 
 document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
-    xrSession=await navigator.xr.requestSession(mode,arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test']}:{requiredFeatures:['local-floor']});
-    glLayer=new XRWebGLLayer(xrSession,gl,{alpha:true});
-    xrSession.updateRenderState({baseLayer:glLayer});
-    xrRefSpace=await xrSession.requestReferenceSpace('local-floor');
-    // ★ 初期位置: 正面0.6m、高さ0.8m、中央
-    wallWX=0;wallWY=0.8;wallWZ=-0.6;wallYaw=0;wallPitch=0;wallRoll=0;
-    wallLocked=true;clearPaintData();refreshTargets();updateRotDisplay();
+    const opts=arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}:{requiredFeatures:['local-floor']};
+    xrSess=await navigator.xr.requestSession(mode,opts);
+    glLay=new XRWebGLLayer(xrSess,gl,{alpha:true});
+    xrSess.updateRenderState({baseLayer:glLay});
+    xrRef=await xrSess.requestReferenceSpace('local-floor');
+    wX=0;wWY=0.8;wZ=-0.6;wY=0;wP=0;wR=0;
+    locked=true;clearPaint();rT();updRot();
     document.getElementById('ui').style.display='none';
-    document.getElementById('hud').style.display='block';
-    document.getElementById('session-panel').style.display='block';
-    document.getElementById('paint-reset-btn').style.display='block';
-    updateLockBtn();
-    xrSession.requestAnimationFrame(onXRFrame);
-    xrSession.addEventListener('end',()=>{
-      stopDetect();stopRepeat();
-      document.getElementById('ui').style.display='flex';
-      ['hud','session-panel','paint-reset-btn'].forEach(id=>document.getElementById(id).style.display='none');
-    });
-  }catch(e){statusEl.textContent='エラー: '+e.message;statusEl.style.color='#ff4466';}
+    document.getElementById('ar-overlay').style.display='block';
+    updLock();
+    xrSess.requestAnimationFrame(xrF);
+    xrSess.addEventListener('end',()=>{stopDet();stopR();document.getElementById('ui').style.display='flex';document.getElementById('ar-overlay').style.display='none';});
+  }catch(e){stEl.textContent='エラー: '+e.message;stEl.style.color='#ff4466';}
 });
 
-function toggleLock(){wallLocked=!wallLocked;updateLockBtn();}
-function updateLockBtn(){
-  const btn=document.getElementById('btn-lock');
-  btn.textContent=wallLocked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';
-  btn.className=wallLocked?'wall-btn lk':'wall-btn ulk';
-}
-function setOpDot(t,a){document.getElementById('dot-'+t).className='op-dot'+(a?' '+t:'');document.getElementById('lbl-'+t).className='op-lbl'+(a?' active':'');}
+function toggleLock(){locked=!locked;updLock();}
+function updLock(){const btn=document.getElementById('btn-lock');btn.textContent=locked?'🔒 ロック中':'🔓 アンロック — 移動/回転可';btn.className=locked?'ww-btn lk':'ww-btn ulk';}
+function sOD(t,a){document.getElementById('dot-'+t).className='op-dot'+(a?' '+t:'');document.getElementById('lbl-'+t).className='op-lbl'+(a?' active':'');}
 
 async function startDetect(){
-  if(!xrSession)return;
-  if(isDetecting){stopDetect();return;}
+  if(!xrSess)return;if(detecting){stopDet();return;}
   try{
-    const vs=await xrSession.requestReferenceSpace('viewer');
-    xrHitTestSource=await xrSession.requestHitTestSource({space:vs});
-    isDetecting=true;wallLocked=false;updateLockBtn();
+    const vs=await xrSess.requestReferenceSpace('viewer');
+    xrHit=await xrSess.requestHitTestSource({space:vs});
+    detecting=true;locked=false;updLock();
     document.getElementById('btn-detect').textContent='✓ 検出中 — 右トリガーでスナップ';
-    document.getElementById('btn-detect').classList.add('scanning');
-    setOpDot('detect',true);
-  }catch(e){
-    document.getElementById('btn-detect').textContent='⚠ ARが必要です';
-    setTimeout(()=>document.getElementById('btn-detect').textContent='🔍 壁を自動検出',2000);
-  }
+    document.getElementById('btn-detect').classList.add('scanning');sOD('detect',true);
+  }catch(e){document.getElementById('btn-detect').textContent='⚠ ARが必要です';setTimeout(()=>document.getElementById('btn-detect').textContent='🔍 壁を自動検出',2000);}
 }
-function stopDetect(){
-  if(xrHitTestSource){xrHitTestSource.cancel();xrHitTestSource=null;}
-  isDetecting=false;
-  document.getElementById('btn-detect').textContent='🔍 壁を自動検出';
-  document.getElementById('btn-detect').classList.remove('scanning');
-  setOpDot('detect',false);
-}
+function stopDet(){if(xrHit){xrHit.cancel();xrHit=null;}detecting=false;document.getElementById('btn-detect').textContent='🔍 壁を自動検出';document.getElementById('btn-detect').classList.remove('scanning');sOD('detect',false);}
 
-// ============================================================
-// 壁状態
-// ============================================================
-let wallWX=0,wallWY=0.8,wallWZ=-0.6;
-let wallYaw=0,wallPitch=0,wallRoll=0;
-let grabbing=false,grabOX=0,grabOY=0,grabOZ=0;
-let rotating=false,rotSQ={x:0,y:0,z:0,w:1},rotSY=0,rotSP=0,rotSR=0;
+// WALL STATE
+let wX=0,wWY=0.8,wZ=-0.6,wY=0,wP=0,wR=0;
+let grab=false,gOX=0,gOY=0,gOZ=0;
+let rot=false,rSQ={x:0,y:0,z:0,w:1},rSY=0,rSP=0,rSR=0;
 let hitPos=null,fc=0;
-let kPos={x:0,y:1,z:-.5},kQuat={x:0,y:0,z:0,w:1};
 
-function onXRFrame(t,frame){
-  xrSession.requestAnimationFrame(onXRFrame);fc++;
-  const pose=frame.getViewerPose(xrRefSpace);if(!pose)return;
-  gl.bindFramebuffer(gl.FRAMEBUFFER,glLayer.framebuffer);
+function xrF(t,frame){
+  xrSess.requestAnimationFrame(xrF);fc++;
+  const pose=frame.getViewerPose(xrRef);if(!pose)return;
+  gl.bindFramebuffer(gl.FRAMEBUFFER,glLay.framebuffer);
   gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
 
   hitPos=null;
-  if(isDetecting&&xrHitTestSource){
-    const hits=frame.getHitTestResults(xrHitTestSource);
-    if(hits.length>0){const hp=hits[0].getPose(xrRefSpace);if(hp){const p=hp.transform.position,q=hp.transform.orientation;hitPos={x:p.x,y:p.y,z:p.z,qx:q.x,qy:q.y,qz:q.z,qw:q.w};}}
-  }
+  if(detecting&&xrHit){const hits=frame.getHitTestResults(xrHit);if(hits.length>0){const hp=hits[0].getPose(xrRef);if(hp){const p=hp.transform.position,q=hp.transform.orientation;hitPos={x:p.x,y:p.y,z:p.z,qx:q.x,qy:q.y,qz:q.z,qw:q.w};}}}
 
-  let curAngle=lastAngle;
-  for(const src of xrSession.inputSources){
+  let curA=lastAng;
+  for(const src of xrSess.inputSources){
     if(!src.gripSpace)continue;
-    const gp=frame.getPose(src.gripSpace,xrRefSpace);if(!gp)continue;
+    const gp=frame.getPose(src.gripSpace,xrRef);if(!gp)continue;
     const q=gp.transform.orientation,p=gp.transform.position;
-    const trigger=src.gamepad?.buttons[0]?.value??0;
-    const grip=src.gamepad?.buttons[1]?.value??0;
+    const tr=src.gamepad?.buttons[0]?.value??0;
+    const gr=src.gamepad?.buttons[1]?.value??0;
 
     if(src.handedness==='right'){
-      const cfz=-(1-2*(q.x*q.x+q.y*q.y));
-      curAngle=Math.min(90,Math.max(0,90-Math.asin(Math.max(-1,Math.min(1,Math.abs(cfz))))*180/Math.PI));
-      kPos={x:p.x,y:p.y,z:p.z};kQuat={x:q.x,y:q.y,z:q.z,w:q.w};
+      // ★ コテ角度: グリップ前方向と壁面法線の角度を正しく計算
+      // Quest3グリップ: +Z = コントローラー後方, -Z = 前方
+      // 前方ベクトル = rotate(0,0,-1) by q
+      const fwdX=2*(q.x*q.z+q.w*q.y);
+      const fwdY=2*(q.y*q.z-q.w*q.x);
+      const fwdZ=-(1-2*(q.x*q.x+q.y*q.y));
+      // 壁法線はローカルZ方向 = eM(wY,wP,wR)の第3列
+      const R=eM(wY,wP,wR);
+      const nX=R[8],nY=R[9],nZ=R[10];
+      // 前方ベクトルと壁法線の内積 → 角度
+      const dot=fwdX*nX+fwdY*nY+fwdZ*nZ;
+      const ang=Math.acos(Math.max(-1,Math.min(1,Math.abs(dot))))*180/Math.PI;
+      curA=Math.min(90,Math.max(0,ang));
 
-      if(!isDetecting){
-        // ★ 壁ローカル座標に変換して塗り判定
-        const L=worldToLocal(p.x,p.y,p.z);
-        if(Math.abs(L.z)<PAINT_DIST){
-          if(!wasPainting){strokes++;wasPainting=true;}
-          angLog.push(curAngle);if(angLog.length>2000)angLog.shift();
-          // ★ ローカルX=0がグリッド中央 → gx = L.x/CELL + GW/2
-          // ★ ローカルY=0がグリッド下端 → gy = L.y/CELL
-          const gx=Math.floor(L.x/CELL+GW/2);
-          const gy=Math.floor(L.y/CELL);
-          const pres=Math.max(0,1-Math.abs(L.z)/PAINT_DIST);
-          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
-            const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pres*0.0005);
-          }
-        }else wasPainting=false;
+      if(!detecting){
+        // ★ 奥行きをWALL_DEPTHから計算
+        const PD=WALL_DEPTH/1000;
+        const L=w2L(p.x,p.y,p.z);
+        if(Math.abs(L.z)<PD){
+          if(!wasPaint){strokes++;wasPaint=true;}
+          angLog.push(curA);if(angLog.length>2000)angLog.shift();
+          const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
+          const pr=Math.max(0,1-Math.abs(L.z)/PD);
+          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=gx+dx,ny=gy+dy;if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pr*0.0005);}
+        }else wasPaint=false;
       }
-
-      // ★ hit-test確定: 壁の中央下端にスナップ
-      if(isDetecting&&trigger>0.5&&hitPos){
-        // hit-test座標をそのまま壁の中央X,下端Yとして使う
-        wallWX=hitPos.x;
-        wallWY=hitPos.y;
-        wallWZ=hitPos.z;
-        // ★ hit-testのYaw取得 + Pitch/Roll=0で垂直固定
-        const hq={x:hitPos.qx,y:hitPos.qy,z:hitPos.qz,w:hitPos.qw};
-        wallYaw=Math.atan2(2*(hq.w*hq.y+hq.x*hq.z),1-2*(hq.y*hq.y+hq.x*hq.x));
-        wallPitch=0;wallRoll=0;
-        updateRotDisplay();
-        wallLocked=true;updateLockBtn();stopDetect();clearPaintData();
+      if(detecting&&tr>0.5&&hitPos){
+        wX=hitPos.x;wWY=hitPos.y;wZ=hitPos.z;
+        const q2={x:hitPos.qx,y:hitPos.qy,z:hitPos.qz,w:hitPos.qw};
+        wY=Math.atan2(2*(q2.w*q2.y+q2.x*q2.z),1-2*(q2.y*q2.y+q2.x*q2.x));
+        wP=0;wR=0;updRot();locked=true;updLock();stopDet();clearPaint();
       }
     }
-
-    if(src.handedness==='left'&&!wallLocked){
-      if(trigger>0.5){
-        if(!grabbing){grabbing=true;grabOX=wallWX-p.x;grabOY=wallWY-p.y;grabOZ=wallWZ-p.z;setOpDot('move',true);}
-        else{wallWX=p.x+grabOX;wallWY=p.y+grabOY;wallWZ=p.z+grabOZ;}
-      }else{if(grabbing){grabbing=false;setOpDot('move',false);}}
-      if(grip>0.5){
-        if(!rotating){rotating=true;rotSQ={x:q.x,y:q.y,z:q.z,w:q.w};rotSY=wallYaw;rotSP=wallPitch;rotSR=wallRoll;setOpDot('rotate',true);}
-        else{const d=quatDeltaEuler(rotSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wallYaw=rotSY+d.yaw;wallPitch=rotSP+d.pitch;wallRoll=rotSR+d.roll;}
-      }else{if(rotating){rotating=false;setOpDot('rotate',false);}}
+    if(src.handedness==='left'&&!locked){
+      if(tr>0.5){if(!grab){grab=true;gOX=wX-p.x;gOY=wWY-p.y;gOZ=wZ-p.z;sOD('move',true);}else{wX=p.x+gOX;wWY=p.y+gOY;wZ=p.z+gOZ;}}else{if(grab){grab=false;sOD('move',false);}}
+      if(gr>0.5){if(!rot){rot=true;rSQ={x:q.x,y:q.y,z:q.z,w:q.w};rSY=wY;rSP=wP;rSR=wR;sOD('rotate',true);}else{const d=qdE(rSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wY=rSY+d.yaw;wP=rSP+d.pitch;wR=rSR+d.roll;}}else{if(rot){rot=false;sOD('rotate',false);}}
     }
   }
 
-  if(fc%20===0){updateHUD(curAngle);updateRotDisplay();}
+  if(fc%20===0){updHUD(curA);updRot();}
 
-  // ★ 壁描画: wallWX/Y/Zはグリッド中央X=0,下端Y=0の位置
-  const wm=wallModelMat(wallWX,wallWY,wallWZ,wallYaw,wallPitch,wallRoll);
+  const wm=wMM(wX,wWY,wZ,wY,wP,wR);
 
   for(const view of pose.views){
-    const vp=glLayer.getViewport(view);
+    const vp=glLay.getViewport(view);
     gl.viewport(vp.x,vp.y,vp.width,vp.height);
     gl.uniformMatrix4fv(uP_,false,view.projectionMatrix);
     gl.uniformMatrix4fv(uV_,false,view.transform.inverse.matrix);
 
     gl.uniformMatrix4fv(uM_,false,wm);
-    gl.bindBuffer(gl.ARRAY_BUFFER,gridBuf);setAttr();
-    gl.drawArrays(gl.LINES,0,(GW+1)*2+(GH+1)*2);
+    gl.bindBuffer(gl.ARRAY_BUFFER,gBuf);sA();
+    const gv=gridV();gl.drawArrays(gl.LINES,0,gv.length/7);
 
-    const wd=wallVerts();
-    if(wd.length>0){gl.bindBuffer(gl.ARRAY_BUFFER,wallBuf);gl.bufferData(gl.ARRAY_BUFFER,wd,gl.DYNAMIC_DRAW);setAttr();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);}
+    const wd=wallV();
+    if(wd.length>0){gl.bindBuffer(gl.ARRAY_BUFFER,wBuf);gl.bufferData(gl.ARRAY_BUFFER,wd,gl.DYNAMIC_DRAW);sA();gl.drawArrays(gl.TRIANGLES,0,wd.length/7);}
 
-    if(isDetecting&&hitPos){
-      const rd=reticleVerts(hitPos.x,hitPos.y,hitPos.z,.15);
-      gl.uniformMatrix4fv(uM_,false,matId());
-      gl.bindBuffer(gl.ARRAY_BUFFER,retBuf);gl.bufferData(gl.ARRAY_BUFFER,rd,gl.DYNAMIC_DRAW);setAttr();gl.drawArrays(gl.TRIANGLES,0,rd.length/7);
+    if(detecting&&hitPos){
+      const rd=retV(hitPos.x,hitPos.y,hitPos.z,.15);
+      gl.uniformMatrix4fv(uM_,false,mId());
+      gl.bindBuffer(gl.ARRAY_BUFFER,rBuf);gl.bufferData(gl.ARRAY_BUFFER,rd,gl.DYNAMIC_DRAW);sA();gl.drawArrays(gl.TRIANGLES,0,rd.length/7);
     }
-
-    // ★ 手のみ表示（コテ形状を削除）
-    const hm=handMat(kQuat,kPos.x,kPos.y,kPos.z);
-    gl.uniformMatrix4fv(uM_,false,hm);
-    gl.bindBuffer(gl.ARRAY_BUFFER,handBuf);setAttr();gl.drawArrays(gl.TRIANGLES,0,HAND_TRIS);
   }
 }
 </script>
