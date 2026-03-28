@@ -158,12 +158,36 @@ canvas{display:block;}
     <div class="ww-body">
       <div class="op-box">
         <div class="op-row"><div class="od" id="dm"></div><span class="ol" id="lm">左トリガー → 壁移動</span></div>
-        <div class="op-row"><div class="od" id="dr"></div><span class="ol" id="lr">左グリップ → 壁回転</span></div>
         <div class="op-row"><div class="od" id="dd"></div><span class="ol" id="ld">右トリガー → 壁スナップ</span></div>
       </div>
       <button class="wb det" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
       <button class="wb lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
       <div class="ww-sep"></div>
+      <!-- ★ 壁の位置 +/-ボタン -->
+      <div class="dep-box" style="border-color:rgba(0,229,255,0.35);">
+        <div class="dep-ttl" style="color:#00e5ff">壁の位置</div>
+        <!-- 上下 -->
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="color:#aac8e0;font-size:11px;width:32px;">上下</span>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('Y',-0.01)" onmousedown="mvWall('Y',-0.01)">▼</button>
+          <div style="flex:1;text-align:center;color:#fff;font-size:13px;font-weight:bold;" id="wpos-y">0.80m</div>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('Y',0.01)" onmousedown="mvWall('Y',0.01)">▲</button>
+        </div>
+        <!-- 左右 -->
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="color:#aac8e0;font-size:11px;width:32px;">左右</span>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('X',-0.01)" onmousedown="mvWall('X',-0.01)">◀</button>
+          <div style="flex:1;text-align:center;color:#fff;font-size:13px;font-weight:bold;" id="wpos-x">0.00m</div>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('X',0.01)" onmousedown="mvWall('X',0.01)">▶</button>
+        </div>
+        <!-- 奥行き位置 -->
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="color:#aac8e0;font-size:11px;width:32px;">奥前</span>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('Z',0.01)" onmousedown="mvWall('Z',0.01)">↙</button>
+          <div style="flex:1;text-align:center;color:#fff;font-size:13px;font-weight:bold;" id="wpos-z">0.60m</div>
+          <button class="dep-btn" style="width:38px;height:38px;font-size:18px;" ontouchstart="mvWall('Z',-0.01)" onmousedown="mvWall('Z',-0.01)">↗</button>
+        </div>
+      </div>
       <!-- 奥行き -->
       <div class="dep-box">
         <div class="dep-ttl">コテ当たり奥行き</div>
@@ -194,18 +218,6 @@ canvas{display:block;}
           <button class="dep-pre" style="background:#200a0a;border:1.5px solid #ff4466;color:#ff4466" onclick="setRed(8)">厳しい×8</button>
         </div>
       </div>
-      <!-- 向き -->
-      <div class="sec-ttl">壁の向き</div>
-      <div class="ori-grid">
-        <button class="ob v" onclick="setOri('v')">🔲 垂直</button>
-        <button class="ob h" onclick="setOri('h')">⬜ 水平</button>
-        <button class="ob r" onclick="resetRot()">↺ 回転リセット</button>
-      </div>
-      <!-- 微調整 -->
-      <div class="sec-ttl">微調整 (1°)</div>
-      <div class="ra"><span class="ral">Y</span><button class="rb" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button><span class="rav" id="ry">0°</span><button class="rb" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button></div>
-      <div class="ra"><span class="ral">X</span><button class="rb" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button><span class="rav" id="rx">0°</span><button class="rb" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button></div>
-      <div class="ra"><span class="ral">Z</span><button class="rb" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button><span class="rav" id="rz">0°</span><button class="rb" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button></div>
       <div class="ww-sep"></div>
       <div class="st">スコア基準</div>
       <div class="sr"><span class="sl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="sv" id="ss-angle-val">35°</span></div>
@@ -291,24 +303,25 @@ bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cf
 function rT(){document.getElementById('h-ta').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
 
 function chDep(d){DEPTH=Math.max(5,Math.min(200,DEPTH+d));document.getElementById('dep-disp').textContent=DEPTH;}
+// 壁位置表示を更新
+function updWallPos(){
+  if(document.getElementById('wpos-x'))document.getElementById('wpos-x').textContent=wX.toFixed(2)+'m';
+  if(document.getElementById('wpos-y'))document.getElementById('wpos-y').textContent=wWY.toFixed(2)+'m';
+  if(document.getElementById('wpos-z'))document.getElementById('wpos-z').textContent=Math.abs(wZ).toFixed(2)+'m';
+}
+// ★ 壁位置 +/- 移動 (1cm単位)
+function mvWall(axis,delta){
+  if(axis==='X'){wX+=delta;document.getElementById('wpos-x').textContent=wX.toFixed(2)+'m';}
+  if(axis==='Y'){wWY+=delta;document.getElementById('wpos-y').textContent=wWY.toFixed(2)+'m';}
+  if(axis==='Z'){wZ+=delta;document.getElementById('wpos-z').textContent=Math.abs(wZ).toFixed(2)+'m';}
+}
 // ★ 赤閾値 (RED_RATIO: 目標厚みの何倍で赤になるか)
 let RED_RATIO=5;
 function chRed(d){RED_RATIO=Math.max(1.5,Math.min(20,+(RED_RATIO+d*0.5).toFixed(1)));document.getElementById('red-disp').textContent=RED_RATIO;}
 function setRed(v){RED_RATIO=v;document.getElementById('red-disp').textContent=v;}
 function setDep(v){DEPTH=v;document.getElementById('dep-disp').textContent=v;}
 
-function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else{wY=0;wP=-Math.PI/2;wR=0;}uRot();}
-function resetRot(){wY=0;wP=0;wR=0;uRot();}
 
-const D2R=Math.PI/180;
-let rpt=null,rpi=null;
-function sr(ax,sg){adj(ax,sg);rpt=setTimeout(()=>{rpi=setInterval(()=>adj(ax,sg),80);},400);}
-function stopR(){clearTimeout(rpt);clearInterval(rpi);}
-function adj(ax,sg){if(ax==='Y')wY+=sg*D2R;if(ax==='X')wP+=sg*D2R;if(ax==='Z')wR+=sg*D2R;uRot();}
-function uRot(){
-  function f(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
-  document.getElementById('ry').textContent=f(wY);document.getElementById('rx').textContent=f(wP);document.getElementById('rz').textContent=f(wR);
-}
 
 // ★ スコア共有モーダル
 function showScoreModal(){
@@ -546,12 +559,12 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
     xrSess.updateRenderState({baseLayer:glLay});
     xrRef=await xrSess.requestReferenceSpace('local-floor');
     wX=0;wWY=0.8;wZ=-0.6;wY=0;wP=0;wR=0;
-    locked=true;clrP();rT();uRot();
+    locked=true;clrP();rT();
     document.getElementById('ui').style.display='none';
     document.getElementById('ar-overlay').style.display='block';
     updLock();
     xrSess.requestAnimationFrame(xrF);
-    xrSess.addEventListener('end',()=>{stopDet();stopR();document.getElementById('ui').style.display='flex';document.getElementById('ar-overlay').style.display='none';});
+    xrSess.addEventListener('end',()=>{stopDet();document.getElementById('ui').style.display='flex';document.getElementById('ar-overlay').style.display='none';});
   }catch(e){stEl.textContent='エラー: '+e.message;stEl.style.color='#ff4466';}
 });
 
@@ -573,7 +586,6 @@ function stopDet(){if(xrHit){xrHit.cancel();xrHit=null;}detecting=false;document
 
 let wX=0,wWY=0.8,wZ=-0.6,wY=0,wP=0,wR=0;
 let grab=false,gOX=0,gOY=0,gOZ=0;
-let rot=false,rSQ={x:0,y:0,z:0,w:1},rSY=0,rSP=0,rSR=0;
 let hitPos=null,fc=0;
 
 function xrF(t,frame){
@@ -618,16 +630,16 @@ function xrF(t,frame){
         wX=hitPos.x;wWY=hitPos.y;wZ=hitPos.z;
         const q2={x:hitPos.qx,y:hitPos.qy,z:hitPos.qz,w:hitPos.qw};
         wY=Math.atan2(2*(q2.w*q2.y+q2.x*q2.z),1-2*(q2.y*q2.y+q2.x*q2.x));
-        wP=0;wR=0;uRot();locked=true;updLock();stopDet();clrP();
+        wP=0;wR=0;locked=true;updLock();stopDet();clrP();
       }
     }
     if(src.handedness==='left'&&!locked){
       if(tr>0.5){if(!grab){grab=true;gOX=wX-p.x;gOY=wWY-p.y;gOZ=wZ-p.z;sOD('m',true);}else{wX=p.x+gOX;wWY=p.y+gOY;wZ=p.z+gOZ;}}else{if(grab){grab=false;sOD('m',false);}}
-      if(gr>0.5){if(!rot){rot=true;rSQ={x:q.x,y:q.y,z:q.z,w:q.w};rSY=wY;rSP=wP;rSR=wR;sOD('r',true);}else{const d=qdE(rSQ,{x:q.x,y:q.y,z:q.z,w:q.w});wY=rSY+d.yaw;wP=rSP+d.pitch;wR=rSR+d.roll;}}else{if(rot){rot=false;sOD('r',false);}}
+
     }
   }
 
-  if(fc%20===0){updHUD(curA);uRot();}
+  if(fc%20===0){updHUD(curA);updWallPos();}
 
   const wm=wMM(wX,wWY,wZ,wY,wP,wR);
   for(const view of pose.views){
