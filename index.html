@@ -196,11 +196,26 @@ canvas{display:block;}
           <div class="dep-disp" id="dep-disp">50</div>
           <button class="dep-btn" ontouchstart="chDep(1)" onmousedown="chDep(1)">＋</button>
         </div>
-        <div class="dep-unit">mm</div>
+        <div class="dep-unit">mm（コテ当たり判定の深さ）</div>
         <div class="dep-presets">
           <button class="dep-pre dp1" onclick="setDep(20)">20mm</button>
           <button class="dep-pre dp2" onclick="setDep(50)">50mm</button>
           <button class="dep-pre dp3" onclick="setDep(100)">100mm</button>
+        </div>
+      </div>
+      <!-- ★ コテ刃先オフセット -->
+      <div class="dep-box" style="border-color:rgba(255,204,0,0.4);background:rgba(255,204,0,0.05);">
+        <div class="dep-ttl" style="color:#ffcc00">コテ刃先オフセット</div>
+        <div class="dep-ctrl" style="border-color:rgba(255,204,0,0.4);">
+          <button class="dep-btn" style="color:#ffcc00" ontouchstart="chOfs(-10)" onmousedown="chOfs(-10)">−</button>
+          <div class="dep-disp" id="ofs-disp" style="color:#ffcc00">300</div>
+          <button class="dep-btn" style="color:#ffcc00" ontouchstart="chOfs(10)" onmousedown="chOfs(10)">＋</button>
+        </div>
+        <div class="dep-unit">mm　手首→刃先の距離 (10mm刻み)</div>
+        <div class="dep-presets">
+          <button class="dep-pre dp1" onclick="setOfs(200)">200mm</button>
+          <button class="dep-pre dp2" onclick="setOfs(300)">300mm</button>
+          <button class="dep-pre dp3" onclick="setOfs(450)">450mm</button>
         </div>
       </div>
       <!-- ★ 当たり判定の厚み設定 -->
@@ -217,6 +232,34 @@ canvas{display:block;}
           <button class="dep-pre" style="background:#181006;border:1.5px solid #ff9900;color:#ff9900" onclick="setRed(5)">標準×5</button>
           <button class="dep-pre" style="background:#200a0a;border:1.5px solid #ff4466;color:#ff4466" onclick="setRed(8)">厳しい×8</button>
         </div>
+      </div>
+      <div class="ww-sep"></div>
+      <!-- 向き -->
+      <div class="sec-ttl" style="color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:6px;">壁の向き</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;">
+        <button style="border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;background:#100620;border:1.5px solid #aa44ff;color:#aa44ff;" onclick="setOri('v')">🔲 垂直</button>
+        <button style="border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;" onclick="setOri('h')">⬜ 水平</button>
+        <button style="border:none;border-radius:7px;font-size:11px;font-weight:bold;padding:8px 4px;cursor:pointer;text-align:center;background:#181006;border:1.5px solid #ff9900;color:#ff9900;grid-column:1/-1;" onclick="resetRot()">↺ 回転リセット</button>
+      </div>
+      <!-- 微調整 -->
+      <div style="color:#ff9900;font-size:9px;letter-spacing:2px;margin-bottom:6px;">微調整 (1°)</div>
+      <div style="display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;">
+        <span style="color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;">Y</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button>
+        <span style="color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;" id="ry">0°</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button>
+      </div>
+      <div style="display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;">
+        <span style="color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;">X</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button>
+        <span style="color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;" id="rx">0°</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button>
+      </div>
+      <div style="display:flex;align-items:center;background:rgba(255,153,0,0.07);border:1px solid rgba(255,153,0,0.2);border-radius:7px;padding:5px 7px;margin-bottom:5px;gap:5px;">
+        <span style="color:#ff9900;font-size:11px;font-weight:bold;width:16px;flex-shrink:0;">Z</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button>
+        <span style="color:#fff;font-size:12px;font-weight:bold;min-width:38px;text-align:center;flex:1;" id="rz">0°</span>
+        <button style="background:rgba(255,153,0,0.15);border:1.5px solid rgba(255,153,0,0.35);color:#ff9900;font-size:15px;font-weight:bold;width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;user-select:none;" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button>
       </div>
       <div class="ww-sep"></div>
       <div class="st">スコア基準</div>
@@ -246,6 +289,7 @@ canvas{display:block;}
       <div class="row" style="margin-top:8px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0mm</span></div>
       <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-tt">8mm±2mm</span></div>
       <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
+      <div class="row"><span class="lbl">トラッキング</span><span class="val sm" id="h-ht" style="color:#4a6a8a">待機中</span></div>
     </div>
   </div>
 
@@ -303,6 +347,25 @@ bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cf
 function rT(){document.getElementById('h-ta').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
 
 function chDep(d){DEPTH=Math.max(5,Math.min(200,DEPTH+d));document.getElementById('dep-disp').textContent=DEPTH;}
+// ★ コテ刃先オフセット (mm)
+let KOTE_OFFSET = 300;
+function chOfs(d){KOTE_OFFSET=Math.max(0,Math.min(800,KOTE_OFFSET+d));const el=document.getElementById('ofs-disp');if(el)el.textContent=KOTE_OFFSET;}
+function setOfs(v){KOTE_OFFSET=v;const el=document.getElementById('ofs-disp');if(el)el.textContent=v;}
+
+// 回転
+const D2R=Math.PI/180;
+let rpt=null,rpi=null;
+function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else{wY=0;wP=-Math.PI/2;wR=0;}uRot();}
+function resetRot(){wY=0;wP=0;wR=0;uRot();}
+function sr(ax,sg){adj(ax,sg);rpt=setTimeout(()=>{rpi=setInterval(()=>adj(ax,sg),80);},400);}
+function stopR(){clearTimeout(rpt);clearInterval(rpi);}
+function adj(ax,sg){if(ax==='Y')wY+=sg*D2R;if(ax==='X')wP+=sg*D2R;if(ax==='Z')wR+=sg*D2R;uRot();}
+function uRot(){
+  function f(r){let d=Math.round(r*180/Math.PI)%360;if(d>180)d-=360;if(d<-180)d+=360;return d+'°';}
+  const ry=document.getElementById('ry'),rx=document.getElementById('rx'),rz=document.getElementById('rz');
+  if(ry)ry.textContent=f(wY);if(rx)rx.textContent=f(wP);if(rz)rz.textContent=f(wR);
+}
+
 // 壁位置表示を更新
 function updWallPos(){
   if(document.getElementById('wpos-x'))document.getElementById('wpos-x').textContent=wX.toFixed(2)+'m';
@@ -553,7 +616,7 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
-    const opts=arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}:{requiredFeatures:['local-floor']};
+    const opts=arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay','hand-tracking'],domOverlay:{root:document.getElementById('ar-overlay')}}:{requiredFeatures:['local-floor','hand-tracking']};
     xrSess=await navigator.xr.requestSession(mode,opts);
     glLay=new XRWebGLLayer(xrSess,gl,{alpha:true});
     xrSess.updateRenderState({baseLayer:glLay});
@@ -599,8 +662,63 @@ function xrF(t,frame){
   if(detecting&&xrHit){const hits=frame.getHitTestResults(xrHit);if(hits.length>0){const hp=hits[0].getPose(xrRef);if(hp){const p=hp.transform.position,q=hp.transform.orientation;hitPos={x:p.x,y:p.y,z:p.z,qx:q.x,qy:q.y,qz:q.z,qw:q.w};}}}
 
   let curA=lastAng;
+
+  // ★ ハンドトラッキング処理
+  for(const src of xrSess.inputSources){
+    if(src.hand && src.handedness==='right'){
+      // 手首関節
+      const wristJoint=src.hand.get('wrist');
+      const midMeta=src.hand.get('middle-finger-metacarpal');
+      const indexTip=src.hand.get('index-finger-tip');
+      if(!wristJoint||!midMeta)continue;
+      const htEl=document.getElementById('h-ht');
+      const wristP=frame.getJointPose(wristJoint,xrRef);
+      const midP=frame.getJointPose(midMeta,xrRef);
+      const idxP=indexTip?frame.getJointPose(indexTip,xrRef):null;
+      if(!wristP||!midP)continue;
+
+      // 手首→中指付け根の方向ベクトル（コテの向き）
+      const wx=wristP.transform.position.x,wy=wristP.transform.position.y,wz2=wristP.transform.position.z;
+      const mx=midP.transform.position.x,my=midP.transform.position.y,mz=midP.transform.position.z;
+      let dx=mx-wx,dy=my-wy,dz=mz-wz2;
+      const len=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.001;
+      dx/=len;dy/=len;dz/=len;
+
+      // コテ刃先 = 手首位置 + 方向 × オフセット
+      const ofs=KOTE_OFFSET/1000;
+      const kx=wx+dx*ofs, ky=wy+dy*ofs, kz=wz2+dz*ofs;
+
+      // コテ角度: 手の向きと壁法線の角度
+      const R=eMf(wY,wP,wR);
+      const dot2=dx*R[8]+dy*R[9]+dz*R[10];
+      curA=Math.acos(Math.max(-1,Math.min(1,Math.abs(dot2))))*180/Math.PI;
+
+      if(htEl){htEl.textContent='✓ 手検出中';htEl.style.color='#00ff88';}
+      if(!detecting){
+        const PD=DEPTH/1000;
+        const L=w2L(kx,ky,kz);  // 刃先位置で判定
+        if(Math.abs(L.z)<PD){
+          if(!wasPaint){strokes++;wasPaint=true;}
+          angLog.push(curA);if(angLog.length>2000)angLog.shift();
+          const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
+          const pr=Math.max(0,1-Math.abs(L.z)/PD);
+          for(let dy2=-1;dy2<=1;dy2++)for(let dx2=-1;dx2<=1;dx2++){
+            const nx=gx+dx2,ny=gy+dy2;
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.08,thick[ny*GW+nx]+pr*0.00015);
+          }
+        }else wasPaint=false;
+      }
+    }
+  }
+
+  // コントローラー処理（フォールバック）
   for(const src of xrSess.inputSources){
     if(!src.gripSpace)continue;
+    // ハンドトラッキング中はコントローラーをスキップ
+    const hasHand=[...xrSess.inputSources].some(s=>s.hand&&s.handedness==='right');
+    if(hasHand)continue;
+    const htEl2=document.getElementById('h-ht');
+    if(htEl2){htEl2.textContent='コントローラー';htEl2.style.color='#ffcc00';}
     const gp=frame.getPose(src.gripSpace,xrRef);if(!gp)continue;
     const q=gp.transform.orientation,p=gp.transform.position;
     const tr=src.gamepad?.buttons[0]?.value??0;
@@ -639,7 +757,7 @@ function xrF(t,frame){
     }
   }
 
-  if(fc%20===0){updHUD(curA);updWallPos();}
+  if(fc%20===0){updHUD(curA);updWallPos();uRot();}
 
   const wm=wMM(wX,wWY,wZ,wY,wP,wR);
   for(const view of pose.views){
