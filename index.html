@@ -18,7 +18,8 @@ p{color:#4a6a8a;font-size:12px;text-align:center;padding:0 20px;}
 input[type=range]{width:110px;accent-color:#00e5ff;}
 .set-val{color:#fff;font-size:13px;font-weight:bold;min-width:52px;text-align:right;}
 .btn-main{background:#00e5ff;color:#000;border:none;padding:16px 44px;font-size:20px;font-weight:bold;cursor:pointer;border-radius:8px;}
-.btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 24px;font-size:14px;cursor:pointer;border-radius:6px;}
+.btn-row{display:flex;gap:10px;}
+.btn-sub{background:transparent;color:#00e5ff;border:1.5px solid #00e5ff;padding:10px 20px;font-size:13px;cursor:pointer;border-radius:6px;}
 #status{color:#ffcc00;font-size:12px;text-align:center;padding:0 20px;}
 
 /* DOM Overlay */
@@ -26,7 +27,7 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 
 /* 壁設定ウィンドウ */
 #wall-window{position:absolute;top:16px;left:16px;width:240px;pointer-events:auto;background:rgba(2,6,14,0.96);border:2px solid #00e5ff;border-radius:14px;overflow:hidden;box-shadow:0 0 28px rgba(0,229,255,0.35);}
-.ww-hdr{background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(0,229,255,0.05));padding:10px 14px;border-bottom:1px solid rgba(0,229,255,0.25);}
+.ww-hdr{background:rgba(0,229,255,0.1);padding:10px 14px;border-bottom:1px solid rgba(0,229,255,0.2);}
 .ww-ttl{color:#00e5ff;font-size:10px;letter-spacing:3px;font-weight:bold;}
 .ww-body{padding:12px 14px;max-height:calc(100vh - 80px);overflow-y:auto;}
 .ww-sep{height:1px;background:rgba(0,229,255,0.15);margin:10px 0;}
@@ -46,13 +47,14 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 .wb.ulk{background:#1a1000;border:1.5px solid #ffcc00;color:#ffcc00;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
 
+/* 奥行き */
 .dep-box{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.25);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
-.dep-ttl{color:#00e5ff;font-size:9px;letter-spacing:2px;margin-bottom:10px;}
+.dep-ttl{color:#00e5ff;font-size:9px;letter-spacing:2px;margin-bottom:8px;}
 .dep-ctrl{display:flex;align-items:center;background:rgba(0,0,0,0.4);border:1.5px solid rgba(0,229,255,0.3);border-radius:10px;overflow:hidden;}
 .dep-btn{background:rgba(0,229,255,0.12);border:none;color:#00e5ff;font-size:22px;font-weight:bold;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;-webkit-user-select:none;}
 .dep-btn:active{background:rgba(0,229,255,0.3);}
-.dep-disp{flex:1;text-align:center;color:#fff;font-size:22px;font-weight:bold;line-height:44px;}
-.dep-unit{color:#4a6a8a;font-size:11px;text-align:center;margin-top:4px;}
+.dep-disp{flex:1;text-align:center;color:#fff;font-size:22px;font-weight:bold;}
+.dep-unit{color:#4a6a8a;font-size:10px;text-align:center;margin-top:4px;}
 .dep-presets{display:flex;gap:4px;margin-top:8px;}
 .dep-pre{flex:1;border:none;border-radius:6px;font-size:11px;font-weight:bold;padding:6px 2px;cursor:pointer;text-align:center;}
 .dp1{background:#061828;border:1.5px solid #00e5ff;color:#00e5ff;}
@@ -74,39 +76,48 @@ input[type=range]{width:110px;accent-color:#00e5ff;}
 .rb:active{background:rgba(255,153,0,0.35);}
 
 .st{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;}
-.sr2{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.sr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
 .sl{color:#aac8e0;font-size:11px;flex:1;}
 input[type=range].sm{width:80px;accent-color:#00e5ff;}
 .sv{color:#fff;font-size:11px;font-weight:bold;min-width:34px;text-align:right;}
 
-/* ★ スコアHUD — 常時表示、大きく見やすく */
-#hud{position:absolute;top:16px;right:16px;pointer-events:none;width:200px;}
-.panel{background:rgba(2,6,14,0.94);border:2px solid #00e5ff;border-radius:12px;padding:10px 14px;margin-bottom:8px;box-shadow:0 0 16px rgba(0,229,255,0.2);}
-.ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:6px;opacity:0.75;}
-
-/* ★ スコア大きく */
-.score-wrap{text-align:center;padding:4px 0;}
-.score-num{font-size:72px;font-weight:bold;line-height:1;}
-.score-grade{font-size:16px;letter-spacing:4px;margin-top:2px;}
-
-/* ★ アングルメーター */
-.angle-big{text-align:center;padding:4px 0;}
-.angle-num{font-size:40px;font-weight:bold;line-height:1;}
-.angle-lbl{font-size:10px;color:#4a6a8a;margin-top:2px;}
-.gwrap{position:relative;height:12px;border-radius:6px;overflow:hidden;margin-top:6px;}
-.gzones{display:flex;width:100%;height:100%;}
-.zb{flex:25;background:rgba(255,68,102,0.6);}.zw{flex:15;background:rgba(255,204,0,0.6);}.zg{flex:20;background:rgba(0,255,136,0.6);}
-.ndl{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 5px #fff;}
-
-.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.lbl{color:#aac8e0;font-size:11px;}
-.val{font-size:18px;font-weight:bold;color:#fff;text-align:right;}
-.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:14px;}
-.bar-bg{width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:2px;}
+/* スコアHUD */
+#hud{position:absolute;top:16px;right:16px;pointer-events:none;width:230px;}
+.panel{background:rgba(2,6,14,0.94);border:2px solid #00e5ff;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 0 16px rgba(0,229,255,0.2);}
+.ptitle{color:#00e5ff;font-size:9px;letter-spacing:3px;margin-bottom:8px;opacity:0.75;}
+.score-wrap{text-align:center;}
+.score-num{font-size:60px;font-weight:bold;line-height:1;}
+.score-grade{font-size:14px;letter-spacing:4px;margin-top:4px;}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.lbl{color:#aac8e0;font-size:12px;}
+.val{font-size:20px;font-weight:bold;color:#fff;text-align:right;}
+.val.good{color:#00ff88;}.val.warn{color:#ffcc00;}.val.bad{color:#ff4466;}.val.sm{font-size:15px;}
+.bar-bg{width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:2px;}
 .bar-fill{height:100%;border-radius:3px;transition:width 0.3s;}
+.gwrap{position:relative;height:14px;border-radius:7px;overflow:hidden;margin-top:4px;}
+.gzones{display:flex;width:100%;height:100%;}
+.zb{flex:25;background:rgba(255,68,102,0.55);}.zw{flex:15;background:rgba(255,204,0,0.55);}.zg{flex:20;background:rgba(0,255,136,0.55);}
+.ndl{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left 0.1s;transform:translateX(-50%);box-shadow:0 0 4px #fff;}
+
+/* ★ スコア共有ボタン */
+#score-share-btn{position:absolute;bottom:16px;right:16px;pointer-events:auto;background:rgba(2,6,14,0.94);border:2px solid #00ff88;color:#00ff88;font-size:12px;font-weight:bold;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 0 12px rgba(0,255,136,0.3);}
 
 #prb{position:absolute;bottom:16px;left:16px;pointer-events:auto;background:rgba(2,6,14,0.92);border:1.5px solid #ff6644;color:#ff6644;font-size:11px;padding:8px 12px;border-radius:8px;cursor:pointer;}
 
+/* スコア共有モーダル */
+#score-modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:rgba(2,6,14,0.98);border:2px solid #00ff88;border-radius:16px;padding:20px;pointer-events:auto;display:none;z-index:200;box-shadow:0 0 32px rgba(0,255,136,0.4);}
+.sm-title{color:#00ff88;font-size:11px;letter-spacing:3px;margin-bottom:16px;text-align:center;}
+.sm-score{font-size:72px;font-weight:bold;text-align:center;line-height:1;margin-bottom:4px;}
+.sm-grade{font-size:18px;letter-spacing:4px;text-align:center;margin-bottom:16px;}
+.sm-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.sm-stat{background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;text-align:center;}
+.sm-stat-lbl{color:#4a6a8a;font-size:10px;margin-bottom:4px;}
+.sm-stat-val{color:#fff;font-size:18px;font-weight:bold;}
+#sm-qr{display:block;margin:0 auto 12px;border-radius:8px;}
+.sm-url{color:#00e5ff;font-size:9px;text-align:center;word-break:break-all;margin-bottom:12px;}
+.sm-close{background:#1e2530;border:none;color:#aac8e0;font-size:13px;padding:10px;border-radius:8px;cursor:pointer;width:100%;}
+
+/* スマホスコア */
 #phone-score{position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0a0c10;z-index:30;gap:20px;}
 .ps-score{font-size:120px;font-weight:bold;line-height:1;}
 .ps-grade{font-size:28px;letter-spacing:6px;}
@@ -123,7 +134,7 @@ canvas{display:block;}
 
 <div id="ui">
   <h1>左官AR TRAINER</h1>
-  <p>右手: コテ塗り / 左手トリガー: 移動 / 左手グリップ: 回転</p>
+  <p>右手: コテ塗り / 左手トリガー: 壁移動 / 左手グリップ: 壁回転</p>
   <div class="card">
     <div class="card-title">スコア基準設定</div>
     <div class="set-row"><span class="set-label">目標角度</span><input type="range" id="cfg-angle" min="10" max="70" value="35"><span class="set-val" id="cfg-angle-val">35°</span></div>
@@ -132,101 +143,110 @@ canvas{display:block;}
     <div class="set-row"><span class="set-label">厚み許容</span><input type="range" id="cfg-thick-tol" min="1" max="10" value="2"><span class="set-val" id="cfg-thick-tol-val">±2mm</span></div>
   </div>
   <button class="btn-main" id="btn-ar">📷 ARセッション開始</button>
-  <button class="btn-sub" id="btn-phone">📱 スマホスコア表示</button>
+  <div class="btn-row">
+    <button class="btn-sub" id="btn-phone">📱 スマホスコア</button>
+    <button class="btn-sub" id="btn-score-page">🏆 スコア確認</button>
+  </div>
   <div id="status">WebXR確認中...</div>
 </div>
 
+<!-- DOM Overlay -->
+
 <div id="ar-overlay">
-  <!-- 壁設定ウィンドウ -->
   <div id="wall-window">
-    <div class="ww-hdr"><span class="ww-ttl">🧱 壁設定</span></div>
+    <div class="ww-hdr"><span class="ww-ttl">🧱 壁設定ウィンドウ</span></div>
     <div class="ww-body">
       <div class="op-box">
-        <div class="op-row"><div class="od" id="dm"></div><span class="ol" id="lm">左トリガー → 移動</span></div>
-        <div class="op-row"><div class="od" id="dr"></div><span class="ol" id="lr">左グリップ → 回転</span></div>
-        <div class="op-row"><div class="od" id="dd"></div><span class="ol" id="ld">右トリガー → スナップ</span></div>
+        <div class="op-row"><div class="od" id="dm"></div><span class="ol" id="lm">左トリガー → 壁移動</span></div>
+        <div class="op-row"><div class="od" id="dr"></div><span class="ol" id="lr">左グリップ → 壁回転</span></div>
+        <div class="op-row"><div class="od" id="dd"></div><span class="ol" id="ld">右トリガー → 壁スナップ</span></div>
       </div>
       <button class="wb det" id="btn-detect" onclick="startDetect()">🔍 壁を自動検出</button>
       <button class="wb lk" id="btn-lock" onclick="toggleLock()">🔒 ロック中</button>
       <div class="ww-sep"></div>
-
-```
-  <!-- 奥行き -->
-  <div class="dep-box">
-    <div class="dep-ttl">コテ当たり判定の奥行き</div>
-    <div class="dep-ctrl">
-      <button class="dep-btn" ontouchstart="chDep(-1)" onmousedown="chDep(-1)">−</button>
-      <div class="dep-disp" id="dep-disp">50</div>
-      <button class="dep-btn" ontouchstart="chDep(1)" onmousedown="chDep(1)">＋</button>
+      <!-- 奥行き -->
+      <div class="dep-box">
+        <div class="dep-ttl">コテ当たり奥行き</div>
+        <div class="dep-ctrl">
+          <button class="dep-btn" ontouchstart="chDep(-1)" onmousedown="chDep(-1)">−</button>
+          <div class="dep-disp" id="dep-disp">50</div>
+          <button class="dep-btn" ontouchstart="chDep(1)" onmousedown="chDep(1)">＋</button>
+        </div>
+        <div class="dep-unit">mm</div>
+        <div class="dep-presets">
+          <button class="dep-pre dp1" onclick="setDep(20)">20mm</button>
+          <button class="dep-pre dp2" onclick="setDep(50)">50mm</button>
+          <button class="dep-pre dp3" onclick="setDep(100)">100mm</button>
+        </div>
+      </div>
+      <!-- 向き -->
+      <div class="sec-ttl">壁の向き</div>
+      <div class="ori-grid">
+        <button class="ob v" onclick="setOri('v')">🔲 垂直</button>
+        <button class="ob h" onclick="setOri('h')">⬜ 水平</button>
+        <button class="ob r" onclick="resetRot()">↺ 回転リセット</button>
+      </div>
+      <!-- 微調整 -->
+      <div class="sec-ttl">微調整 (1°)</div>
+      <div class="ra"><span class="ral">Y</span><button class="rb" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button><span class="rav" id="ry">0°</span><button class="rb" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button></div>
+      <div class="ra"><span class="ral">X</span><button class="rb" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button><span class="rav" id="rx">0°</span><button class="rb" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button></div>
+      <div class="ra"><span class="ral">Z</span><button class="rb" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button><span class="rav" id="rz">0°</span><button class="rb" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button></div>
+      <div class="ww-sep"></div>
+      <div class="st">スコア基準</div>
+      <div class="sr"><span class="sl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="sv" id="ss-angle-val">35°</span></div>
+      <div class="sr"><span class="sl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="sv" id="ss-tol-val">±5°</span></div>
+      <div class="sr"><span class="sl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="sv" id="ss-thick-val">8mm</span></div>
+      <div class="sr"><span class="sl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="sv" id="ss-thick-tol-val">±2mm</span></div>
     </div>
-    <div class="dep-unit">mm</div>
-    <div class="dep-presets">
-      <button class="dep-pre dp1" onclick="setDep(20)">20mm</button>
-      <button class="dep-pre dp2" onclick="setDep(50)">50mm</button>
-      <button class="dep-pre dp3" onclick="setDep(100)">100mm</button>
-    </div>
   </div>
-
-  <!-- 向き -->
-  <div class="sec-ttl">向き</div>
-  <div class="ori-grid">
-    <button class="ob v" onclick="setOri('v')">🔲 垂直</button>
-    <button class="ob h" onclick="setOri('h')">⬜ 水平</button>
-    <button class="ob r" onclick="resetRot()">↺ 回転リセット</button>
-  </div>
-  <div class="sec-ttl">微調整 (1°)</div>
-  <div class="ra"><span class="ral">Y</span><button class="rb" ontouchstart="sr('Y',-1)" ontouchend="stopR()" onmousedown="sr('Y',-1)" onmouseup="stopR()">−</button><span class="rav" id="ry">0°</span><button class="rb" ontouchstart="sr('Y',1)" ontouchend="stopR()" onmousedown="sr('Y',1)" onmouseup="stopR()">＋</button></div>
-  <div class="ra"><span class="ral">X</span><button class="rb" ontouchstart="sr('X',-1)" ontouchend="stopR()" onmousedown="sr('X',-1)" onmouseup="stopR()">−</button><span class="rav" id="rx">0°</span><button class="rb" ontouchstart="sr('X',1)" ontouchend="stopR()" onmousedown="sr('X',1)" onmouseup="stopR()">＋</button></div>
-  <div class="ra"><span class="ral">Z</span><button class="rb" ontouchstart="sr('Z',-1)" ontouchend="stopR()" onmousedown="sr('Z',-1)" onmouseup="stopR()">−</button><span class="rav" id="rz">0°</span><button class="rb" ontouchstart="sr('Z',1)" ontouchend="stopR()" onmousedown="sr('Z',1)" onmouseup="stopR()">＋</button></div>
-  <div class="ww-sep"></div>
-  <div class="st">スコア基準</div>
-  <div class="sr2"><span class="sl">目標角度</span><input type="range" class="sm" id="ss-angle" min="10" max="70" value="35"><span class="sv" id="ss-angle-val">35°</span></div>
-  <div class="sr2"><span class="sl">許容ブレ</span><input type="range" class="sm" id="ss-tol" min="2" max="20" value="5"><span class="sv" id="ss-tol-val">±5°</span></div>
-  <div class="sr2"><span class="sl">目標厚み</span><input type="range" class="sm" id="ss-thick" min="2" max="20" value="8"><span class="sv" id="ss-thick-val">8mm</span></div>
-  <div class="sr2"><span class="sl">厚み許容</span><input type="range" class="sm" id="ss-thick-tol" min="1" max="10" value="2"><span class="sv" id="ss-thick-tol-val">±2mm</span></div>
-</div>
-```
-
-  </div>
-
-  <!-- ★ スコアHUD — 常時AR内表示 -->
 
   <div id="hud">
-    <!-- 総合スコア -->
     <div class="panel">
       <div class="ptitle">総合スコア</div>
-      <div class="score-wrap">
-        <div class="score-num" id="h-score">0</div>
-        <div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div>
-      </div>
+      <div class="score-wrap"><div class="score-num" id="h-score">0</div><div class="score-grade" id="h-grade" style="color:#4a6a8a">--- GRADE ---</div></div>
     </div>
-    <!-- 角度 -->
     <div class="panel">
       <div class="ptitle">コテ角度</div>
-      <div class="angle-big">
-        <div class="angle-num" id="h-angle">--°</div>
-        <div class="angle-lbl" id="h-ta">目標 35°±5°</div>
-      </div>
-      <div class="gwrap">
-        <div class="gzones"><div class="zb"></div><div class="zw"></div><div class="zg"></div><div class="zw"></div><div class="zb"></div></div>
-        <div class="ndl" id="h-ndl" style="left:50%"></div>
-      </div>
+      <div class="row"><span class="lbl">現在</span><span class="val" id="h-angle">--°</span></div>
+      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-ta">35°±5°</span></div>
+      <div class="gwrap"><div class="gzones"><div class="zb"></div><div class="zw"></div><div class="zg"></div><div class="zw"></div><div class="zb"></div></div><div class="ndl" id="h-ndl" style="left:50%"></div></div>
       <div class="row" style="margin-top:8px"><span class="lbl">ブレ率</span><span class="val" id="h-blur">0%</span></div>
       <div class="bar-bg"><div class="bar-fill" id="h-bbar" style="width:0%;background:#00ff88"></div></div>
     </div>
-    <!-- 詳細 -->
     <div class="panel">
       <div class="row"><span class="lbl">カバレッジ</span><span class="val" id="h-cover">0%</span></div>
       <div class="bar-bg"><div class="bar-fill" id="h-cbar" style="width:0%;background:#00e5ff"></div></div>
       <div class="row" style="margin-top:8px"><span class="lbl">厚み</span><span class="val sm" id="h-thick">0mm</span></div>
-      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-tt">8±2mm</span></div>
+      <div class="row"><span class="lbl">目標</span><span class="val sm" style="color:#00e5ff" id="h-tt">8mm±2mm</span></div>
       <div class="row"><span class="lbl">ストローク</span><span class="val sm" id="h-strokes">0回</span></div>
     </div>
   </div>
 
+  <!-- ★ スコア共有ボタン -->
+
+<button id="score-share-btn" onclick="showScoreModal()">📊 スコア共有</button>
 <button id="prb" onclick="clrP()">🗑 塗りリセット</button>
 
+  <!-- ★ スコア共有モーダル -->
+
+  <div id="score-modal">
+    <div class="sm-title">📊 セッションスコア</div>
+    <div class="sm-score" id="sm-score">0</div>
+    <div class="sm-grade" id="sm-grade">--- GRADE ---</div>
+    <div class="sm-stats">
+      <div class="sm-stat"><div class="sm-stat-lbl">角度ブレ率</div><div class="sm-stat-val" id="sm-blur">0%</div></div>
+      <div class="sm-stat"><div class="sm-stat-lbl">カバレッジ</div><div class="sm-stat-val" id="sm-cover">0%</div></div>
+      <div class="sm-stat"><div class="sm-stat-lbl">平均厚み</div><div class="sm-stat-val" id="sm-thick">0mm</div></div>
+      <div class="sm-stat"><div class="sm-stat-lbl">ストローク</div><div class="sm-stat-val" id="sm-strk">0回</div></div>
+    </div>
+    <!-- QRコード (Google Charts API) -->
+    <img id="sm-qr" width="180" height="180" src="" alt="QR">
+    <div class="sm-url" id="sm-url"></div>
+    <button class="sm-close" onclick="hideScoreModal()">✕ 閉じる</button>
+  </div>
 </div>
+
+<!-- スマホスコア -->
 
 <div id="phone-score">
   <div class="ps-score" id="ps-num">0</div>
@@ -242,6 +262,7 @@ canvas{display:block;}
 <canvas id="c"></canvas>
 
 <script>
+// CONFIG
 let CFG={angle:35,tol:5,thick:8,thickTol:2};
 let DEPTH=50;
 
@@ -252,11 +273,12 @@ function bS(mId,sId,k,sfx){
   me.addEventListener('input',()=>u(+me.value));se.addEventListener('input',()=>u(+se.value));
 }
 bS('cfg-angle','ss-angle','angle','°');bS('cfg-tol','ss-tol','tol','°');bS('cfg-thick','ss-thick','thick','mm');bS('cfg-thick-tol','ss-thick-tol','thickTol','mm');
-function rT(){document.getElementById('h-ta').textContent='目標 '+CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'±'+CFG.thickTol+'mm';}
+function rT(){document.getElementById('h-ta').textContent=CFG.angle+'°±'+CFG.tol+'°';document.getElementById('h-tt').textContent=CFG.thick+'mm±'+CFG.thickTol+'mm';}
 
 function chDep(d){DEPTH=Math.max(5,Math.min(200,DEPTH+d));document.getElementById('dep-disp').textContent=DEPTH;}
 function setDep(v){DEPTH=v;document.getElementById('dep-disp').textContent=v;}
-function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else if(t==='h'){wY=0;wP=-Math.PI/2;wR=0;}uRot();}
+
+function setOri(t){if(t==='v'){wY=0;wP=0;wR=0;}else{wY=0;wP=-Math.PI/2;wR=0;}uRot();}
 function resetRot(){wY=0;wP=0;wR=0;uRot();}
 
 const D2R=Math.PI/180;
@@ -269,20 +291,72 @@ function uRot(){
   document.getElementById('ry').textContent=f(wY);document.getElementById('rx').textContent=f(wP);document.getElementById('rz').textContent=f(wR);
 }
 
+// ★ スコア共有モーダル
+function showScoreModal(){
+  const s=calcS();
+  const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
+  const[,g,gc]=gs.find(([m])=>s.total>=m);
+  document.getElementById('sm-score').textContent=s.total;
+  document.getElementById('sm-score').style.color=gc;
+  document.getElementById('sm-grade').textContent='GRADE '+g;
+  document.getElementById('sm-grade').style.color=gc;
+  document.getElementById('sm-blur').textContent=Math.round(s.blur*100)+'%';
+  document.getElementById('sm-cover').textContent=Math.round(s.coverage*100)+'%';
+  document.getElementById('sm-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
+  document.getElementById('sm-strk').textContent=strokes+'回';
+  // URLにスコアを埋め込んでQRコード生成
+  const url=location.href.split('?')[0]+'?score='+s.total+'&grade='+g+'&blur='+Math.round(s.blur*100)+'&cov='+Math.round(s.coverage*100)+'&thick='+(s.avg*1000).toFixed(1);
+  const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(url);
+  document.getElementById('sm-qr').src=qrUrl;
+  document.getElementById('sm-url').textContent=url;
+  document.getElementById('score-modal').style.display='block';
+}
+function hideScoreModal(){document.getElementById('score-modal').style.display='none';}
+
+// ★ スコア表示ページ (URLパラメータから読み込み)
+function checkScorePage(){
+  const p=new URLSearchParams(location.search);
+  if(!p.has('score'))return;
+  // スコア確認専用画面を表示
+  document.getElementById('ui').style.display='none';
+  const ps=document.getElementById('phone-score');
+  ps.style.display='flex';
+  const score=p.get('score'),grade=p.get('grade'),blur=p.get('blur'),cov=p.get('cov'),thick=p.get('thick');
+  const gs=[[90,'#00ff88'],[80,'#00e5ff'],[65,'#ffcc00'],[45,'#ff9900'],[0,'#ff4466']];
+  const gc=gs.find(([m])=>+score>=m)[1];
+  document.getElementById('ps-num').textContent=score;
+  document.getElementById('ps-num').style.color=gc;
+  document.getElementById('ps-grade').textContent='GRADE '+grade;
+  document.getElementById('ps-grade').style.color=gc;
+  document.getElementById('ps-blur').textContent=blur+'%';
+  document.getElementById('ps-cover').textContent=cov+'%';
+  document.getElementById('ps-thick').textContent=thick+'mm';
+}
+checkScorePage();
+
+// スマホスコア
 let pT=null;
 document.getElementById('btn-phone').addEventListener('click',()=>{document.getElementById('ui').style.display='none';document.getElementById('phone-score').style.display='flex';pT=setInterval(rfP,500);});
 document.getElementById('ps-back').addEventListener('click',()=>{clearInterval(pT);document.getElementById('phone-score').style.display='none';document.getElementById('ui').style.display='flex';});
+document.getElementById('btn-score-page').addEventListener('click',()=>{
+  // スコアURLを直接開く
+  const s=calcS();
+  const gs=[[90,'S'],[80,'A'],[65,'B'],[45,'C'],[0,'D']];
+  const[,g]=gs.find(([m])=>s.total>=m);
+  const url=location.href.split('?')[0]+'?score='+s.total+'&grade='+g+'&blur='+Math.round(s.blur*100)+'&cov='+Math.round(s.coverage*100)+'&thick='+(s.avg*1000).toFixed(1);
+  window.open(url,'_blank');
+});
 function rfP(){
   const s=calcS();const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
   const[,g,gc]=gs.find(([m])=>s.total>=m);
   const sn=document.getElementById('ps-num');sn.textContent=s.total;sn.style.color=gc;
-  const gd=document.getElementById('ps-grade');gd.textContent='--- GRADE '+g+' ---';gd.style.color=gc;
+  const gd=document.getElementById('ps-grade');gd.textContent='GRADE '+g;gd.style.color=gc;
   document.getElementById('ps-blur').textContent=Math.round(s.blur*100)+'%';
   document.getElementById('ps-cover').textContent=Math.round(s.coverage*100)+'%';
   document.getElementById('ps-thick').textContent=(s.avg*1000).toFixed(1)+'mm';
 }
 
-// WebGL
+// WEBGL
 const canvas=document.getElementById('c');
 canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 let gl=canvas.getContext('webgl2',{xrCompatible:true,alpha:true});
@@ -327,54 +401,38 @@ const thick=new Float32Array(GW*GH);
 const angLog=[];let strokes=0,wasPaint=false;
 function clrP(){thick.fill(0);angLog.length=0;strokes=0;wasPaint=false;}
 
-// ★ 塗りマス: グリッドは完全フラット、赤マスのみ奥に凹む
+// ★ wallV: フラット表示 + 厚塗り(赤)は奥に凹む
 function wallV(){
   const v=[];
-  const tgtM=CFG.thick/1000;
-  const TOO_THICK_RATIO=1.15; // これ以上は赤(凹み)
-  const maxSink=0.015; // 最大凹み量(m) = 15mm
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
     const t=thick[gy*GW+gx];if(!t)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003,y0=gy*CELL,y1=y0+CELL-0.003;
+    const tgtM=CFG.thick/1000;
     const ratio=t/tgtM;
-    let r,g,b,a;
-    let zOffset=0; // Z方向オフセット (正=壁面から浮く, 負=凹む)
-    if(ratio<0.85){
-      // 薄: 青
-      r=0.1;g=0.4;b=1.0;a=Math.min(0.85,ratio*0.6+0.25);
-      zOffset=0;
-    } else if(ratio<TOO_THICK_RATIO){
-      // 適正: 緑
-      r=0.0;g=1.0;b=0.5;a=0.85;
-      zOffset=0;
-    } else {
-      // ★ 厚すぎ: 赤 → 奥に凹む
-      r=1.0;g=0.15;b=0.1;a=0.90;
-      // 塗りすぎるほど深く凹む (最大15mm)
-      const excess=Math.min(ratio-TOO_THICK_RATIO,1.0);
-      zOffset=-(excess*maxSink); // マイナス=壁面奥へ
+    let r,g,b;
+    if(ratio<0.85){r=0.1;g=0.4;b=1.0;}
+    else if(ratio<1.15){r=0.0;g=1.0;b=0.5;}
+    else{r=1.0;g=0.4;b=0.1;}
+    const a=Math.min(0.88,ratio*0.5+0.3);
+    // ★ 厚塗り(ratio>1.15)は奥に凹む: Zを正方向にオフセット
+    let zOff=0;
+    if(ratio>1.15){
+      // 最大5cmまで奥に沈む
+      zOff=Math.min((ratio-1.15)*0.06,0.05);
     }
-    // フラットな四角形 (Z=zOffset)
-    const z=zOffset;
+    // ★ フラット1枚のみ (厚み表示なし)
     v.push(
-      x0,y0,z,r,g,b,a, x1,y0,z,r,g,b,a, x0,y1,z,r,g,b,a,
-      x1,y0,z,r,g,b,a, x1,y1,z,r,g,b,a, x0,y1,z,r,g,b,a
+      x0,y0,zOff,r,g,b,a,
+      x1,y0,zOff,r,g,b,a,
+      x0,y1,zOff,r,g,b,a,
+      x1,y0,zOff,r,g,b,a,
+      x1,y1,zOff,r,g,b,a,
+      x0,y1,zOff,r,g,b,a
     );
-    // 凹みがある場合、縁を暗くして凹み感を演出
-    if(zOffset<0){
-      const ea=0.5,er=0.6,eg=0.05,eb=0.05;
-      // 上縁
-      v.push(x0,y1,0,er,eg,eb,ea, x0,y1,z,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea,
-             x1,y1,0,er,eg,eb,ea, x0,y1,z,er,eg,eb,ea, x1,y1,z,er,eg,eb,ea);
-      // 右縁
-      v.push(x1,y0,0,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea, x1,y0,z,er,eg,eb,ea,
-             x1,y0,z,er,eg,eb,ea, x1,y1,0,er,eg,eb,ea, x1,y1,z,er,eg,eb,ea);
-    }
   }
   return new Float32Array(v);
 }
 
-// グリッド線 (外枠シアン + 内側白)
 function gridV(){
   const v=[];
   const bx=-(GW/2)*CELL,ex=(GW/2)*CELL,by=0,ey=GH*CELL;
@@ -384,8 +442,7 @@ function gridV(){
   return new Float32Array(v);
 }
 function retV(cx,cy,cz,rad){
-  const v=[],seg=24;
-  for(let i=0;i<seg;i++){const a0=(i/seg)*Math.PI*2,a1=((i+1)/seg)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.9,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.9,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.9);}
+  const v=[],seg=24;for(let i=0;i<seg;i++){const a0=(i/seg)*Math.PI*2,a1=((i+1)/seg)*Math.PI*2;v.push(cx,cy,cz,0,.9,1,.9,cx+Math.cos(a0)*rad,cy+Math.sin(a0)*rad,cz,0,.9,1,.9,cx+Math.cos(a1)*rad,cy+Math.sin(a1)*rad,cz,0,.9,1,.9);}
   return new Float32Array(v);
 }
 
@@ -405,12 +462,10 @@ function updHUD(ang){
   lastAng=ang;const s=calcS();
   const gs=[[90,'S','#00ff88'],[80,'A','#00e5ff'],[65,'B','#ffcc00'],[45,'C','#ff9900'],[0,'D','#ff4466']];
   const[,g,gc]=gs.find(([m])=>s.total>=m);
-  // スコア
   document.getElementById('h-score').textContent=s.total;document.getElementById('h-score').style.color=gc;
   const ge=document.getElementById('h-grade');ge.textContent='--- GRADE '+g+' ---';ge.style.color=gc;
-  // 角度
   const diff=Math.abs(ang-CFG.angle);
-  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='angle-num '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
+  const ae=document.getElementById('h-angle');ae.textContent=ang.toFixed(1)+'°';ae.className='val '+(diff<=CFG.tol?'good':diff<=CFG.tol*2?'warn':'bad');
   document.getElementById('h-ndl').style.left=Math.min(100,Math.max(0,ang/70*100))+'%';
   const bp=Math.round(s.blur*100);const be=document.getElementById('h-blur');be.textContent=bp+'%';be.className='val '+(bp<20?'good':bp<40?'warn':'bad');
   const bb=document.getElementById('h-bbar');bb.style.width=bp+'%';bb.style.background=bp<20?'#00ff88':bp<40?'#ffcc00':'#ff4466';
@@ -429,9 +484,7 @@ document.getElementById('btn-ar').addEventListener('click',async()=>{
   try{
     const arOk=await navigator.xr.isSessionSupported('immersive-ar');
     const mode=arOk?'immersive-ar':'immersive-vr';
-    const opts=arOk
-      ?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}
-      :{requiredFeatures:['local-floor']};
+    const opts=arOk?{requiredFeatures:['local-floor'],optionalFeatures:['hit-test','dom-overlay'],domOverlay:{root:document.getElementById('ar-overlay')}}:{requiredFeatures:['local-floor']};
     xrSess=await navigator.xr.requestSession(mode,opts);
     glLay=new XRWebGLLayer(xrSess,gl,{alpha:true});
     xrSess.updateRenderState({baseLayer:glLay});
@@ -486,9 +539,7 @@ function xrF(t,frame){
     const gr=src.gamepad?.buttons[1]?.value??0;
 
     if(src.handedness==='right'){
-      const fwdX=2*(q.x*q.z+q.w*q.y);
-      const fwdY=2*(q.y*q.z-q.w*q.x);
-      const fwdZ=-(1-2*(q.x*q.x+q.y*q.y));
+      const fwdX=2*(q.x*q.z+q.w*q.y),fwdY=2*(q.y*q.z-q.w*q.x),fwdZ=-(1-2*(q.x*q.x+q.y*q.y));
       const R=eMf(wY,wP,wR);
       const dot=fwdX*R[8]+fwdY*R[9]+fwdZ*R[10];
       curA=Math.acos(Math.max(-1,Math.min(1,Math.abs(dot))))*180/Math.PI;
@@ -503,7 +554,7 @@ function xrF(t,frame){
           const pr=Math.max(0,1-Math.abs(L.z)/PD);
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.05,thick[ny*GW+nx]+pr*0.0005);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.03,thick[ny*GW+nx]+pr*0.0005);
           }
         }else wasPaint=false;
       }
