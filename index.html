@@ -710,11 +710,12 @@ function xrF(t,frame){
           const dist=Math.abs(L.z);
           const proximity=1.0-(dist/PD2); // 0(遠)〜1(近)
           let level;
-          if(proximity>0.8)level=1.0;       // 青: 強く押し込んでいる
-          else if(proximity>0.6)level=0.8;  // 水色
-          else if(proximity>0.4)level=0.6;  // 緑: 適正
-          else if(proximity>0.2)level=0.4;  // 黄
-          else level=0.2;                   // 赤: 軽く触れているだけ
+          // 緑の範囲を広げて適正判定しやすく
+          if(proximity>0.9)level=1.0;       // 青: 壁に深く押し込んだ時だけ
+          else if(proximity>0.75)level=0.8; // 水色: かなり深め
+          else if(proximity>0.25)level=0.6; // 緑: 適正(広い範囲)
+          else if(proximity>0.1)level=0.4;  // 黄: かなり浅め
+          else level=0.2;                   // 赤: ほぼ触れていないだけ
 
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
           let painted=false;
@@ -767,10 +768,10 @@ function xrF(t,frame){
           const dist=Math.abs(L.z);
           const proximity=1.0-(dist/PD2);
           let level;
-          if(proximity>0.8)level=1.0;
-          else if(proximity>0.6)level=0.8;
-          else if(proximity>0.4)level=0.6;
-          else if(proximity>0.2)level=0.4;
+          if(proximity>0.9)level=1.0;
+          else if(proximity>0.75)level=0.8;
+          else if(proximity>0.25)level=0.6;
+          else if(proximity>0.1)level=0.4;
           else level=0.2;
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
           let painted=false;
