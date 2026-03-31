@@ -496,73 +496,49 @@ const thick=new Float32Array(GW*GH);
 const angLog=[];let strokes=0,wasPaint=false;
 function clrP(){thick.fill(0);angLog.length=0;strokes=0;wasPaint=false;}
 
-// wallV: フラット + 赤(厚塗り)は奥に凹む
+// ★ wallV: 塗り圧(0〜1)を色と突出量で表現
+// thick[i] = 塗り圧レベル (0=未塗, 0.2=赤/薄, 1.0=青/厚)
+// 突出: 青(厚)→手前に出る(Z+), 赤(薄)→奥に引っ込む(Z-)
 function wallV(){
   const v=[];
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
     const t=thick[gy*GW+gx];if(!t)continue;
     const x0=(gx-GW/2)*CELL,x1=x0+CELL-0.003,y0=gy*CELL,y1=y0+CELL-0.003;
-    const tgtM=CFG.thick/1000;
-    const ratio=t/tgtM;
-    // 5段階カラー
-    let r,g,b;
-    if(ratio<1.0){r=0.1;g=0.3;b=1.0;}          // 青: 薄い
-    else if(ratio<2.0){r=0.0;g=0.85;b=1.0;}     // 水色: やや薄い
-    else if(ratio<3.5){r=0.0;g=1.0;b=0.3;}      // 緑: 適正
-    else if(ratio<RED_RATIO){r=1.0;g=0.85;b=0.0;} // 黄: やや厚い
-    else{r=1.0;g=0.25;b=0.0;}                   // 赤: 厚すぎ(凹む)
-    const a=Math.min(0.88,ratio*0.5+0.3);
 
-    if(ratio<RED_RATIO){
-      // 通常・薄塗り: フラット (Z=0)
-      v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,
-             x1,y0,0,r,g,b,a,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
-    } else {
-      // ★ 厚塗り(赤=目標2倍以上): グリッドマスが奥に凹む
-      // 壁ローカル座標でZ+ = 壁の奥方向
-      const over = ratio - RED_RATIO;
-      // 凹み深さ: 壁面から内側(カメラから遠ざかる)方向
-      // 壁のローカル座標でZ=0が壁面、凹みはZ値をマイナスに
-      const dz = Math.min(over * 0.15, 0.18);
-      // 実際の凹み方向: カメラは壁のZ+側から見ているので
-      // 凹みはZ-方向 = dzを負で渡す
-      const dzFinal = -dz;
+    // 塗り圧 0〜1 → 5段階色 + 突出量
+    let r,g,b,zOff;
+    if(t<=0.2){        // 赤: 薄い → 奥に凹む
+      r=1.0;g=0.2;b=0.0; zOff=-0.06;
+    } else if(t<=0.4){ // 黄: やや薄い → 少し凹む
+      r=1.0;g=0.85;b=0.0; zOff=-0.02;
+    } else if(t<=0.6){ // 緑: 適正 → ツラ(0)
+      r=0.0;g=1.0;b=0.3; zOff=0.0;
+    } else if(t<=0.8){ // 水色: やや厚い → 少し出る
+      r=0.0;g=0.85;b=1.0; zOff=0.02;
+    } else {            // 青: 厚い → 手前に出る
+      r=0.1;g=0.3;b=1.0; zOff=0.06;
+    }
+    const a=0.88;
 
-      // 凹んだ底面 (暗くして穴感を出す)
-      const dr=r*0.4, dg=g*0.4, db=b*0.4, da=a*0.85;
-      v.push(x0,y0,dzFinal,dr,dg,db,da,x1,y0,dzFinal,dr,dg,db,da,x0,y1,dzFinal,dr,dg,db,da,
-             x1,y0,dzFinal,dr,dg,db,da,x1,y1,dzFinal,dr,dg,db,da,x0,y1,dzFinal,dr,dg,db,da);
+    // 前面(塗り面)
+    v.push(x0,y0,zOff,r,g,b,a,x1,y0,zOff,r,g,b,a,x0,y1,zOff,r,g,b,a,
+           x1,y0,zOff,r,g,b,a,x1,y1,zOff,r,g,b,a,x0,y1,zOff,r,g,b,a);
 
-      // 凹みの縁（手前の枠） - 穴の入口を縁取り
-      const er=1.0,eg=0.3,eb=0.1,ea=0.9; // 濃いオレンジで縁
-      const edge=0.004;
-      // 下辺
-      v.push(x0,y0,0,er,eg,eb,ea,x1,y0,0,er,eg,eb,ea,x0,y0+edge,0,er,eg,eb,ea,
-             x1,y0,0,er,eg,eb,ea,x1,y0+edge,0,er,eg,eb,ea,x0,y0+edge,0,er,eg,eb,ea);
-      // 上辺
-      v.push(x0,y1-edge,0,er,eg,eb,ea,x1,y1-edge,0,er,eg,eb,ea,x0,y1,0,er,eg,eb,ea,
-             x1,y1-edge,0,er,eg,eb,ea,x1,y1,0,er,eg,eb,ea,x0,y1,0,er,eg,eb,ea);
-      // 左辺
-      v.push(x0,y0,0,er,eg,eb,ea,x0+edge,y0,0,er,eg,eb,ea,x0,y1,0,er,eg,eb,ea,
-             x0+edge,y0,0,er,eg,eb,ea,x0+edge,y1,0,er,eg,eb,ea,x0,y1,0,er,eg,eb,ea);
-      // 右辺
-      v.push(x1-edge,y0,0,er,eg,eb,ea,x1,y0,0,er,eg,eb,ea,x1-edge,y1,0,er,eg,eb,ea,
-             x1,y0,0,er,eg,eb,ea,x1,y1,0,er,eg,eb,ea,x1-edge,y1,0,er,eg,eb,ea);
-
-      // 側面: 穴の内壁 (グラデーション)
-      const w1=r*0.6,w2=g*0.6,w3=b*0.6,wa=a*0.7;
-      // 下内壁
-      v.push(x0,y0,0,r,g,b,a,x1,y0,0,r,g,b,a,x0,y0,dzFinal,w1,w2,w3,wa,
-             x1,y0,0,r,g,b,a,x1,y0,dzFinal,w1,w2,w3,wa,x0,y0,dzFinal,w1,w2,w3,wa);
-      // 上内壁
-      v.push(x0,y1,dzFinal,w1,w2,w3,wa,x1,y1,dzFinal,w1,w2,w3,wa,x0,y1,0,r,g,b,a,
-             x1,y1,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a,x0,y1,0,r,g,b,a);
-      // 左内壁
-      v.push(x0,y0,dzFinal,w1,w2,w3,wa,x0,y0,0,r,g,b,a,x0,y1,dzFinal,w1,w2,w3,wa,
-             x0,y0,0,r,g,b,a,x0,y1,0,r,g,b,a,x0,y1,dzFinal,w1,w2,w3,wa);
-      // 右内壁
-      v.push(x1,y0,0,r,g,b,a,x1,y0,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a,
-             x1,y0,dzFinal,w1,w2,w3,wa,x1,y1,dzFinal,w1,w2,w3,wa,x1,y1,0,r,g,b,a);
+    // 側面: zOff→0 への壁(奥行き感)
+    const dr=r*0.55,dg=g*0.55,db=b*0.55,da=0.75;
+    if(Math.abs(zOff)>0.001){
+      // 下面
+      v.push(x0,y0,0,dr,dg,db,da,x1,y0,0,dr,dg,db,da,x0,y0,zOff,r,g,b,a,
+             x1,y0,0,dr,dg,db,da,x1,y0,zOff,r,g,b,a,x0,y0,zOff,r,g,b,a);
+      // 上面
+      v.push(x0,y1,zOff,r,g,b,a,x1,y1,zOff,r,g,b,a,x0,y1,0,dr,dg,db,da,
+             x1,y1,zOff,r,g,b,a,x1,y1,0,dr,dg,db,da,x0,y1,0,dr,dg,db,da);
+      // 左面
+      v.push(x0,y0,zOff,r,g,b,a,x0,y0,0,dr,dg,db,da,x0,y1,zOff,r,g,b,a,
+             x0,y0,0,dr,dg,db,da,x0,y1,0,dr,dg,db,da,x0,y1,zOff,r,g,b,a);
+      // 右面
+      v.push(x1,y0,0,dr,dg,db,da,x1,y0,zOff,r,g,b,a,x1,y1,0,dr,dg,db,da,
+             x1,y0,zOff,r,g,b,a,x1,y1,zOff,r,g,b,a,x1,y1,0,dr,dg,db,da);
     }
   }
   return new Float32Array(v);
@@ -586,11 +562,21 @@ const wBuf=mkB(new Float32Array(0),gl.DYNAMIC_DRAW);
 const rBuf=mkB(new Float32Array(24*3*7),gl.DYNAMIC_DRAW);
 
 function calcS(){
-  let cov=0,ts=0;for(let i=0;i<thick.length;i++)if(thick[i]>0){cov++;ts+=thick[i];}
-  const coverage=cov/thick.length,avg=cov>0?ts/cov:0,tgtM=CFG.thick/1000,tolM=CFG.thickTol/1000;
+  let cov=0,greenCnt=0;
+  for(let i=0;i<thick.length;i++){
+    if(thick[i]>0){
+      cov++;
+      // 緑(0.5〜0.7)が適正
+      if(thick[i]>=0.5&&thick[i]<=0.7)greenCnt++;
+    }
+  }
+  const coverage=cov/thick.length;
+  const pressScore=cov>0?greenCnt/cov:0; // 適正圧の割合
   let blur=0;if(angLog.length>0)blur=angLog.filter(a=>Math.abs(a-CFG.angle)>CFG.tol).length/angLog.length;
-  let tok=0;for(let i=0;i<thick.length;i++)if(thick[i]>0&&Math.abs(thick[i]-tgtM)<tolM)tok++;
-  return{total:Math.round((1-blur)*40+coverage*35+(cov>0?tok/cov:0)*25),blur,coverage,avg};
+  // avg: 塗り圧の平均(表示用)
+  let ts=0;for(let i=0;i<thick.length;i++)if(thick[i]>0)ts+=thick[i];
+  const avg=cov>0?ts/cov:0;
+  return{total:Math.round((1-blur)*40+coverage*35+pressScore*25),blur,coverage,avg,pressScore};
 }
 let lastAng=35;
 function updHUD(ang){
@@ -652,6 +638,11 @@ function stopDet(){if(xrHit){xrHit.cancel();xrHit=null;}detecting=false;document
 
 let wX=0,wWY=0.8,wZ=-0.6,wY=0,wP=0,wR=0;
 let grab=false,gOX=0,gOY=0,gOZ=0;
+// ★ 塗り圧計算用: 直前フレームの刃先位置
+let prevKx=null,prevKy=null,prevKz=null;
+let prevTime=0;
+// 接触中かどうか(接触開始時のみ圧力を記録)
+let contactCells=new Set(); // 今回の接触で既に塗ったセル
 let hitPos=null,fc=0;
 
 function xrF(t,frame){
@@ -699,17 +690,45 @@ function xrF(t,frame){
       if(htEl){htEl.textContent='✓ 手検出中';htEl.style.color='#00ff88';}
       if(!detecting){
         const PD=DEPTH/1000;
-        const L=w2L(kx,ky,kz);  // 刃先位置で判定
+        const L=w2L(kx,ky,kz);
         if(Math.abs(L.z)<PD){
-          if(!wasPaint){strokes++;wasPaint=true;}
-          angLog.push(curA);if(angLog.length>2000)angLog.shift();
+          // ★ 塗り圧 = 刃先の移動速度から計算
+          const now=performance.now();
+          let pressure=0.6; // デフォルト(緑=適正)
+          if(prevKx!==null && now>prevTime){
+            const dt=(now-prevTime)/1000;
+            const spd=Math.sqrt((kx-prevKx)**2+(ky-prevKy)**2+(kz-prevKz)**2)/dt;
+            // 速度 0〜0.5m/s を 0〜1 に正規化
+            // 速い=力強い=青(厚), 遅い=弱い=赤(薄)
+            pressure=Math.min(1.0,Math.max(0.05,spd/0.5));
+          }
+          // ★ 5段階に量子化
+          let level;
+          if(pressure>0.8)level=1.0;       // 青
+          else if(pressure>0.6)level=0.8;  // 水色
+          else if(pressure>0.4)level=0.6;  // 緑
+          else if(pressure>0.2)level=0.4;  // 黄
+          else level=0.2;                  // 赤
+
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
-          const pr=Math.max(0,1-Math.abs(L.z)/PD);
+          let painted=false;
           for(let dy2=-1;dy2<=1;dy2++)for(let dx2=-1;dx2<=1;dx2++){
             const nx=gx+dx2,ny=gy+dy2;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.08,thick[ny*GW+nx]+pr*0.00015);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH){
+              const key=ny*GW+nx;
+              // ★ 接触開始セルまたは再塗りは上書き
+              thick[key]=level;
+              painted=true;
+            }
           }
-        }else wasPaint=false;
+          if(painted){
+            if(!wasPaint){strokes++;wasPaint=true;}
+            angLog.push(curA);if(angLog.length>2000)angLog.shift();
+          }
+        }else{
+          wasPaint=false;
+        }
+        prevKx=kx;prevKy=ky;prevKz=kz;prevTime=performance.now();
       }
     }
   }
@@ -737,15 +756,28 @@ function xrF(t,frame){
         const PD=DEPTH/1000;
         const L=w2L(p.x,p.y,p.z);
         if(Math.abs(L.z)<PD){
-          if(!wasPaint){strokes++;wasPaint=true;}
-          angLog.push(curA);if(angLog.length>2000)angLog.shift();
+          const now=performance.now();
+          let pressure=0.6;
+          if(prevKx!==null && now>prevTime){
+            const dt=(now-prevTime)/1000;
+            const spd=Math.sqrt((p.x-prevKx)**2+(p.y-prevKy)**2+(p.z-prevKz)**2)/dt;
+            pressure=Math.min(1.0,Math.max(0.05,spd/0.5));
+          }
+          let level;
+          if(pressure>0.8)level=1.0;
+          else if(pressure>0.6)level=0.8;
+          else if(pressure>0.4)level=0.6;
+          else if(pressure>0.2)level=0.4;
+          else level=0.2;
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
-          const pr=Math.max(0,1-Math.abs(L.z)/PD);
+          let painted=false;
           for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
             const nx=gx+dx,ny=gy+dy;
-            if(nx>=0&&nx<GW&&ny>=0&&ny<GH)thick[ny*GW+nx]=Math.min(0.08,thick[ny*GW+nx]+pr*0.00015);
+            if(nx>=0&&nx<GW&&ny>=0&&ny<GH){thick[ny*GW+nx]=level;painted=true;}
           }
+          if(painted){if(!wasPaint){strokes++;wasPaint=true;}angLog.push(curA);if(angLog.length>2000)angLog.shift();}
         }else wasPaint=false;
+        prevKx=p.x;prevKy=p.y;prevKz=p.z;prevTime=performance.now();
       }
       if(detecting&&tr>0.5&&hitPos){
         wX=hitPos.x;wWY=hitPos.y;wZ=hitPos.z;
