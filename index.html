@@ -686,9 +686,12 @@ function xrF(t,frame){
       const dlen=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.001;
       dx/=dlen;dy/=dlen;dz/=dlen;
 
-      // コテ刃先 = 手首 + 指方向 × オフセット
+      // コテ刃先 = 手首 + 指方向 × オフセット + Y軸補正(+10cm)
       const ofs=KOTE_OFFSET/1000;
-      const kx=wp.x+dx*ofs, ky=wp.y+dy*ofs, kz=wp.z+dz*ofs;
+      const HAND_Y_OFFSET=0.10; // 10cm上にオフセット(コントローラーとの座標合わせ)
+      const kx=wp.x+dx*ofs;
+      const ky=wp.y+dy*ofs+HAND_Y_OFFSET;
+      const kz=wp.z+dz*ofs;
 
       // コテ角度: 手の向きと壁法線の角度
       const R=eMf(wY,wP,wR);
