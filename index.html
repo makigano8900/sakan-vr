@@ -507,16 +507,11 @@ function wallV(){
 
     // 塗り圧 0〜1 → 5段階色 + 突出量
     let r,g,b,zOff;
-    // t=level値: 0.2=赤(薄/奥へ凹), 1.0=青(厚/手前へ出る)
-    // zOff符号: + = 手前(カメラ側), - = 奥(壁の奥)
-    if(t<=0.2){        // 赤: 薄い → 奥に凹む
+    // 3色: 赤(薄/奥凹), 緑(適正/ツラ), 青(厚/手前出)
+    if(t<=0.3){        // 赤: 薄い → 奥に凹む
       r=1.0;g=0.2;b=0.0; zOff=0.06;
-    } else if(t<=0.4){ // 黄: やや薄い → 少し凹む
-      r=1.0;g=0.85;b=0.0; zOff=0.02;
-    } else if(t<=0.6){ // 緑: 適正 → ツラ(0)
+    } else if(t<=0.7){ // 緑: 適正 → ツラ(0)
       r=0.0;g=1.0;b=0.3; zOff=0.0;
-    } else if(t<=0.8){ // 水色: やや厚い → 少し出る
-      r=0.0;g=0.85;b=1.0; zOff=-0.02;
     } else {            // 青: 厚い → 手前に出る
       r=0.1;g=0.3;b=1.0; zOff=-0.06;
     }
@@ -569,7 +564,7 @@ function calcS(){
     if(thick[i]>0){
       cov++;
       // 緑(0.5〜0.7)が適正
-      if(thick[i]>=0.5&&thick[i]<=0.7)greenCnt++;
+      if(thick[i]>=0.3&&thick[i]<=0.7)greenCnt++;
     }
   }
   const coverage=cov/thick.length;
@@ -710,12 +705,10 @@ function xrF(t,frame){
           const dist=Math.abs(L.z);
           const proximity=1.0-(dist/PD2); // 0(遠)〜1(近)
           let level;
-          // 緑の範囲を広げて適正判定しやすく
-          if(proximity>0.9)level=1.0;       // 青: 壁に深く押し込んだ時だけ
-          else if(proximity>0.75)level=0.8; // 水色: かなり深め
-          else if(proximity>0.25)level=0.6; // 緑: 適正(広い範囲)
-          else if(proximity>0.1)level=0.4;  // 黄: かなり浅め
-          else level=0.2;                   // 赤: ほぼ触れていないだけ
+          // 3段階: 赤(薄)・緑(適正)・青(厚)
+          if(proximity>0.75)level=1.0;      // 青: 深く押し込んでいる
+          else if(proximity>0.25)level=0.6; // 緑: 適正
+          else level=0.2;                   // 赤: 軽く触れているだけ
 
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
           let painted=false;
@@ -768,10 +761,8 @@ function xrF(t,frame){
           const dist=Math.abs(L.z);
           const proximity=1.0-(dist/PD2);
           let level;
-          if(proximity>0.9)level=1.0;
-          else if(proximity>0.75)level=0.8;
+          if(proximity>0.75)level=1.0;
           else if(proximity>0.25)level=0.6;
-          else if(proximity>0.1)level=0.4;
           else level=0.2;
           const gx=Math.floor(L.x/CELL+GW/2),gy=Math.floor(L.y/CELL);
           let painted=false;
