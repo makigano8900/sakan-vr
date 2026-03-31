@@ -662,27 +662,33 @@ function xrF(t,frame){
   // ★ ハンドトラッキング処理
   for(const src of xrSess.inputSources){
     if(src.hand && src.handedness==='right'){
-      // 手首関節
+      // ★ 手首のみで方向を計算 → 握った状態でも安定動作
       const wristJoint=src.hand.get('wrist');
-      const midMeta=src.hand.get('middle-finger-metacarpal');
-      const indexTip=src.hand.get('index-finger-tip');
-      if(!wristJoint||!midMeta)continue;
+      if(!wristJoint)continue;
       const htEl=document.getElementById('h-ht');
       const wristP=frame.getJointPose(wristJoint,xrRef);
-      const midP=frame.getJointPose(midMeta,xrRef);
-      const idxP=indexTip?frame.getJointPose(indexTip,xrRef):null;
-      if(!wristP||!midP)continue;
+      if(!wristP)continue;
 
-      // 手首→中指付け根の方向ベクトル（コテの向き）
-      const wx=wristP.transform.position.x,wy=wristP.transform.position.y,wz2=wristP.transform.position.z;
-      const mx=midP.transform.position.x,my=midP.transform.position.y,mz=midP.transform.position.z;
-      let dx=mx-wx,dy=my-wy,dz=mz-wz2;
-      const len=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.001;
-      dx/=len;dy/=len;dz/=len;
+      // 手首のクォータニオンから手の向きを取得
+      // コントローラーと同じ方法: 手のひら法線方向を前方とする
+      const q=wristP.transform.orientation;
+      const wp=wristP.transform.position;
 
-      // コテ刃先 = 手首位置 + 方向 × オフセット
+      // Quest3ハンドトラッキングの手首座標系:
+      // 手のひら方向 = Yaw+Pitch から算出
+      // 前腕→手先方向ベクトル: クォータニオンのX軸方向
+      // column-major: X軸 = (1-2(yy+zz), 2(xy+wz), 2(xz-wy))
+      const qx=q.x,qy=q.y,qz=q.z,qw=q.w;
+      // 手首ローカルX軸(手の指方向=コテの向き)
+      let dx=1-2*(qy*qy+qz*qz);
+      let dy=2*(qx*qy+qw*qz);
+      let dz=2*(qx*qz-qw*qy);
+      const dlen=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.001;
+      dx/=dlen;dy/=dlen;dz/=dlen;
+
+      // コテ刃先 = 手首 + 指方向 × オフセット
       const ofs=KOTE_OFFSET/1000;
-      const kx=wx+dx*ofs, ky=wy+dy*ofs, kz=wz2+dz*ofs;
+      const kx=wp.x+dx*ofs, ky=wp.y+dy*ofs, kz=wp.z+dz*ofs;
 
       // コテ角度: 手の向きと壁法線の角度
       const R=eMf(wY,wP,wR);
